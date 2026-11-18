@@ -13,6 +13,6 @@ const SITE = {
   youtube: "https://www.youtube.com/@Snake-yl3il/videos",
   youtubeSubscribe: "https://www.youtube.com/@Snake-yl3il?sub_confirmation=1",
   spotify: "https://open.spotify.com/show/3x36G48NufkZM1Er2Mvp2b",
-  apiUrl: "",
+  apiUrl: "https://script.google.com/macros/s/AKfycbx3D2hTO1Vsz_RhNWpr7Hyc7IarZXWG2wpjrIYQnvMAqMNIY-CzROm31BfneUlZEPxJ/exec",
   guestVotesPerDay: 3   // 每位聽眾每天可投「下一位來賓」幾票
 };
