@@ -10,6 +10,11 @@
 // 有新投稿時寄通知信給你（留空 '' 就不寄）
 const NOTIFY_EMAIL = '';
 
+// 試算表 ID（網址 /d/ 和 /edit 中間那串）。
+// 從試算表「擴充功能 → Apps Script」開的程式可以留空 ''；在 script.google.com 另外建的就要填。
+const SHEET_ID = '';
+function ss_() { return SHEET_ID ? SpreadsheetApp.openById(SHEET_ID) : SpreadsheetApp.getActive(); }
+
 const VOTES = '投票統計';
 const WISHES = '聽眾投稿';
 const VOTE_HEADER = ['key', 'count', 'updated'];
@@ -45,7 +50,7 @@ function doPost(e) {
 
 /* ---------------- 內部函式 ---------------- */
 function sheet_(name, header) {
-  const ss = SpreadsheetApp.getActive();
+  const ss = ss_();
   let sh = ss.getSheetByName(name);
   if (!sh) {
     sh = ss.insertSheet(name);
@@ -88,7 +93,7 @@ function wish_(b) {
   if (NOTIFY_EMAIL) {
     MailApp.sendEmail(NOTIFY_EMAIL, '【三國別演了】新投稿：' + content.slice(0, 20),
       '暱稱：' + b.nickname + '\n年級：' + b.grade + '\n類型：' + b.type + '\n想問：' + b.host + '\n\n' + content +
-      '\n\n到試算表把 approved 打勾，就會出現在許願牆。\n' + SpreadsheetApp.getActive().getUrl());
+      '\n\n到試算表把 approved 打勾，就會出現在許願牆。\n' + ss_().getUrl());
   }
 }
 
