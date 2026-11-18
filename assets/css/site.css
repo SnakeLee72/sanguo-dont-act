@@ -251,6 +251,23 @@ p { margin: 0; }
 .footer a:hover { color: #fff; }
 .footer .copy { grid-column: 1 / -1; border-top: 1px solid rgba(255,255,255,.12); padding-top: 16px; font-size: 13px; color: #B8987A; }
 
+/* ---------- 背景音樂按鈕 ---------- */
+.bgm-btn {
+  position: fixed; right: 16px; bottom: 92px; z-index: 70;
+  width: 52px; height: 52px; border-radius: 50%; border: 2px solid var(--gold);
+  background: var(--curtain-deep); color: var(--lantern); display: grid; place-items: center;
+  box-shadow: 0 8px 20px -8px rgba(0,0,0,.6); transition: transform .15s;
+}
+.bgm-btn:hover { transform: scale(1.06); }
+.bgm-ico { display: none; align-items: flex-end; gap: 3px; height: 20px; }
+.bgm-ico i { width: 4px; height: 6px; background: var(--lantern); border-radius: 2px; animation: bgmbar 1s ease-in-out infinite; }
+.bgm-ico i:nth-child(2) { animation-delay: .15s; } .bgm-ico i:nth-child(3) { animation-delay: .3s; } .bgm-ico i:nth-child(4) { animation-delay: .45s; }
+@keyframes bgmbar { 0%,100% { height: 5px; } 50% { height: 20px; } }
+.bgm-off { font-size: 20px; line-height: 1; }
+.bgm-btn.on .bgm-ico { display: flex; }
+.bgm-btn.on .bgm-off { display: none; }
+@media (min-width: 900px) { .bgm-btn { bottom: 24px; right: 24px; } }
+
 /* ---------- 雜項 ---------- */
 .fade-in { animation: fadeUp .4s ease-out both; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }

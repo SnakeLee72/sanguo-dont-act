@@ -125,9 +125,84 @@
         <p class="muted" style="margin-top:6px">${esc(ep.desc)}</p>
         ${ep.lesson ? `<p class="ep-lesson" style="margin-top:12px">💡 本集核心句：${esc(ep.lesson)}</p>` : ""}
         ${relHtml ? `<p class="small muted" style="margin-top:16px">本集小百科</p><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px">${relHtml}</div>` : ""}
-      </div>`);
+      </div>`, { onClose: () => setTimeout(() => { if (!$("#modal")) BGM.release(); }, 0) });
+    BGM.hold(); // 看影片、聽節目時先暫停背景音樂
     $$("#modal [data-mode]").forEach(b => b.addEventListener("click", () => openPlayer(code, b.dataset.mode)));
   }
+
+  /* ---------- 背景音樂 ----------
+     瀏覽器不允許「一打開網頁就自動出聲」，所以在訪客第一次點擊或按鍵時才開始播放。
+     右下角按鈕可以開關，選擇會被記住；換頁時會從剛剛的位置接著播。 */
+  const BGM = {
+    src: "assets/audio/bgm.mp3", volume: 0.3,
+    _a: null, _held: false, _btn: null,
+    get on() { try { return localStorage.getItem("sgby_bgm") !== "off"; } catch (_) { return true; } },
+    set on(v) { try { localStorage.setItem("sgby_bgm", v ? "on" : "off"); } catch (_) {} },
+    audio() {
+      if (!this._a) {
+        const a = this._a = new Audio(this.src);
+        a.loop = true; a.preload = "auto"; a.volume = 0;
+        try { const t = +sessionStorage.getItem("sgby_bgm_t"); if (t > 0) a.currentTime = t; } catch (_) {}
+        a.addEventListener("play", () => this.ui()); a.addEventListener("pause", () => this.ui());
+      }
+      return this._a;
+    },
+    play() {
+      if (this._held) return;
+      const a = this.audio();
+      a.play().then(() => this.fade(this.volume)).catch(() => this.ui());
+    },
+    pause() { if (this._a) this._a.pause(); },
+    fade(to) {
+      const a = this._a; if (!a) return;
+      clearInterval(this._f);
+      this._f = setInterval(() => {
+        const d = to - a.volume;
+        if (Math.abs(d) < 0.03) { a.volume = to; clearInterval(this._f); } else a.volume += d > 0 ? 0.03 : -0.03;
+      }, 60);
+    },
+    hold() { this._held = true; this.pause(); },
+    release() { this._held = false; if (this.on && this._a) this.play(); },
+    toggle() {
+      const playing = this._a && !this._a.paused;
+      this.on = !playing;
+      if (playing) { this.pause(); toast("🔇 背景音樂已關閉，之後也不會自動播放"); }
+      else { this._held = false; this.play(); toast("🎵 背景音樂開啟"); }
+    },
+    ui() {
+      const b = this._btn; if (!b) return;
+      const playing = !!(this._a && !this._a.paused);
+      b.classList.toggle("on", playing);
+      b.setAttribute("aria-pressed", playing);
+      b.setAttribute("aria-label", playing ? "關閉背景音樂" : "播放背景音樂");
+      b.title = playing ? "關閉背景音樂" : "播放背景音樂";
+    },
+    init() {
+      const b = this._btn = document.createElement("button");
+      b.className = "bgm-btn"; b.type = "button";
+      b.innerHTML = `<span class="bgm-ico" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="bgm-off" aria-hidden="true">🎵</span>`;
+      b.addEventListener("click", () => this.toggle());
+      document.body.appendChild(b);
+      this.ui();
+      // 第一次互動時開始播放（點音樂按鈕或播放節目時除外）
+      const start = (e) => {
+        if (e.target.closest && e.target.closest(".bgm-btn, [data-play]")) return;
+        off();
+        if (!this.on || this._held) return;
+        let first = true; try { first = !+sessionStorage.getItem("sgby_bgm_t"); } catch (_) {}
+        this.play();
+        if (first) setTimeout(() => { if (this._a && !this._a.paused) toast("🎵 背景音樂播放中，右下角按鈕可以關閉"); }, 400);
+      };
+      const off = () => ["pointerdown", "keydown"].forEach(t => document.removeEventListener(t, start, true));
+      ["pointerdown", "keydown"].forEach(t => document.addEventListener(t, start, true));
+      // 上一頁正在播 → 這一頁試著直接接著播（有些瀏覽器會擋，擋住就等第一次點擊）
+      try { if (this.on && +sessionStorage.getItem("sgby_bgm_t") > 0) this.play(); } catch (_) {}
+      // 換頁前記住播放位置
+      const save = () => { try { if (this._a) sessionStorage.setItem("sgby_bgm_t", this._a.paused && !this.on ? 0 : this._a.currentTime || 0.01); } catch (_) {} };
+      window.addEventListener("pagehide", save);
+      setInterval(save, 3000);
+    }
+  };
   document.addEventListener("click", e => {
     const b = e.target.closest("[data-play]");
     if (b) { e.preventDefault(); openPlayer(b.dataset.play); }
@@ -286,6 +361,7 @@
     document.body.appendChild(footer);
   }
   layout();
+  BGM.init();
   if (!DEMO) Store.stats(); // 一進頁面就先去拿統計數字，越早開始越快好
 
   window.SG = { $, $$, esc, FACTION, VERDICT, SOURCE_TYPE, personById, idiomById, storyById, epByCode, avatar, factionChip, verdictBadge,
