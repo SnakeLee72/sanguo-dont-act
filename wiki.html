@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>三國小百科｜三國別演了</title>
+<meta name="description" content="三國別演了節目中介紹過的人物、成語與故事。正史怎麼寫？小說怎麼演？一次看清楚。" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/site.css" />
+<style>
+  .tabs { display: flex; gap: 6px; border-bottom: 2px solid var(--line); margin-bottom: 22px; overflow-x: auto; }
+  .tabs a { text-decoration: none; padding: 12px 18px; font-weight: 700; font-size: 18px; border-bottom: 4px solid transparent; margin-bottom: -2px; white-space: nowrap; color: var(--muted); }
+  .tabs a[aria-selected="true"] { color: var(--curtain); border-color: var(--curtain); }
+  .p-card { text-align: left; border: 1px solid var(--line); display: flex; flex-direction: column; gap: 10px; padding: 20px; position: relative; transition: transform .2s; }
+  .p-card:hover { transform: translateY(-3px); }
+  .p-card::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 5px; background: var(--f); }
+  .tagrow { display: flex; flex-wrap: wrap; gap: 6px; }
+  .p-head { padding: 28px 24px 20px; background: linear-gradient(135deg, var(--f), color-mix(in srgb, var(--f) 60%, #000)); color: #fff; display: flex; gap: 16px; align-items: center; }
+  .p-head .avatar { box-shadow: 0 0 0 3px rgba(255,255,255,.9); }
+  .vs { display: grid; gap: 10px; }
+  .vs-row { display: grid; gap: 0; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+  @media (min-width: 640px) { .vs-row { grid-template-columns: 1fr 1fr; } }
+  .vs-row > div { padding: 12px 14px; }
+  .vs-novel { background: #FFF0EC; }
+  .vs-truth { background: #EEF7F1; }
+  .vs-row b { display: block; font-size: 13px; margin-bottom: 2px; }
+  .h-list { margin: 8px 0 0; padding-left: 1.2em; }
+  .h-list li { margin: 4px 0; }
+  .idiom { padding: 22px; display: flex; flex-direction: column; gap: 8px; }
+  .idiom .word { font-family: var(--head); font-size: 32px; letter-spacing: .12em; color: var(--curtain-dark); }
+  .idiom details summary { cursor: pointer; font-weight: 700; color: var(--curtain); list-style: none; }
+  .idiom details summary::-webkit-details-marker { display: none; }
+  .idiom details[open] summary { margin-bottom: 8px; }
+  .flash { animation: flash 1.6s ease-out; }
+  @keyframes flash { 0%, 40% { box-shadow: 0 0 0 4px var(--lantern); } 100% { box-shadow: var(--shadow); } }
+  .story { padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+  .story h3 { font-size: 22px; }
+  .guess { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .guess button { border: 2px solid var(--line); background: #fff; border-radius: 12px; padding: 10px 4px; font-weight: 700; font-size: 15px; }
+  .guess button:hover { border-color: var(--curtain); }
+  .reveal { border-radius: 12px; background: var(--paper-2); padding: 12px 14px; }
+  .progress { display: flex; align-items: center; gap: 12px; background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 16px; font-weight: 700; }
+</style>
+</head>
+<body data-page="wiki">
+<main>
+  <section class="page-hero">
+    <div class="lanterns" aria-hidden="true"><span class="lantern"></span><span class="lantern"></span><span class="lantern"></span></div>
+    <div class="wrap">
+      <h1>📜 三國小百科</h1>
+      <p>節目裡聊過的人物、成語與故事都在這裡。正史怎麼寫？小說怎麼演？史官幫你一次查清楚。</p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:28px">
+    <div class="wrap">
+      <nav class="tabs" role="tablist" aria-label="小百科分類">
+        <a href="#people" data-tab="people" role="tab">👤 人物</a>
+        <a href="#idioms" data-tab="idioms" role="tab">📖 成語</a>
+        <a href="#stories" data-tab="stories" role="tab">🔍 史實查核</a>
+      </nav>
+      <div class="toolbar">
+        <div class="seg" id="subFilter" role="group" aria-label="篩選"></div>
+        <input class="search" id="q" type="search" placeholder="🔍 搜尋…" aria-label="搜尋小百科" />
+      </div>
+      <div id="panel"></div>
+      <p class="empty hidden" id="empty">找不到符合的內容。也許可以<a href="request.html#wish">點播</a>讓我們做一集？</p>
+    </div>
+  </section>
+</main>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/wiki.js"></script>
+</body>
+</html>

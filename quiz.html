@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>你是哪位三國來賓？｜三國別演了</title>
+<meta name="description" content="7 題心理小測驗，看看你最像趙雲、呂布、周瑜、關羽、張飛、孫權、劉備、司馬懿還是陸遜！" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/site.css" />
+<style>
+  .q-box { max-width: 720px; margin: 0 auto; }
+  .opts { display: grid; gap: 10px; margin-top: 20px; }
+  .opt { text-align: left; border: 2px solid var(--line); background: #fff; border-radius: 14px; padding: 14px 18px; font-size: 18px; font-weight: 500; transition: all .15s; }
+  .opt:hover { border-color: var(--curtain); background: #FFF6F3; transform: translateX(3px); }
+  .steps { display: flex; gap: 6px; }
+  .steps i { flex: 1; height: 6px; border-radius: 6px; background: var(--line); }
+  .steps i.on { background: var(--curtain); }
+  .result-head { padding: 32px 24px; text-align: center; color: #fff; background: linear-gradient(135deg, var(--f), color-mix(in srgb, var(--f) 55%, #000)); }
+  .result-head .avatar { margin: 0 auto; box-shadow: 0 0 0 4px rgba(255,255,255,.9); }
+  .result-head h2 { font-size: clamp(34px, 7vw, 52px); margin-top: 12px; }
+  .also { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+</style>
+</head>
+<body data-page="quiz">
+<main>
+  <section class="page-hero">
+    <div class="lanterns" aria-hidden="true"><span class="lantern"></span><span class="lantern"></span><span class="lantern"></span></div>
+    <div class="wrap">
+      <h1>🎭 你是哪位三國來賓？</h1>
+      <p>7 個生活小情境，沒有標準答案。選最像你的那一個，看看你和哪位來賓最合拍！</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="wrap">
+      <div class="q-box" id="box"></div>
+    </div>
+  </section>
+</main>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/core.js"></script>
+<script>
+(function () {
+  const { $, esc, avatar, factionChip, personById, epByCode, links, Store, toast } = SG;
+  const box = $("#box");
+  let i = 0, score = {};
+
+  function start() {
+    i = 0; score = {};
+    box.innerHTML = `<div class="card card-pad" style="text-align:center;padding:36px 24px">
+      <div style="display:flex;justify-content:center;padding-left:10px">${PEOPLE.filter(p => p.role === "guest").map(p => `<span style="margin-left:-10px">${avatar(p, 50)}</span>`).join("")}</div>
+      <h2 style="font-size:30px;margin-top:20px">九位來賓，誰最像你？</h2>
+      <p class="muted" style="margin-top:8px">測完會告訴你理由，還能直接收聽那一集。</p>
+      <button class="btn btn-red" style="margin-top:22px;font-size:18px" id="go">開始測驗 →</button></div>`;
+    $("#go").addEventListener("click", show);
+  }
+  function show() {
+    const item = PERSONA_QUIZ[i];
+    box.innerHTML = `<div class="card card-pad fade-in" style="padding:28px">
+      <div class="steps" aria-hidden="true">${PERSONA_QUIZ.map((_, k) => `<i class="${k <= i ? "on" : ""}"></i>`).join("")}</div>
+      <p class="muted small" style="margin-top:14px">第 ${i + 1} / ${PERSONA_QUIZ.length} 題</p>
+      <h2 style="font-size:clamp(24px,4vw,30px);margin-top:4px">${esc(item.q)}</h2>
+      <div class="opts">${item.options.map((o, k) => `<button class="opt" data-k="${k}">${esc(o.t)}</button>`).join("")}</div>
+    </div>`;
+    box.querySelectorAll(".opt").forEach(b => b.addEventListener("click", () => {
+      item.options[+b.dataset.k].p.forEach(id => score[id] = (score[id] || 0) + 1);
+      i++;
+      i < PERSONA_QUIZ.length ? show() : result();
+    }));
+    box.querySelector(".opt").focus({ preventScroll: true });
+  }
+  function result() {
+    const order = PEOPLE.filter(p => p.role === "guest").map(p => p.id);
+    const ranked = Object.entries(score).sort((a, b) => b[1] - a[1] || order.indexOf(a[0]) - order.indexOf(b[0]));
+    const p = personById[ranked[0][0]];
+    const others = ranked.slice(1, 3).map(([id]) => personById[id]);
+    const ep = epByCode[p.episode];
+    Store.vote("persona:" + p.id); // 統計大家測出誰（不影響畫面）
+    box.innerHTML = `<article class="card fade-in f-${p.faction}">
+      <div class="result-head">
+        ${avatar(p, 96)}
+        <p style="margin-top:14px;opacity:.9">你最像的三國來賓是</p>
+        <h2>${esc(p.name)}</h2>
+        <p style="opacity:.9">${p.tags.map(t => "#" + esc(t)).join("　")}</p>
+      </div>
+      <div class="card-pad" style="display:grid;gap:16px;padding:24px">
+        <p style="font-size:19px;font-weight:700">${esc(p.quizBlurb)}</p>
+        ${ep && ep.lesson ? `<p class="ep-lesson">💡 ${esc(p.name)}教你的事：${esc(ep.lesson)}</p>` : ""}
+        <p class="muted">${esc(p.oneLine)}</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          ${ep ? `<button class="btn btn-red" data-play="${esc(ep.code)}">▶ 收聽 ${esc(ep.code)} ${esc(p.name)}來作客</button>` : ""}
+          <a class="btn btn-line" href="${links.person(p.id)}">📜 看${esc(p.name)}的人物檔案</a>
+        </div>
+        ${others.length ? `<div style="border-top:1px dashed var(--line);padding-top:14px"><p class="small muted" style="text-align:center;margin-bottom:8px">你身上也有一點……</p>
+          <div class="also">${others.map(o => `<a class="chip chip-link" href="${links.person(o.id)}" style="padding:6px 12px">${avatar(o, 26)} ${esc(o.name)}</a>`).join("")}</div></div>` : ""}
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+          <button class="btn btn-ink btn-sm" id="share">📋 複製結果分享給朋友</button>
+          <button class="btn btn-line btn-sm" id="again">↺ 再測一次</button>
+        </div>
+      </div></article>`;
+    $("#again").addEventListener("click", start);
+    $("#share").addEventListener("click", async () => {
+      const url = location.href.split("#")[0];
+      const text = `我在《三國別演了》測出來最像「${p.name}」！${p.quizBlurb} 你也來測測看：${url}`;
+      try { await navigator.clipboard.writeText(text); toast("已複製！貼給朋友吧"); }
+      catch (_) { prompt("複製這段文字分享：", text); }
+    });
+    box.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  start();
+})();
+</script>
+</body>
+</html>

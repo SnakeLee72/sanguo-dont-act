@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>三國別演了｜親子歷史 Podcast 官方網站</title>
+<meta name="description" content="曹操、諸葛亮與小喬跨越時空主持的三國人物訪談 Podcast。歷史喜劇＋史實查核，從小學生到大人都聽得懂，適合全家一起收聽。" />
+<meta property="og:title" content="三國別演了｜《三國演義》沒說的，今天當面問清楚！" />
+<meta property="og:image" content="https://i.ytimg.com/vi/16Z4QY-HXtA/hqdefault.jpg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/site.css" />
+<style>
+  .stage {
+    position: relative; overflow: hidden; color: #FFF4DE;
+    background: radial-gradient(ellipse at 50% 0%, #C24A2C 0%, #7A1E1E 40%, var(--curtain-deep) 85%);
+    padding: 56px 0 0;
+  }
+  .stage::before, .stage::after { /* 左右布幕 */
+    content: ""; position: absolute; top: 0; bottom: 0; width: 9%; z-index: 0;
+    background: repeating-linear-gradient(90deg, #5E1515 0 10px, #8A2323 10px 22px, #6A1919 22px 30px);
+    box-shadow: 0 0 30px rgba(0,0,0,.6);
+  }
+  .stage::before { left: 0; border-radius: 0 0 60% 0; }
+  .stage::after { right: 0; border-radius: 0 0 0 60%; }
+  .stage .wrap { position: relative; z-index: 1; }
+  .spot { position: absolute; top: -40px; width: 260px; height: 520px; background: radial-gradient(ellipse at 50% 0%, rgba(255,226,160,.28), transparent 70%); pointer-events: none; }
+  .hero-grid { display: grid; gap: 32px; align-items: center; padding: 0 4%; }
+  @media (min-width: 900px) { .hero-grid { grid-template-columns: 1.15fr 1fr; } }
+  .hero-kicker { display: inline-flex; gap: 8px; align-items: center; background: rgba(0,0,0,.25); border: 1px solid rgba(240,178,62,.5); color: var(--lantern); border-radius: 999px; padding: 4px 14px; font-weight: 700; font-size: 14px; }
+  .onair { width: 9px; height: 9px; border-radius: 50%; background: #FF4D3D; box-shadow: 0 0 0 0 rgba(255,77,61,.7); animation: rec 1.6s infinite; }
+  @keyframes rec { 70% { box-shadow: 0 0 0 10px rgba(255,77,61,0); } 100% { box-shadow: 0 0 0 0 rgba(255,77,61,0); } }
+  .hero-title { font-size: clamp(48px, 10vw, 88px); line-height: 1.1; margin: 16px 0 8px; text-shadow: 0 4px 0 rgba(0,0,0,.35); }
+  .hero-title em { font-style: normal; color: var(--lantern); }
+  .hero-slogan { font-family: var(--head); font-size: clamp(20px, 3vw, 26px); color: #FFE2B0; }
+  .hero-about { color: #F0D3B0; margin-top: 14px; max-width: 560px; }
+  .hero-btns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+  .stage-floor { margin-top: 40px; height: 34px; background: linear-gradient(#6B3A1E, #3E200F); border-top: 4px solid var(--gold); }
+
+  .hosts { display: grid; gap: 14px; }
+  .host { display: flex; gap: 12px; align-items: center; }
+  .host:nth-child(2) { margin-left: 28px; }
+  .bubble { position: relative; background: #FFF8EA; color: var(--ink); border-radius: 16px; padding: 10px 14px; box-shadow: 0 8px 20px -10px rgba(0,0,0,.6); }
+  .bubble::before { content: ""; position: absolute; left: -7px; top: 50%; margin-top: -7px; border: 7px solid transparent; border-right-color: #FFF8EA; border-left: 0; }
+  .bubble b { display: block; font-size: 13px; color: var(--curtain); }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 18px; }
+  .stat { background: rgba(0,0,0,.25); border-radius: 14px; padding: 10px; text-align: center; }
+  .stat b { display: block; font-family: var(--head); font-size: 28px; color: var(--lantern); line-height: 1.2; }
+  .stat span { font-size: 12px; color: #F0D3B0; }
+
+  .feature { display: grid; }
+  @media (min-width: 820px) { .feature { grid-template-columns: 1.2fr 1fr; } }
+  .feature > * { min-width: 0; }
+  .feature .ep-thumb { aspect-ratio: 16/9; align-self: center; }
+
+  .poll-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+  .poll-btns button { border: 2px solid var(--line); background: #fff; border-radius: 14px; padding: 14px 8px; font-weight: 700; font-size: 17px; }
+  .poll-btns button:hover:not(:disabled) { border-color: var(--curtain); }
+  .poll-btns button.pick-me { border-color: var(--curtain); background: #FFF0EC; }
+  .poll-result { margin-top: 14px; display: grid; gap: 8px; }
+  .rank-row { display: grid; grid-template-columns: 28px 44px 1fr; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px dashed var(--line); }
+  .rank-row:last-child { border: 0; }
+  .rank-no { font-family: var(--head); font-size: 22px; color: var(--gold); text-align: center; }
+
+  .portal { text-decoration: none; padding: 22px; display: flex; flex-direction: column; gap: 6px; transition: transform .2s; }
+  .portal:hover { transform: translateY(-3px); }
+  .portal .big { font-size: 36px; }
+  .portal h3 { font-size: 24px; }
+  .quiz-cta { background: linear-gradient(120deg, var(--curtain-dark), var(--curtain)); color: #FFF4DE; border-radius: 24px; padding: 28px; display: grid; gap: 16px; align-items: center; }
+  @media (min-width: 760px) { .quiz-cta { grid-template-columns: 1fr auto; padding: 36px 40px; } }
+  .quiz-faces { display: flex; gap: -8px; }
+  .quiz-faces .avatar { margin-left: -10px; }
+</style>
+</head>
+<body data-page="home">
+
+<main>
+  <!-- 戲台主視覺 -->
+  <section class="stage" aria-labelledby="heroTitle">
+    <div class="spot" style="left:12%"></div><div class="spot" style="right:14%"></div>
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <span class="hero-kicker"><span class="onair"></span> ON AIR｜親子歷史 Podcast</span>
+          <h1 class="hero-title" id="heroTitle">三國<em>別演了</em></h1>
+          <p class="hero-slogan">《三國演義》沒說的，今天當面問清楚！</p>
+          <p class="hero-about" id="heroAbout"></p>
+          <div class="hero-btns">
+            <button class="btn btn-gold" id="playLatest">▶ 播放最新一集</button>
+            <a class="btn btn-yt" id="ytBtn" target="_blank" rel="noopener">YouTube</a>
+            <a class="btn btn-sp" id="spBtn" target="_blank" rel="noopener">Spotify</a>
+          </div>
+        </div>
+        <div>
+          <div class="hosts" id="hosts"></div>
+          <div class="stats" id="stats"></div>
+        </div>
+      </div>
+    </div>
+    <div class="stage-floor"></div>
+  </section>
+
+  <!-- 最新一集 + 今日查核 -->
+  <section class="section">
+    <div class="wrap grid" style="gap:28px">
+      <div>
+        <div class="sec-head"><h2><span class="kicker">LATEST</span>最新一集</h2><a class="btn btn-line btn-sm" href="episodes.html">全部節目 →</a></div>
+        <div id="latest"></div>
+      </div>
+      <div class="grid g2" style="gap:24px">
+        <div class="card card-pad" id="poll" aria-live="polite"></div>
+        <div class="card card-pad">
+          <div class="sec-head" style="margin-bottom:8px"><h2 style="font-size:24px"><span class="kicker">VOTE</span>下一位來賓排行榜</h2></div>
+          <div id="rank"><p class="muted">讀取中…</p></div>
+          <a class="btn btn-red" style="width:100%;margin-top:12px" href="request.html">🗳️ 我也要投票 / 點播</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 小百科入口 -->
+  <section class="section section-alt">
+    <div class="wrap">
+      <div class="sec-head"><h2><span class="kicker">ENCYCLOPEDIA</span>三國小百科</h2><p>節目裡聊過的人物、成語、故事，全部整理在這裡。</p></div>
+      <div class="grid g3" id="portals"></div>
+      <h3 style="font-size:22px;margin:34px 0 14px">今天認識誰？</h3>
+      <div class="grid g4" id="randomPeople"></div>
+    </div>
+  </section>
+
+  <!-- 測驗 -->
+  <section class="section">
+    <div class="wrap">
+      <div class="quiz-cta">
+        <div>
+          <p style="color:var(--lantern);font-weight:700">🎭 7 題心理小測驗</p>
+          <h2 style="font-size:clamp(26px,4vw,36px);margin-top:6px">你是哪一位三國來賓？</h2>
+          <p style="color:#F0D3B0;margin-top:6px">趙雲的勇敢、司馬懿的耐心、還是張飛的熱血？測完直接聽那一集！</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;align-items:flex-start">
+          <div class="quiz-faces" id="quizFaces" style="padding-left:10px"></div>
+          <a class="btn btn-gold" href="quiz.html">開始測驗 →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/home.js"></script>
+</body>
+</html>

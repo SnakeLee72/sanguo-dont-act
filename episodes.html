@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>全部節目｜三國別演了</title>
+<meta name="description" content="三國別演了所有單集：趙雲、呂布、周瑜、關羽、張飛、孫權、劉備、司馬懿、陸遜來作客，以及成語特別篇與主題曲 MV。" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/site.css" />
+</head>
+<body data-page="episodes">
+<main>
+  <section class="page-hero">
+    <div class="lanterns" aria-hidden="true"><span class="lantern"></span><span class="lantern"></span><span class="lantern"></span></div>
+    <div class="wrap">
+      <h1>🎧 全部節目</h1>
+      <p>每集邀請一位三國人物，請他親自回答：當年到底發生了什麼？為什麼做出那個決定？後人對他的印象公平嗎？</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="toolbar">
+        <div class="seg" id="filters" role="group" aria-label="節目分類"></div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <input class="search" id="q" type="search" placeholder="🔍 搜尋人物或關鍵字（例如：勇敢）" aria-label="搜尋節目" />
+          <div class="seg" role="group" aria-label="排序">
+            <button id="sortBtn" aria-pressed="false">⇅ 從第一集開始</button>
+          </div>
+        </div>
+      </div>
+      <div class="grid g3" id="list"></div>
+      <p class="empty hidden" id="empty">找不到符合的節目，換個關鍵字試試？</p>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="wrap" style="text-align:center">
+      <h2 style="font-size:28px">下一集想聽誰？</h2>
+      <p class="muted" style="margin-top:6px">投票決定下一位來賓，或把你的問題交給主持人！</p>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px">
+        <a class="btn btn-red" href="request.html">🗳️ 前往點播台</a>
+        <a class="btn btn-yt" id="ytBtn" target="_blank" rel="noopener">訂閱 YouTube</a>
+        <a class="btn btn-sp" id="spBtn" target="_blank" rel="noopener">追蹤 Spotify</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/core.js"></script>
+<script>
+(function () {
+  const { $, $$, episodeCard, personById, openPlayer, epByCode } = SG;
+  $("#ytBtn").href = SITE.youtubeSubscribe; $("#spBtn").href = SITE.spotify;
+
+  const FILTERS = [["all", "全部"], ["ep", "人物來作客"], ["sp", "特別篇"], ["mv", "主題曲 MV"]];
+  let filter = "all", oldestFirst = false, q = "";
+  $("#filters").innerHTML = FILTERS.map(([k, l]) => `<button data-f="${k}" aria-pressed="${k === filter}">${l}</button>`).join("");
+
+  function render() {
+    $$("#filters button").forEach(b => b.setAttribute("aria-pressed", b.dataset.f === filter));
+    const kw = q.trim().toLowerCase();
+    let list = EPISODES.filter(e => filter === "all" || e.type === filter).filter(e => {
+      if (!kw) return true;
+      const g = personById[e.person];
+      return [e.code, e.title, e.question, e.desc, e.lesson, g && g.name].join(" ").toLowerCase().includes(kw);
+    });
+    if (oldestFirst) list = list.slice().reverse();
+    $("#list").innerHTML = list.map(episodeCard).join("");
+    $("#empty").classList.toggle("hidden", list.length > 0);
+  }
+  $("#filters").addEventListener("click", e => { const b = e.target.closest("[data-f]"); if (b) { filter = b.dataset.f; render(); } });
+  $("#q").addEventListener("input", e => { q = e.target.value; render(); });
+  $("#sortBtn").addEventListener("click", e => {
+    oldestFirst = !oldestFirst;
+    e.currentTarget.setAttribute("aria-pressed", oldestFirst);
+    e.currentTarget.textContent = oldestFirst ? "⇅ 從最新一集開始" : "⇅ 從第一集開始";
+    render();
+  });
+  render();
+
+  // 網址帶 #EP03 時直接打開那一集
+  const code = decodeURIComponent(location.hash.slice(1));
+  if (epByCode[code] && epByCode[code].status !== "upcoming") setTimeout(() => openPlayer(code), 300);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>聽眾點播台｜三國別演了</title>
+<meta name="description" content="投票決定下一位來賓、點播想聽的成語與故事、把你的奇葩問題交給曹操、諸葛亮與小喬！" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/site.css" />
+<style>
+  .jump { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+  .cand { padding: 16px; display: flex; flex-direction: column; gap: 10px; position: relative; }
+  .cand.voted { border-color: var(--lantern); box-shadow: 0 0 0 2px var(--lantern), var(--shadow); }
+  .cand .top { display: flex; gap: 12px; align-items: center; }
+  .cand .n { font-family: var(--head); font-size: 22px; color: var(--curtain); }
+  .cand .rank { position: absolute; right: 12px; top: 10px; font-size: 22px; }
+  .board { display: grid; gap: 16px; }
+  @media (min-width: 860px) { .board { grid-template-columns: 1.3fr 1fr 1fr; } }
+  .col { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; }
+  .col h3 { font-size: 20px; display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .col h3 .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .topic { display: flex; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 12px; background: var(--paper); margin-bottom: 8px; }
+  .topic p { flex: 1; font-weight: 500; }
+  .up { border: 2px solid var(--line); background: #fff; border-radius: 12px; min-width: 58px; padding: 4px 6px; font-weight: 700; line-height: 1.2; text-align: center; }
+  .up small { display: block; font-size: 11px; color: var(--muted); font-weight: 500; }
+  .up:hover:not(:disabled) { border-color: var(--curtain); }
+  .up.on { background: var(--curtain); border-color: var(--curtain); color: #fff; }
+  .up.on small { color: #FFD8CF; }
+  .wish-card { padding: 16px; display: flex; gap: 12px; align-items: flex-start; }
+  .wish-card p.c { font-size: 17px; }
+  .form-grid { display: grid; gap: 18px; }
+  @media (min-width: 720px) { .form-grid { grid-template-columns: 1fr 1fr; } .full { grid-column: 1 / -1; } }
+  .done { text-align: center; padding: 20px 0; }
+  .sky { position: relative; height: 200px; overflow: hidden; border-radius: 18px; background: linear-gradient(#2B0C0C, #6B1D1D); }
+  .sky .lantern { position: absolute; left: 50%; bottom: -60px; width: 46px; height: 60px; margin-left: -23px; animation: rise 2.6s ease-out forwards; }
+  .sky .lantern::before { display: none; }
+  .sky .star { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: #FFE7B8; opacity: .7; }
+  @keyframes rise { 0% { transform: translateY(0) scale(.8); } 100% { transform: translateY(-210px) scale(1); } }
+  .note { background: #FFF6E2; border: 1px dashed var(--gold); border-radius: 12px; padding: 10px 14px; font-size: 14px; }
+</style>
+</head>
+<body data-page="request">
+<main>
+  <section class="page-hero">
+    <div class="lanterns" aria-hidden="true"><span class="lantern"></span><span class="lantern"></span><span class="lantern"></span></div>
+    <div class="wrap">
+      <h1>🙋 聽眾點播台</h1>
+      <p>下一集由你決定！投票選來賓、幫題目按讚，或把你的奇葩問題交給曹操、諸葛亮和小喬。</p>
+      <div class="jump">
+        <a class="btn btn-gold btn-sm" href="#vote">🗳️ 下一位來賓</a>
+        <a class="btn btn-ghost btn-sm" href="#board">📋 題目看板</a>
+        <a class="btn btn-ghost btn-sm" href="#wall">🏮 許願牆</a>
+        <a class="btn btn-ghost btn-sm" href="#wish">✍️ 我要投稿</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 下一位來賓 -->
+  <section class="section" id="vote" style="scroll-margin-top:70px">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2><span class="kicker">VOTE</span>下一位來賓，你想見誰？</h2>
+        <p id="voteLeft" class="chip" style="font-size:15px"></p>
+      </div>
+      <div class="grid g4" id="cands"><p class="muted">讀取中…</p></div>
+      <p class="small muted" style="margin-top:14px">名單裡沒有你想見的人？<a href="#wish">直接投稿告訴我們 →</a></p>
+    </div>
+  </section>
+
+  <!-- 題目看板 -->
+  <section class="section section-alt" id="board" style="scroll-margin-top:70px">
+    <div class="wrap">
+      <div class="sec-head"><h2><span class="kicker">BOARD</span>題目看板</h2><p>按 👍 越多，越快排進錄音！</p></div>
+      <div class="board">
+        <div class="col"><h3><span class="dot" style="background:var(--lantern)"></span>募集中</h3><div id="colCollect"></div></div>
+        <div class="col"><h3><span class="dot" style="background:var(--curtain)"></span>錄製中</h3><div id="colRec"></div></div>
+        <div class="col"><h3><span class="dot" style="background:var(--ok)"></span>已播出</h3><div id="colAired"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 許願牆 -->
+  <section class="section" id="wall" style="scroll-margin-top:70px">
+    <div class="wrap">
+      <div class="sec-head"><h2><span class="kicker">WISH WALL</span>聽眾許願牆</h2><p>主持人看過的聽眾投稿會掛在這裡，你也可以幫別人的問題按讚！</p></div>
+      <div class="grid g2" id="wishes"></div>
+    </div>
+  </section>
+
+  <!-- 投稿 -->
+  <section class="section section-alt" id="wish" style="scroll-margin-top:70px">
+    <div class="wrap" style="max-width:820px">
+      <div class="sec-head"><h2><span class="kicker">SUBMIT</span>放一盞許願燈籠</h2><p>想聽的人物、成語、故事，或想問主持人的問題，都可以寫下來！</p></div>
+      <div class="card card-pad">
+        <form id="form" class="form-grid" novalidate>
+          <fieldset class="field full" style="border:0;padding:0;margin:0">
+            <legend>你想投稿的是…</legend>
+            <div class="pick" id="typePick"></div>
+          </fieldset>
+          <div class="field full">
+            <label for="content">內容</label>
+            <textarea class="textarea" id="content" name="content" rows="4" maxlength="300" placeholder="例如：想聽黃忠！七十歲還能上戰場是真的嗎？"></textarea>
+            <span class="small muted"><span id="len">0</span> / 300 字</span>
+          </div>
+          <div class="field">
+            <label for="nickname">暱稱</label>
+            <input class="input" id="nickname" name="nickname" maxlength="20" placeholder="例如：愛吃包子的小書僮" />
+          </div>
+          <div class="field">
+            <label for="grade">年級</label>
+            <select class="select" id="grade" name="grade">
+              <option value="">請選擇</option>
+              <option>國小中年級</option><option>國小五年級</option><option>國小六年級</option>
+              <option>國一</option><option>國二</option><option>國三</option><option>高中以上</option><option>家長 / 大人</option>
+            </select>
+          </div>
+          <fieldset class="field full" style="border:0;padding:0;margin:0">
+            <legend>希望由誰來回答？</legend>
+            <div class="pick" id="hostPick"></div>
+          </fieldset>
+          <p class="note full">🔒 為了保護你，請<b>不要</b>寫真實姓名、學校、電話或地址。投稿經主持人看過後，才會出現在許願牆上。</p>
+          <p class="full" id="err" style="color:var(--bad);font-weight:700" role="alert"></p>
+          <div class="full" style="text-align:center"><button class="btn btn-red" style="font-size:18px;padding:14px 34px">🏮 放出許願燈籠</button></div>
+        </form>
+        <div id="done" class="done hidden" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/request.js"></script>
+</body>
+</html>
