@@ -1,0 +1,13 @@
+{
+  "name": "三國別演了",
+  "short_name": "三國別演了",
+  "description": "《三國演義》沒說的，今天當面問清楚！",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FBF5EA",
+  "theme_color": "#4D1414",
+  "icons": [
+    { "src": "assets/img/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "assets/img/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

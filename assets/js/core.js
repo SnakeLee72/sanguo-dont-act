@@ -165,41 +165,70 @@
     get() { try { return JSON.parse(localStorage.getItem(this._k)) || { votes: {}, wishes: [] }; } catch (_) { return { votes: {}, wishes: [] }; } },
     set(v) { try { localStorage.setItem(this._k, JSON.stringify(v)); } catch (_) {} }
   };
+  /* 線上模式：Google 試算表回應約 2–3 秒，所以
+     1) 統計數字在同一個分頁裡快取 90 秒，換頁不用重新等待；
+     2) 投票「先算進畫面、再背景送出」，按下去立刻有反應。 */
+  const TTL = 90 * 1000, SKEY = "sgby_stats_v1";
+  const zeroView = (raw) => new Proxy(raw, { get: (t, k) => typeof k === "string" ? (t[k] || 0) : undefined });
+  const Session = {
+    get() { try { const c = JSON.parse(sessionStorage.getItem(SKEY)); return c && Date.now() - c.t < TTL ? c : null; } catch (_) { return null; } },
+    set(c) { try { sessionStorage.setItem(SKEY, JSON.stringify(c)); } catch (_) {} }
+  };
   const Store = {
     demo: DEMO,
-    _cache: null,
+    _raw: null,       // { t, votes:{}, wishes:[] }
+    _inflight: null,
+    _view() { return { votes: zeroView(this._raw.votes), wishes: this._raw.wishes, error: this._raw.error }; },
     async stats(force) {
-      if (this._cache && !force) return this._cache;
       if (DEMO) {
         const d = Local.get();
         const votes = new Proxy(d.votes, { get: (t, k) => typeof k === "string" ? (t[k] || 0) + seed(k) : undefined });
-        this._cache = { votes, wishes: d.wishes.map(w => ({ ...w, votes: (w.votes || 0) })) };
-        return this._cache;
+        return { votes, wishes: d.wishes.map(w => ({ ...w, votes: (w.votes || 0) })) };
       }
-      try {
-        const r = await fetch(`${SITE.apiUrl}?action=stats&t=${Date.now()}`);
-        const j = await r.json();
-        const raw = j.votes || {};
-        this._cache = { votes: new Proxy(raw, { get: (t, k) => typeof k === "string" ? (t[k] || 0) : undefined }), wishes: j.wishes || [] };
-      } catch (e) {
-        console.warn("讀取統計失敗", e);
-        this._cache = { votes: new Proxy({}, { get: () => 0 }), wishes: [], error: true };
+      if (!force) {
+        if (this._raw && Date.now() - this._raw.t < TTL) return this._view();
+        const s = Session.get(); if (s) { this._raw = s; return this._view(); }
       }
-      return this._cache;
+      if (!this._inflight) {
+        this._inflight = (async () => {
+          try {
+            const r = await fetch(`${SITE.apiUrl}?action=stats&t=${Date.now()}`);
+            const j = await r.json();
+            this._raw = { t: Date.now(), votes: j.votes || {}, wishes: j.wishes || [] };
+            Session.set(this._raw);
+          } catch (e) {
+            console.warn("讀取統計失敗", e);
+            if (!this._raw) this._raw = { t: 0, votes: {}, wishes: [], error: true };
+          } finally { this._inflight = null; }
+        })();
+      }
+      await this._inflight;
+      return this._view();
     },
     async _post(body) {
       const r = await fetch(SITE.apiUrl, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(body) });
       return r.json();
     },
+    _bump(key, n) {
+      if (!this._raw) this._raw = { t: Date.now(), votes: {}, wishes: [] };
+      this._raw.votes[key] = (this._raw.votes[key] || 0) + n;
+      const w = this._raw.wishes.find(x => "wish:" + x.id === key); if (w) w.votes = (w.votes || 0) + n;
+      Session.set(this._raw);
+    },
+    /* 回傳 true 代表「已算進畫面」；真正送出在背景進行 */
     async vote(key) {
       if (!/^[a-z0-9:_-]{1,60}$/i.test(key)) return false;
       if (DEMO) {
         const d = Local.get(); d.votes[key] = (d.votes[key] || 0) + 1;
         const w = d.wishes.find(x => "wish:" + x.id === key); if (w) w.votes = (w.votes || 0) + 1;
-        Local.set(d); this._cache = null; return true;
+        Local.set(d); return true;
       }
-      try { await this._post({ action: "vote", key }); this._cache = null; return true; }
-      catch (e) { console.warn(e); return false; }
+      this._bump(key, 1);
+      this._post({ action: "vote", key }).catch(e => {
+        console.warn(e); this._bump(key, -1);
+        toast("網路不穩，這一票沒有送出，請稍後再試");
+      });
+      return true;
     },
     async wish(data) {
       const clean = {
@@ -210,9 +239,9 @@
       if (DEMO) {
         const d = Local.get();
         d.wishes.unshift({ id: "local" + Date.now(), ...clean, votes: 0, mine: true });
-        Local.set(d); this._cache = null; return true;
+        Local.set(d); return true;
       }
-      try { await this._post({ action: "wish", ...clean }); this._cache = null; return true; }
+      try { await this._post({ action: "wish", ...clean }); return true; }
       catch (e) { console.warn(e); return false; }
     }
   };
@@ -257,6 +286,7 @@
     document.body.appendChild(footer);
   }
   layout();
+  if (!DEMO) Store.stats(); // 一進頁面就先去拿統計數字，越早開始越快好
 
   window.SG = { $, $$, esc, FACTION, VERDICT, SOURCE_TYPE, personById, idiomById, storyById, epByCode, avatar, factionChip, verdictBadge,
     thumb, epLabel, fmtDate, published, links, episodeCard, openModal, closeModal, openPlayer, toast, Store, Mine, today };

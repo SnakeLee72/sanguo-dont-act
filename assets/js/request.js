@@ -13,10 +13,10 @@
     $("#cands").innerHTML = list.map((c, i) => {
       const mineToday = (Mine.value("guestToday:" + c.id) === SG.today());
       return `<article class="card cand f-${c.faction} ${mineToday ? "voted" : ""}">
-        ${i < 3 ? `<span class="rank" aria-label="第${i + 1}名">${medal[i]}</span>` : ""}
+        ${i < 3 && c.n > 0 ? `<span class="rank" aria-label="第${i + 1}名">${medal[i]}</span>` : ""}
         <div class="top">${avatar({ name: c.name, faction: c.faction }, 52)}<div><b style="font-family:var(--head);font-size:24px">${esc(c.name)}</b><br>${factionChip(c.faction)}</div></div>
         <p class="small">${esc(c.teaser)}</p>
-        <div style="margin-top:auto"><div style="display:flex;justify-content:space-between;align-items:end"><span class="n">${c.n}</span><span class="small muted">票</span></div>
+        <div style="margin-top:auto"><div style="display:flex;justify-content:space-between;align-items:end">${c.n > 0 ? `<span class="n">${c.n}</span><span class="small muted">票</span>` : `<span class="n" style="font-size:17px">🔥 搶頭香！</span>`}</div>
         <div class="bar"><i style="width:${c.n / max * 100}%"></i></div></div>
         <button class="btn ${mineToday ? "btn-gold" : "btn-red"} btn-sm" data-guest="${c.id}" ${left <= 0 ? "disabled" : ""}>${mineToday ? "✔ 再投一票" : "🗳️ 投他一票"}</button>
       </article>`;
@@ -36,7 +36,7 @@
   /* ---------- 題目看板 ---------- */
   function upBtn(key, n) {
     const on = Mine.has(key);
-    return `<button class="up ${on ? "on" : ""}" data-up="${esc(key)}" ${on ? "disabled" : ""} aria-label="${on ? "已按讚" : "按讚"}">👍 ${n}<small>${on ? "已按讚" : "想聽"}</small></button>`;
+    return `<button class="up ${on ? "on" : ""}" data-up="${esc(key)}" ${on ? "disabled" : ""} aria-label="${on ? "已按讚" : "按讚"}">👍${n > 0 ? " " + n : ""}<small>${on ? "已按讚" : "想聽"}</small></button>`;
   }
   function renderBoard() {
     const collect = TOPICS.filter(t => t.status === "collecting").map(t => ({ ...t, n: stats.votes["topic:" + t.id] })).sort((a, b) => b.n - a.n);
@@ -99,9 +99,10 @@
     if (!data.nickname) { err.textContent = "請取一個暱稱（不要用真實姓名喔）。"; form.nickname.focus(); return; }
     if (BAD.test(data.content + " " + data.nickname)) { err.textContent = "小喬：看起來有電話或 Email，為了安全請刪掉再送出喔！"; return; }
     err.textContent = "";
-    const btn = form.querySelector("button[type=submit], button:not([type])"); btn.disabled = true;
+    const btn = form.querySelector("button[type=submit], button:not([type])"); const label = btn.textContent;
+    btn.disabled = true; btn.textContent = "🏮 燈籠點火中…";
     const ok = await Store.wish(data);
-    btn.disabled = false;
+    btn.disabled = false; btn.textContent = label;
     if (!ok) { err.textContent = "送出失敗，請稍後再試一次。"; return; }
     const stars = Array.from({ length: 22 }, () => `<span class="star" style="left:${Math.random() * 100}%;top:${Math.random() * 90}%"></span>`).join("");
     const host = HOSTS.find(h => h.id === data.host);
@@ -119,7 +120,7 @@
   });
 
   async function refresh() {
-    stats = await Store.stats(true);
+    stats = await Store.stats();
     if (stats.error) toast("暫時連不上投票資料，請稍後重新整理");
     renderCands(); renderBoard(); renderWall();
   }

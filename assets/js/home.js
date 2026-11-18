@@ -71,7 +71,7 @@
     if (mine) showResult(mine);
   }
   async function showResult(mine) {
-    const s = await Store.stats(true);
+    const s = await Store.stats();
     const t = s.votes[pollKey("true")], f = s.votes[pollKey("fiction")], total = Math.max(1, t + f);
     const right = mine === story.verdict;
     $("#pollRes").innerHTML = `
@@ -79,7 +79,7 @@
         <p style="font-weight:700;color:${right ? "var(--ok)" : "var(--bad)"}">${right ? "✅ 你答對了！" : "❌ 被演到了！"}　答案：${verdictBadge(story.verdict)}</p>
         <div class="small">📜 是真的 ${Math.round(t / total * 100)}%<div class="bar"><i style="width:${t / total * 100}%"></i></div></div>
         <div class="small">🎭 別演了 ${Math.round(f / total * 100)}%<div class="bar"><i style="width:${f / total * 100}%"></i></div></div>
-        <p class="small muted">共 ${t + f} 位聽眾參與</p>
+        <p class="small muted">${t + f <= 1 ? "🎉 你是今天第一位參與的聽眾！" : `共 ${t + f} 位聽眾參與`}</p>
         <p style="background:var(--paper-2);border-radius:12px;padding:10px 12px">📜 史官說：${esc(story.history)}</p>
         <a class="small" href="${links.story(story.id)}">看更多史實查核 →</a>
       </div>`;
@@ -90,6 +90,10 @@
   Store.stats().then(s => {
     const ranked = CANDIDATES.map(c => ({ ...c, n: s.votes["guest:" + c.id] })).sort((a, b) => b.n - a.n).slice(0, 5);
     const max = Math.max(1, ranked[0]?.n || 1);
+    if (!ranked[0] || ranked[0].n === 0) {
+      $("#rank").innerHTML = `<div style="text-align:center;padding:18px 0"><p style="font-size:40px">🔥</p><p style="font-family:var(--head);font-size:22px">還沒有人投票！</p><p class="muted">搶頭香，決定誰是下一位來賓。候選人有黃忠、馬超、貂蟬、華佗……</p></div>`;
+      return;
+    }
     $("#rank").innerHTML = ranked.map((c, i) => `
       <div class="rank-row">
         <span class="rank-no">${i + 1}</span>
