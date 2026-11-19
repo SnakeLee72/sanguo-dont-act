@@ -6,6 +6,53 @@
   $("#ytBtn").href = SITE.youtube;
   $("#spBtn").href = SITE.spotify;
 
+  /* ---------- 戲台：布幕、流蘇、燈籠、聚光燈的互動 ---------- */
+  const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const replay = (el, cls) => { el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); };
+  if (!calm) {
+    // 布幕在文字後面，所以在整個舞台上偵測滑鼠：滑過哪一條皺褶，就從那裡往兩邊撥開
+    const drapes = [...document.querySelectorAll(".drape")].map(dr => ({ dr, folds: [...dr.children], right: dr.classList.contains("right") }));
+    drapes.forEach(d => d.folds.forEach(f => f.addEventListener("animationend", () => f.classList.remove("rustle"))));
+    document.querySelector(".stage").addEventListener("pointermove", e => {
+      drapes.forEach(({ dr, folds, right }) => {
+        const r = dr.getBoundingClientRect();
+        if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) return;
+        const t = right ? (r.right - e.clientX) / r.width : (e.clientX - r.left) / r.width, i = Math.min(folds.length - 1, Math.floor(t * folds.length));
+        if (folds[i].classList.contains("rustle")) return;
+        folds.forEach((f, j) => { const d = Math.abs(j - i); if (d <= 3) setTimeout(() => replay(f, "rustle"), d * 70); });
+      });
+    });
+    // 流蘇
+    document.querySelectorAll(".tassel").forEach(t => {
+      t.style.pointerEvents = "auto";
+      t.addEventListener("pointerenter", () => replay(t, "swing"));
+      t.addEventListener("animationend", () => t.classList.remove("swing"));
+    });
+    // 聚光燈跟著滑鼠
+    const stage = document.querySelector(".stage"), spots = stage.querySelectorAll(".spot");
+    stage.addEventListener("pointermove", e => {
+      const r = stage.getBoundingClientRect(), k = (e.clientX - r.left) / r.width - .5;
+      spots.forEach((s, i) => s.style.transform = `translateX(${(k * (i ? 90 : 120)).toFixed(0)}px) rotate(${(-k * 8).toFixed(1)}deg)`);
+    });
+    stage.addEventListener("pointerleave", () => spots.forEach(s => s.style.transform = ""));
+  }
+  // 燈籠：滑過會晃，點一下用力晃，還會掉出一個成語燈謎
+  let lastIdiom = -1;
+  document.querySelectorAll(".hl").forEach(l => {
+    const inner = l.querySelector(".hl-in");
+    if (!calm) {
+      l.addEventListener("pointerenter", () => { if (!inner.classList.contains("spin")) replay(inner, "swing"); });
+      inner.addEventListener("animationend", () => inner.classList.remove("swing", "spin"));
+    }
+    l.addEventListener("click", () => {
+      if (!calm) replay(inner, "spin");
+      if (!IDIOMS.length) return;
+      let k; do { k = Math.floor(Math.random() * IDIOMS.length); } while (k === lastIdiom && IDIOMS.length > 1);
+      lastIdiom = k; const it = IDIOMS[k];
+      SG.toast(`🏮 燈謎揭曉：「${it.word}」——${it.meaning}`);
+    });
+  });
+
   const latest = published().find(e => e.type !== "mv") || published()[0];
   $("#playLatest").addEventListener("click", () => openPlayer(latest.code));
 

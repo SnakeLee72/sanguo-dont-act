@@ -39,15 +39,55 @@
     background: radial-gradient(ellipse at 50% 0%, #C24A2C 0%, #7A1E1E 40%, var(--curtain-deep) 85%);
     padding: 56px 0 0;
   }
-  .stage::before, .stage::after { /* 左右布幕 */
-    content: ""; position: absolute; top: 0; bottom: 0; width: 9%; z-index: 0;
-    background: repeating-linear-gradient(90deg, #5E1515 0 10px, #8A2323 10px 22px, #6A1919 22px 30px);
-    box-shadow: 0 0 30px rgba(0,0,0,.6);
-  }
-  .stage::before { left: 0; border-radius: 0 0 60% 0; }
-  .stage::after { right: 0; border-radius: 0 0 0 60%; }
-  .stage .wrap { position: relative; z-index: 1; }
-  .spot { position: absolute; top: -40px; width: 260px; height: 520px; background: radial-gradient(ellipse at 50% 0%, rgba(255,226,160,.28), transparent 70%); pointer-events: none; }
+  .stage .wrap { position: relative; z-index: 2; }
+  /* 左右布幕：每一條皺褶都會被滑鼠撥動 */
+  .drape { position: absolute; top: 0; bottom: 0; width: 9%; min-width: 30px; z-index: 1; display: flex; overflow: hidden; box-shadow: 0 0 30px rgba(0,0,0,.6); }
+  .drape.left { left: 0; border-radius: 0 0 60% 0; }
+  .drape.right { right: 0; border-radius: 0 0 0 60%; flex-direction: row-reverse; }
+  .drape i { flex: 1; transform-origin: 50% 0; background: linear-gradient(90deg, #4E1111, #8A2323 35%, #A0302A 50%, #7A1E1E 70%, #521313); }
+  .drape i.rustle { animation: rustle .9s cubic-bezier(.3,.7,.4,1); }
+  @keyframes rustle { 0% { transform: none; } 20% { transform: skewX(5deg) scaleX(1.08); } 45% { transform: skewX(-3.5deg) scaleX(.96); } 70% { transform: skewX(1.6deg); } 100% { transform: none; } }
+  /* 上方帷幔與流蘇 */
+  .valance { position: absolute; top: 0; left: 0; right: 0; height: 30px; z-index: 4; pointer-events: none;
+    background: radial-gradient(circle at 50% 0, #8A2323 15px, transparent 16px) 0 0 / 34px 30px repeat-x, linear-gradient(#6A1919, #6A1919) 0 0 / 100% 12px no-repeat;
+    filter: drop-shadow(0 4px 4px rgba(0,0,0,.35)); }
+  .valance::after { content: ""; position: absolute; left: 0; right: 0; top: 11px; height: 2px; background: var(--gold); opacity: .8; }
+  .tassels { position: absolute; top: 14px; left: 0; right: 0; height: 30px; z-index: 4; display: flex; justify-content: space-around; padding: 0 10%; }
+  .tassel { width: 14px; height: 26px; position: relative; transform-origin: 50% 0; cursor: pointer; }
+  .tassel::before { content: ""; position: absolute; left: 6px; top: 0; width: 2px; height: 9px; background: var(--gold); }
+  .tassel::after { content: ""; position: absolute; left: 2px; top: 8px; width: 10px; height: 16px; border-radius: 4px 4px 2px 2px; background: repeating-linear-gradient(90deg, var(--lantern) 0 2px, var(--gold) 2px 3px); }
+  .tassel.swing { animation: swing 1.4s ease-out; }
+  /* 燈籠 */
+  .hl { position: absolute; top: 0; z-index: 5; width: 46px; background: none; border: 0; padding: 0; cursor: pointer; transform-origin: 50% 0; animation: idle 5s ease-in-out infinite; }
+  .hl:nth-of-type(2) { animation-delay: -1.7s; } .hl:nth-of-type(3) { animation-delay: -3.1s; }
+  @keyframes idle { 0%, 100% { transform: rotate(-2deg); } 50% { transform: rotate(2deg); } }
+  .hl-in { display: flex; flex-direction: column; align-items: center; transform-origin: 50% 0; }
+  .hl-in.swing { animation: swing 1.8s cubic-bezier(.25,.6,.35,1); }
+  .hl-in.spin { animation: swingBig 2.4s cubic-bezier(.25,.6,.35,1); }
+  @keyframes swing { 0% { transform: rotate(0); } 15% { transform: rotate(16deg); } 35% { transform: rotate(-11deg); } 55% { transform: rotate(6deg); } 75% { transform: rotate(-3deg); } 100% { transform: rotate(0); } }
+  @keyframes swingBig { 0% { transform: rotate(0); } 12% { transform: rotate(32deg); } 30% { transform: rotate(-24deg); } 48% { transform: rotate(14deg); } 66% { transform: rotate(-7deg); } 84% { transform: rotate(3deg); } 100% { transform: rotate(0); } }
+  .hl-cord { width: 2px; background: #F3D9B8; }
+  .hl-cap { width: 22px; height: 6px; border-radius: 2px; background: var(--gold); }
+  .hl-body { position: relative; width: 46px; height: 40px; border-radius: 48%; display: grid; place-items: center; font-family: var(--head); font-weight: 700; font-size: 19px; color: var(--lantern);
+    background: radial-gradient(circle at 50% 42%, #FFB45E 0, #E0482E 48%, #A92A1C 100%); box-shadow: 0 0 22px 4px rgba(255,150,60,.35); transition: box-shadow .3s, filter .3s; }
+  .hl-body::before { content: ""; position: absolute; inset: 0; border-radius: 48%; background: repeating-linear-gradient(90deg, transparent 0 8px, rgba(90,20,10,.28) 8px 9px); }
+  .hl-body span { position: relative; text-shadow: 0 1px 2px rgba(0,0,0,.5); }
+  .hl:hover .hl-body, .hl:focus-visible .hl-body { box-shadow: 0 0 34px 10px rgba(255,170,70,.6); filter: brightness(1.12); }
+  .hl-tail { width: 8px; height: 16px; margin-top: -1px; background: repeating-linear-gradient(90deg, var(--lantern) 0 2px, var(--gold) 2px 3px); border-radius: 0 0 3px 3px; }
+  .hl:focus-visible { outline: 2px dashed var(--lantern); outline-offset: 4px; border-radius: 8px; }
+  @media (max-width: 899px) { .hl.wide-only { display: none; } .stage { padding-top: 104px; } }
+  /* 舞台聚光燈會跟著滑鼠移動 */
+  .spot { position: absolute; top: -40px; width: 260px; height: 520px; background: radial-gradient(ellipse at 50% 0%, rgba(255,226,160,.28), transparent 70%); pointer-events: none; transition: transform 1.2s cubic-bezier(.2,.7,.3,1); }
+  /* 標題的字滑過會跳一下 */
+  .hero-title .ch { display: inline-block; transition: transform .25s cubic-bezier(.3,1.6,.5,1), text-shadow .25s; cursor: default; }
+  .hero-title .ch:hover { transform: translateY(-10px) rotate(-4deg); text-shadow: 0 10px 0 rgba(0,0,0,.25); }
+  .host .avatar { transition: transform .3s cubic-bezier(.3,1.6,.5,1); }
+  .host:hover .avatar { transform: translateY(-6px) rotate(-6deg) scale(1.06); }
+  .host .bubble { transition: transform .3s; }
+  .host:hover .bubble { transform: rotate(-1.2deg) translateX(3px); }
+  .stat { transition: transform .25s, background .25s, box-shadow .25s; }
+  .stat:hover { transform: translateY(-4px); background: rgba(0,0,0,.35); box-shadow: 0 0 0 1px rgba(240,178,62,.5), 0 10px 20px -10px rgba(0,0,0,.6); }
+  @media (prefers-reduced-motion: reduce) { .hl, .hl-in, .drape i, .tassel, .hero-title .ch, .host .avatar, .spot { animation: none !important; transition: none !important; } }
   .hero-grid { display: grid; gap: 32px; align-items: center; padding: 0 4%; }
   @media (min-width: 900px) { .hero-grid { grid-template-columns: 1.15fr 1fr; } }
   .hero-kicker { display: inline-flex; gap: 8px; align-items: center; background: rgba(0,0,0,.25); border: 1px solid rgba(240,178,62,.5); color: var(--lantern); border-radius: 999px; padding: 4px 14px; font-weight: 700; font-size: 14px; }
@@ -98,11 +138,17 @@
   <!-- 戲台主視覺 -->
   <section class="stage" aria-labelledby="heroTitle">
     <div class="spot" style="left:12%"></div><div class="spot" style="right:14%"></div>
+    <div class="drape left" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="drape right" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="valance" aria-hidden="true"></div>
+    <div class="tassels" aria-hidden="true"><span class="tassel"></span><span class="tassel"></span><span class="tassel"></span><span class="tassel"></span><span class="tassel"></span><span class="tassel"></span></div>
+    <button class="hl" type="button" style="left:max(2px, calc(4.5% - 23px))" aria-label="點燈籠猜一個成語"><span class="hl-in"><span class="hl-cord" style="height:34px"></span><span class="hl-cap"></span><span class="hl-body"><span>三</span></span><span class="hl-cap"></span><span class="hl-tail"></span></span></button>
+    <button class="hl wide-only" type="button" style="left:56%" aria-label="點燈籠猜一個成語"><span class="hl-in"><span class="hl-cord" style="height:16px"></span><span class="hl-cap"></span><span class="hl-body"><span>國</span></span><span class="hl-cap"></span><span class="hl-tail"></span></span></button>
+    <button class="hl" type="button" style="right:max(2px, calc(4.5% - 23px))" aria-label="點燈籠猜一個成語"><span class="hl-in"><span class="hl-cord" style="height:26px"></span><span class="hl-cap"></span><span class="hl-body"><span>演</span></span><span class="hl-cap"></span><span class="hl-tail"></span></span></button>
     <div class="wrap">
       <div class="hero-grid">
         <div>
           <span class="hero-kicker"><span class="onair"></span> ON AIR｜親子歷史 Podcast</span>
-          <h1 class="hero-title" id="heroTitle">三國<em>別演了</em></h1>
+          <h1 class="hero-title" id="heroTitle" aria-label="三國別演了"><span class="ch" aria-hidden="true">三</span><span class="ch" aria-hidden="true">國</span><em aria-hidden="true"><span class="ch">別</span><span class="ch">演</span><span class="ch">了</span></em></h1>
           <p class="hero-slogan">《三國演義》沒說的，今天當面問清楚！</p>
           <p class="hero-tagline">曹操問動機，諸葛亮想辦法，小喬問真話。</p>
           <p class="hero-about" id="heroAbout"></p>
