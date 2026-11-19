@@ -78,6 +78,8 @@
     const z = o.z || 0, wall = o.wall || C.plaster, rf = o.roof || C.roof, rh = o.rh || Math.min(w, d) * .55;
     if (!z && !o.noShadow) shadow(x, y, w, d, h + rh * .7);
     let s = box(x, y, w, d, h, z, wall);
+    const zb = z + h - Math.min(.2, h * .2), zt = z + h;
+    s += poly([[x, y + d, zb], [x + w, y + d, zb], [x + w, y + d, zt], [x, y + d, zt]], "rgba(40,25,15,.28)") + poly([[x + w, y, zb], [x + w, y + d, zb], [x + w, y + d, zt], [x + w, y, zt]], "rgba(40,25,15,.32)");
     if (o.pillars) for (let i = 0; i <= 3; i++) { const px = x + w * i / 3; s += poly([[px - .06, y + d, z], [px + .06, y + d, z], [px + .06, y + d, z + h], [px - .06, y + d, z + h]], C.red); }
     if (o.door !== false) { const m = x + w / 2; s += poly([[m - .28, y + d, z], [m + .28, y + d, z], [m + .28, y + d, z + h * .62], [m - .28, y + d, z + h * .62]], shade(C.wood, .7)); }
     if (o.win) [x + w * .2, x + w * .8 - .3].forEach(wx => { s += poly([[wx, y + d, z + h * .4], [wx + .3, y + d, z + h * .4], [wx + .3, y + d, z + h * .72], [wx, y + d, z + h * .72]], "#5a4a3a", "win"); });
@@ -118,6 +120,13 @@
   const oxShape = `<g><ellipse cx="0" cy="-5" rx="8" ry="4.5" fill="#7A5A3E"/><circle cx="8" cy="-7" r="3.2" fill="#6B4A33"/><path d="M8 -10l2 -2M9 -10l3 -1" stroke="#E8DCC0" stroke-width="1"/><path d="M-5 -1v3M-2 -1v3M3 -1v3M6 -1v3" stroke="#5A3E2A" stroke-width="1.4"/></g>`;
   function guard(x, y, z) { const [X, Y] = P(x, y, z); return `<g class="guard" transform="translate(${X} ${Y})">${person("#8E2F25", `<path d="M-2.7 -9.4a2.7 2.7 0 0 1 5.4 0z" fill="#3A3A44"/>`)}<path d="M3.2 1V-15" stroke="#5A4A3A" stroke-width=".9"/><path d="M3.2 -15l-1 -3h2z" fill="#B9C2C9"/></g>`; }
   function banner(x, y, z, c = C.red) { const [X, Y] = P(x, y, z); return `<g transform="translate(${X} ${Y})"><path d="M0 0V-22" stroke="#3A2A1E" stroke-width="1.3"/><path class="flag-cloth" d="M0 -22h11q-2.5 3.5 0 7H0z" fill="${c}"/></g>`; }
+  function smoke(x, y, z) {
+    if (!motion) return "";
+    const [X, Y] = P(x, y, z);
+    return `<g class="smoke" transform="translate(${f1(X)} ${f1(Y)})"><circle r="3"/><circle r="3.6" style="animation-delay:-1.3s"/><circle r="3.2" style="animation-delay:-2.6s"/></g>`;
+  }
+  function official(x, y) { const [X, Y] = P(x, y, 0); return `<g transform="translate(${X} ${Y})">${person("#2F3B5A", `<path d="M-2.3 -10.8h4.6v-3.2h-4.6z" fill="#1E1E24"/>`)}</g>`; }
+  function folk(x, y, c) { const [X, Y] = P(x, y, 0); return `<g transform="translate(${X} ${Y})">${person(c, `<path d="M-2.4 -10.6q2.4 -2.6 4.8 0z" fill="#3A2A1E"/>`)}</g>`; }
   function well(x, y) {
     return box(x, y, .6, .6, .3, 0, "#A8A29A", "", { shadow: true }) + poly([[x + .1, y + .1, .3], [x + .5, y + .1, .3], [x + .5, y + .5, .3], [x + .1, y + .5, .3]], "#4F86AC") +
       box(x - .02, y + .25, .06, .1, .9, .3, C.wood) + box(x + .6, y + .25, .06, .1, .9, .3, C.wood) + roof(x, y + .1, .66, .4, 1.2, .3, C.roof, .12);
@@ -135,13 +144,20 @@
   const add = (depth, s) => L.push([depth, s]);
 
   // 地面：田野、護城河、道路、城內地面
-  let base = poly([[-12, -12, 0], [60, -12, 0], [60, 60, 0], [-12, 60, 0]], C.grass) + poly([[-12, -12, 0], [-12, 60, 0], [-40, 60, 0], [-40, -12, 0]], C.grass);
+  const HZ = -24; // 地平線（畫面座標）
+  let base = `<path d="M-490 ${HZ + 2} C-420 ${HZ - 6} -360 ${HZ - 4} -300 ${HZ + 1} S-180 ${HZ + 6} -110 ${HZ - 2} S20 ${HZ - 8} 90 ${HZ - 1} S220 ${HZ + 5} 300 ${HZ - 3} S410 ${HZ - 6} 450 ${HZ} V480 H-490Z" fill="${C.grass}"/>
+    <path d="M-490 ${HZ + 2} C-420 ${HZ - 6} -360 ${HZ - 4} -300 ${HZ + 1} S-180 ${HZ + 6} -110 ${HZ - 2} S20 ${HZ - 8} 90 ${HZ - 1} S220 ${HZ + 5} 300 ${HZ - 3} S410 ${HZ - 6} 450 ${HZ}" class="hill-line"/>`;
+  [[-330, 60, 120, 40, "#B6C786"], [140, 30, 160, 34, "#D3DCA4"], [-60, 420, 200, 50, "#B6C786"], [330, 300, 130, 40, "#D3DCA4"], [-400, 300, 110, 46, "#BDCB8C"], [300, 120, 90, 30, "#B6C786"]]
+    .forEach(([cx, cy, rx, ry, c]) => base += `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="${c}" opacity=".55" filter="url(#cityBlur)"/>`);
+  // 小溪：從山腳流進護城河
+  const brook = `M${P(-7.6, 5.2).map(f1).join(" ")} C${P(-6.4, 4.2).map(f1).join(" ")} ${P(-6, 6.4).map(f1).join(" ")} ${P(-4.9, 5.6).map(f1).join(" ")} S${P(-3.6, 6.2).map(f1).join(" ")} ${P(-2.9, 6.6).map(f1).join(" ")}`;
+  base += `<path d="${brook}" class="brook-bank"/><path d="${brook}" class="brook"/><path d="${brook}" class="brook-flow"/>`;
   let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
   const busy = (x, y) => (x > -3.6 && x < 23.6 && y > -3.6 && y < 23.6) || (x > -1 && x < 9.4 && y > 23.6 && y < 31) || (x > 23.4 && x < 30.6 && y > 21.4 && y < 28.6) || (x > 27 && x < 30 && y > 10.6 && y < 13.6) || (Math.abs(x - 10) < 1 && y > 23) || (Math.abs(y - 10) < 1 && x > 23);
-  for (let i = 0; i < 18; i++) { const x = -10 + (i * 7.3) % 46, y = -10 + (i * 11.7) % 46; if (!busy(x + .8, y + .8)) base += ground(x, y, 1.6, 1.6, C.grass2); }
+  for (let i = 0; i < 18; i++) { const x = -10 + (i * 7.3) % 46, y = -10 + (i * 11.7) % 46; if (!busy(x + .8, y + .8) && P(x, y)[1] > HZ + 6) base += ground(x, y, 1.6, 1.6, C.grass2); }
   let tufts = "", flowers = "";
   for (let i = 0; i < 260; i++) {
-    const x = -12 + rnd() * 50, y = -12 + rnd() * 50; if (busy(x, y)) continue;
+    const x = -12 + rnd() * 50, y = -12 + rnd() * 50; if (busy(x, y) || P(x, y)[1] < HZ + 4 || (x > -8 && x < -2.6 && y > 3.6 && y < 7.2)) continue;
     const [X, Y] = P(x, y, 0);
     if (i % 6 === 0) flowers += `<circle cx="${f1(X)}" cy="${f1(Y - 1)}" r="1.5" fill="${["#FFF6E2", "#F7D774", "#F2B6C6"][i % 3]}"/>`;
     else tufts += `M${f1(X - 3)} ${f1(Y)}l1.5 -3.5M${f1(X)} ${f1(Y)}v-4.5M${f1(X + 3)} ${f1(Y)}l-1.5 -3.5`;
@@ -210,9 +226,12 @@
     return s;
   };
   add(4, yard(2, 2, 6.5, 6.5, "y"));
-  add(8, hall(3.2, 3, 4, 2.2, 1.5, { roof: C.roofRed, rh: 1.3, pillars: true, win: true }));
+  add(8, (shadow(3.2, 3, 4, 2.2, 2.7), "") + box(2.9, 2.7, 4.6, 2.8, .3, 0, "#D3C6AC", "", { shadow: true }) + hall(3.2, 3, 4, 2.2, 1.5, { z: .3, roof: C.roofRed, rh: 1.3, pillars: true, win: true }));
   add(9.5, hall(2.6, 5.9, 1.4, 1.8, 1, { win: true }) + hall(6.5, 5.9, 1.4, 1.8, 1, { win: true }));
-  add(10, tree(5.2, 7) );
+  add(10, tree(5.2, 7));
+  add(14.6, official(4.9, 9.05) + official(5.6, 9.15));
+  add(25.4, guard(17, 8.05, 0));
+  add(31.2, folk(13.9, 15.6, C.gold) + folk(16.3, 13.7, C.blue));
   add(9, lamp(5.2, 5.3, 1.1));
   // 糧倉、武庫（東北）
   add(14, granary(12.6, 2.8, .8, 1.4)); add(15.6, granary(14.6, 2.8, .8, 1.4)); add(16.6, granary(12.6, 4.9, .8, 1.4));
@@ -231,7 +250,8 @@
   add(37, box(12, 18.2, 2.6, .3, .6, 0, C.plaster) + box(15.4, 18.2, 3.1, .3, .6, 0, C.plaster) + box(18.2, 12, .3, 2.6, .6, 0, C.plaster) + box(18.2, 15.4, .3, 3.1, .6, 0, C.plaster));
   // 里（西南）
   add(14, box(2, 12, 6.5, .3, .7, 0, C.plaster) + box(2, 12, .3, 6.5, .7, 0, C.plaster));
-  [[2.6, 12.6], [4.6, 12.6], [2.5, 15.9], [4.4, 16.1], [6.3, 15.9]].forEach(([x, y]) => add(x + y + 2.2, hall(x, y, 1.7, 1.5, .95, { win: true, rh: .8 })));
+  [[2.6, 12.6], [4.6, 12.6], [2.5, 15.9], [4.4, 16.1], [6.3, 15.9]].forEach(([x, y], i) => add(x + y + 2.2, hall(x, y, 1.7, 1.5, .95, { win: true, rh: .8 }) + (i % 2 ? "" : smoke(x + 1.3, y + .35, 1.75))));
+  add(21.3, folk(5.8, 15.4, C.green) + folk(4.6, 15.7, C.red));
   add(20.5, tree(7.6, 13.6, 1.25, C.leaf2)); // 桑樹
   add(20.2, well(4.9, 14.9));
   add(26, box(2, 18.2, 2.4, .3, .7, 0, C.plaster) + box(5.4, 18.2, 3.1, .3, .7, 0, C.plaster) + box(8.2, 12, .3, 6.5, .7, 0, C.plaster));
@@ -246,7 +266,7 @@
   [[-4.3, 2.5], [-4.3, 16.5], [24.3, 3.5], [24.3, 17], [3, -4.3], [16.5, -4.3], [15.5, 24.4]].forEach(([x, y]) => add(x + y + 1, willow(x, y, 1)));
   [[-9, 10, 1.1], [31, 0, 1], [35, 23, 1.1], [19, 30, 1], [-8, 19, .9], [12, 33, 1]].forEach(([x, y, s]) => add(x + y + 1, pine(x, y, s)));
   // 西門外的小村落
-  [[-9.4, 12.6], [-7.2, 13.4], [-9.2, 15.4]].forEach(([x, y]) => add(x + y + 1.6, hall(x, y, 1.5, 1.2, .85, { win: true, rh: .75, roof: C.straw })));
+  [[-9.4, 12.6], [-7.2, 13.4], [-9.2, 15.4]].forEach(([x, y], i) => add(x + y + 1.6, hall(x, y, 1.5, 1.2, .85, { win: true, rh: .75, roof: C.straw }) + (i === 1 ? "" : smoke(x + 1.1, y + .3, 1.55))));
   add(5.6, box(-10.2, 12, 4.6, .12, .45, 0, C.wood) + box(-10.2, 12, .12, 5.4, .45, 0, C.wood));
   add(9.4, box(-10.2, 17.3, 4.6, .12, .45, 0, C.wood));
   add(8.5, haystack(-6.6, 16.4)); add(5.2, tree(-6.2, 11.6, .9)); add(7.6, tree(-10.8, 18.6, 1));
@@ -272,12 +292,12 @@
   const far = "M-490 -14 C-470 -36 -446 -60 -414 -64 C-392 -66 -380 -50 -358 -52 C-330 -55 -318 -88 -288 -90 C-258 -92 -248 -60 -218 -58 C-190 -56 -178 -76 -148 -78 C-118 -80 -100 -52 -70 -50 C-40 -48 -28 -72 2 -74 C30 -76 48 -98 80 -100 C110 -102 128 -64 160 -62 C190 -60 200 -82 230 -84 C260 -86 282 -58 310 -56 C340 -54 362 -88 392 -90 C420 -92 438 -56 450 -44 L450 0 L-490 0Z";
   const near = "M-490 -4 C-460 -22 -430 -30 -396 -26 C-366 -22 -350 -40 -316 -42 C-282 -44 -262 -20 -228 -18 C-196 -16 -170 -34 -136 -34 C-100 -34 -86 -14 -50 -14 C-16 -14 0 -30 34 -32 C70 -34 88 -12 122 -12 C156 -12 176 -36 212 -36 C248 -36 262 -14 296 -12 C330 -10 352 -30 388 -32 C420 -34 440 -18 450 -12 L450 6 L-490 6Z";
   const cun = [[-288, -90], [80, -100], [392, -90], [-148, -78], [230, -84]].map(([x, y]) => `M${x} ${y + 4}q-6 10 -14 16M${x + 4} ${y + 8}q-2 8 -8 14M${x} ${y + 4}q6 10 12 14`).join("");
-  add(-99, `<g class="bg">
+  add(-101, `<g class="bg">
     <rect x="-490" y="-110" width="940" height="130" class="bg-sky"/>${sky}
     <path d="${far}" class="mtn-far"/><path d="${cun}" class="mtn-cun"/>
     <ellipse cx="-200" cy="-22" rx="220" ry="16" class="haze"/><ellipse cx="240" cy="-28" rx="240" ry="18" class="haze"/>
-    <path d="${near}" class="mtn-near"/>
-    <rect x="-490" y="-40" width="940" height="56" fill="url(#cityBlend)"/></g>`);
+    <path d="${near}" class="mtn-near"/></g>`);
+  add(-99.5, `<rect x="-490" y="${HZ - 8}" width="940" height="14" class="horizon-haze"/>`);
   const birds = motion ? [[-470, -40, 34], [-500, -10, 46]].map(([x, y, dur], i) => `<g class="bird"><path d="M-6 0q3 -4 6 0q3 -4 6 0" /><animateMotion dur="${dur}s" begin="${i * 6}s" repeatCount="indefinite" path="M${x} ${y} Q 0 ${y - 50} 480 ${y - 20}"/></g>`).join("") : "";
 
   /* ---------- 探索點 ---------- */

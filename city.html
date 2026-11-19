@@ -64,6 +64,14 @@
   .mist ellipse { fill: #fff; opacity: .22; filter: url(#cityBlur); }
   .mist { animation: mist 30s ease-in-out infinite alternate; }
   @keyframes mist { to { transform: translateX(70px); } }
+  .horizon-haze { fill: #F3EFE0; opacity: .45; filter: url(#cityBlur); pointer-events: none; }
+  .hill-line { fill: none; stroke: #A9B97A; stroke-width: 1.5; opacity: .6; }
+  .brook-bank { fill: none; stroke: #9A8A5E; stroke-width: 9; stroke-linecap: round; opacity: .35; }
+  .brook { fill: none; stroke: url(#cityWater); stroke-width: 6; stroke-linecap: round; }
+  .brook-flow { fill: none; stroke: #fff; stroke-width: 1.2; stroke-dasharray: 2 10; opacity: .8; animation: ripple 5s linear infinite; }
+  .smoke circle { fill: #F2EEE6; opacity: 0; animation: puff 4s ease-out infinite; }
+  @keyframes puff { 0% { transform: translate(0, 0) scale(.6); opacity: .7; } 100% { transform: translate(6px, -26px) scale(1.8); opacity: 0; } }
+  .night .smoke circle { fill: #8E9AB8; }
   .paving { fill: none; stroke: rgba(120,90,50,.28); stroke-width: .7; }
   .rut { fill: none; stroke: rgba(120,90,50,.35); stroke-width: 1; stroke-dasharray: 6 3; }
   .night .bg-sky { fill: #22305A; }
