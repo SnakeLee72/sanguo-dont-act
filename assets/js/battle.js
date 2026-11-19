@@ -1,11 +1,12 @@
 /* 你來當軍師：戰役抉擇遊戲（資料在 data.js 的 BATTLES） */
 (function () {
-  const { $, esc, avatar, personById, epByCode, links, Store, Mine, toast, verdictBadge } = SG;
+  const { $, esc, avatar, personById, storyById, epByCode, links, Store, Mine, toast, verdictBadge } = SG;
   const box = $("#box");
   const hostName = id => (HOSTS.find(h => h.id === id) || personById[id] || {}).name || "";
   const list = BATTLES.filter(b => b.status === "published");
   const voteKey = (b, s, k) => `poll:${b.id}-${s.id}:${k}`;
   const top = () => box.scrollIntoView({ behavior: "smooth", block: "start" });
+  const roleName = b => (personById[b.role] || {}).name || "";
 
   /* ---------- 戰場示意圖（純 SVG 手繪風） ---------- */
   const f1 = n => +n.toFixed(1);
@@ -43,7 +44,8 @@
     const fx = ([id, kind, side]) => P[id] && FX[kind] ? `<g transform="translate(${P[id].x} ${P[id].y})">${FX[kind](sideOf(side || P[id].side))}</g>` : "";
     const terrain = t => {
       if (t.type === "river") return `<path id="rv-${b.id}" d="${t.d}" class="river-bank"/><path d="${t.d}" class="river"/><path d="${t.d}" class="river-flow"/>
-        <text class="river-name" dy="-9"><textPath href="#rv-${b.id}" startOffset="${t.label || 10}%">${esc([...t.name].join("　"))}</textPath></text>`;
+        <text class="river-name" dy="${t.below ? 18 : -9}"><textPath href="#rv-${b.id}" startOffset="${t.label || 10}%">${esc([...t.name].join("　"))}</textPath></text>`;
+      if (t.type === "lake") return `<ellipse cx="${t.x}" cy="${t.y}" rx="${t.rx + 6}" ry="${t.ry + 5}" class="lake-bank"/><ellipse cx="${t.x}" cy="${t.y}" rx="${t.rx}" ry="${t.ry}" class="lake"/><text x="${t.x}" y="${t.y + 4}" class="lake-name">${esc(t.name)}</text>`;
       if (t.type === "mountains") return t.at.map(([x, y, s]) => `<g class="mtn" transform="translate(${x} ${y}) scale(${s / 10})"><path d="M-12 0 0-13 12 0z" class="mtn-body"/><path d="M0-13-3-5 0-7 2-3 4 0" class="mtn-shade"/></g>`).join("");
       if (t.type === "grass") return t.at.map(([x, y]) => `<path class="grass" d="M${x - 4} ${y}q2-5 4-6M${x} ${y}v-7M${x + 4} ${y}q-2-5-4-6"/>`).join("");
       return "";
@@ -138,7 +140,7 @@
       after.innerHTML = `<div class="fade-in" style="display:grid;gap:14px">
         <div class="say">${avatar(personById[o.who], 44)}<p class="bubble"><b>${esc(hostName(o.who))}</b>${esc(o.say)}</p></div>
         <section class="reveal">
-          <h3>📜 史官揭曉：${o.real ? "你和曹操選得一樣！" : `曹操當年選了 ${real.k.toUpperCase()}`}</h3>
+          <h3>📜 史官揭曉：${o.real ? `你和${esc(roleName(b))}選得一樣！` : `${esc(roleName(b))}當年選了 ${real.k.toUpperCase()}`}</h3>
           <p>${esc(s.reveal)}</p>
           <p class="src">出處：${esc(s.source)}</p>
           <p class="ep-lesson">💡 ${esc(s.lesson)}</p>
@@ -174,7 +176,7 @@
     const eps = (b.episodes || []).map(c => epByCode[c]).filter(ep => ep && ep.status === "published");
     box.innerHTML = `<article class="card fade-in" style="overflow:hidden">
       <div class="end-head">
-        <p class="score">你有 ${score} / ${b.steps.length} 個決定和曹操一樣</p>
+        <p class="score">你有 ${score} / ${b.steps.length} 個決定和${esc(roleName(b))}一樣</p>
         <h2>${esc(e.title)}</h2>
         <p style="margin-top:6px">${esc(e.text)}</p>
       </div>
@@ -188,6 +190,7 @@
         <h3 style="font-size:22px;margin-top:6px">延伸收聽・小百科</h3>
         <div class="row">
           ${eps.map(ep => `<button class="btn btn-red btn-sm" data-play="${esc(ep.code)}">▶ ${esc(ep.code)} ${esc(ep.title)}</button>`).join("")}
+          ${(b.stories || []).map(id => storyById[id] && `<a class="chip chip-link" href="${links.story(id)}" style="padding:6px 12px">🔍 ${esc(storyById[id].title)}</a>`).join("")}
           ${b.people.map(id => personById[id] && `<a class="chip chip-link" href="${links.person(id)}" style="padding:6px 12px">${avatar(personById[id], 26)} ${esc(personById[id].name)}的人物檔案</a>`).join("")}
         </div>
         <div class="row" style="justify-content:center;border-top:1px dashed var(--line);padding-top:16px">
@@ -198,7 +201,7 @@
     $("#again").addEventListener("click", () => intro(b));
     $("#share").addEventListener("click", async () => {
       const url = location.href.split("#")[0] + "#" + b.id;
-      const text = `我在《三國別演了》的「你來當軍師・${b.title}」拿到「${e.title}」（${score}/${b.steps.length} 個決定和曹操一樣）！換你來試試：${url}`;
+      const text = `我在《三國別演了》的「你來當軍師・${b.title}」拿到「${e.title}」（${score}/${b.steps.length} 個決定和${roleName(b)}一樣）！換你來試試：${url}`;
       try { await navigator.clipboard.writeText(text); toast("已複製！貼給朋友吧"); }
       catch (_) { prompt("複製這段文字分享：", text); }
     });

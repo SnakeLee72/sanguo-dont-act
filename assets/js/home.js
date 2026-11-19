@@ -122,5 +122,12 @@
       <p class="small">${esc(p.oneLine)}</p>
     </a>`).join("");
 
+  $("#battleList").innerHTML = BATTLES.filter(b => b.status === "published").map(b => {
+    const r = personById[b.role];
+    return `<a class="battle-go" href="battle.html#${esc(b.id)}">${avatar(r, 48)}
+      <div><p class="muted small">${esc(b.year.split("（")[0])}・扮演${esc(r.name)}</p><h3>${esc(b.title)}</h3></div>
+      <span class="go"><span class="go-t">換你當${esc(r.name)} </span>→</span></a>`;
+  }).join("");
+
   $("#quizFaces").innerHTML = PEOPLE.filter(p => p.role === "guest").slice(0, 6).map(p => avatar(p, 46)).join("");
 })();

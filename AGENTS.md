@@ -155,11 +155,12 @@ favicon.ico  site.webmanifest
 ```js
 { id: "guandu", title: "官渡之戰", year: "西元 200 年", role: "caocao", foe: "袁紹", status: "published",
   teaser, intro, introSay: { who: "caocao", say: "開場白" },
-  people: [], episodes: [],                 // 結尾的延伸連結
+  people: [], episodes: [], stories: [],    // 結尾的延伸連結（stories 是 STORIES 的 id）
   seal: "官渡之戰",                          // 地圖左下角紅色印章（2 或 4 個字）
   sides: { cao: { name: "曹操軍", flag: "曹", color: "var(--wei)" }, yuan: { … } },   // 顏色用陣營 token
   terrain: [{ type: "river", name: "黃河", label: 27, d: "SVG path" },
-            { type: "mountains", at: [[x, y, 大小]] }, { type: "grass", at: [[x, y]] }],
+            { type: "mountains", at: [[x, y, 大小]] }, { type: "grass", at: [[x, y]] },
+            { type: "lake", name: "洞庭湖", x, y, rx, ry }],
   places: { guandu: { x, y, name: "官渡", side: "cao", icon: "city|capital|camp|grain|ford" } },   // 400×300 示意圖座標
   steps: [{ id: "1", place, map: { focus: [地點id], arrows: [[從, 到, "sides 的 key 或 feint"]],
                                    fx: [[地點id, "clash|fire|flag", 陣營]] },
@@ -265,5 +266,6 @@ python -m http.server 8765
 | 2026-11-18 | 網站上線（EP01–EP09、SP01、主題曲 MV）、Google 試算表後端、Cloudflare Pages |
 | 2026-11-19 | 新增 SP02 選舉季特別企劃、頻道預告片、官方標語；建立本指南與 `tools/check_data.js` |
 | 2026-11-19 | 新增「你來當軍師」頁面（`battle.html`、`BATTLES`），第一場：官渡之戰 |
+| 2026-11-19 | 戰場示意圖改為古地圖手繪風；新增第二場：赤壁之戰（扮演周瑜）；首頁加入「你來當軍師」入口 |
 
 > 每次完成一批更新，請在上表新增一行（日期用 YYYY-MM-DD）。

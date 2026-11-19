@@ -90,6 +90,15 @@
   .portal:hover { transform: translateY(-3px); }
   .portal .big { font-size: 36px; }
   .portal h3 { font-size: 24px; }
+  .battle-cta { border: 2px solid var(--gold); background: radial-gradient(circle at 85% 10%, #FFF6E2, var(--paper-2) 70%); border-radius: 24px; padding: 26px; display: grid; gap: 18px; }
+  @media (min-width: 760px) { .battle-cta { grid-template-columns: 1fr 1.2fr; align-items: center; padding: 32px 36px; } }
+  .battle-list { display: grid; gap: 10px; }
+  .battle-go { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink); background: var(--card); border: 2px solid var(--line); border-radius: 16px; padding: 12px 14px; transition: all .15s; }
+  .battle-go:hover { border-color: var(--curtain); transform: translateX(3px); }
+  .battle-go > div { flex: 1; min-width: 0; }
+  .battle-go h3 { font-size: 21px; }
+  .battle-go .go { color: var(--curtain); font-weight: 700; white-space: nowrap; }
+  @media (max-width: 480px) { .battle-go .go-t { display: none; } .battle-go .go { font-size: 22px; } }
   .quiz-cta { background: linear-gradient(120deg, var(--curtain-dark), var(--curtain)); color: #FFF4DE; border-radius: 24px; padding: 28px; display: grid; gap: 16px; align-items: center; }
   @media (min-width: 760px) { .quiz-cta { grid-template-columns: 1fr auto; padding: 36px 40px; } }
   .quiz-faces { display: flex; gap: -8px; }
@@ -139,6 +148,20 @@
           <div id="rank"><p class="muted">讀取中…</p></div>
           <a class="btn btn-red" style="width:100%;margin-top:12px" href="request.html">🗳️ 我也要投票 / 點播</a>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 你來當軍師 -->
+  <section class="section" style="padding-top:0">
+    <div class="wrap">
+      <div class="battle-cta">
+        <div>
+          <p style="color:var(--curtain);font-weight:700">⚔️ 歷史抉擇遊戲</p>
+          <h2 style="font-size:clamp(26px,4vw,36px);margin-top:6px">你來當軍師！</h2>
+          <p class="muted" style="margin-top:6px">回到歷史的關鍵時刻，換你做決定。主持人在旁邊吐槽，最後由史官揭曉：當年到底是怎麼選的？</p>
+        </div>
+        <div class="battle-list" id="battleList"></div>
       </div>
     </div>
   </section>

@@ -69,13 +69,14 @@ dup(BATTLES, "id", "BATTLES");
 BATTLES.forEach(b => {
   const where = `BATTLES ${b.id}`;
   if (!ID.test(b.id)) errs.push(`${where} id 格式錯誤`);
-  if (S.has(b.id) || b.steps.some(s => S.has(`${b.id}-${s.id}`))) errs.push(`${where} id 和 STORIES 撞名（投票鍵都用 poll:）`);
+  b.steps.forEach(s => S.has(`${b.id}-${s.id}`) && errs.push(`${where} 第${s.id}步的投票鍵和 STORIES「${b.id}-${s.id}」撞名（都用 poll:）`));
   if (!["published", "upcoming"].includes(b.status)) errs.push(`${where} status 必須是 published / upcoming`);
   if (!b.sides || !Object.keys(b.sides).length) errs.push(`${where} 缺少 sides`);
   Object.values(b.places).forEach(p => (!p.side || (b.sides || {})[p.side]) || errs.push(`${where} 地點 ${p.name} 的 side 不在 sides 裡`));
   if (!P.has(b.role)) errs.push(`${where} role 找不到人物: ${b.role}`);
   (b.people || []).forEach(x => P.has(x) || errs.push(`${where} people 找不到: ${x}`));
   (b.episodes || []).forEach(x => E.has(x) || errs.push(`${where} episodes 找不到: ${x}`));
+  (b.stories || []).forEach(x => S.has(x) || errs.push(`${where} stories 找不到: ${x}`));
   dup(b.steps, "id", where + " steps");
   b.steps.forEach(s => {
     const w = `${where} 第${s.id}步`;
