@@ -103,6 +103,7 @@
     const others = ranked.slice(1, 3).map(([id]) => personById[id]);
     const ep = epByCode[p.episode];
     Store.vote("persona:" + p.id); // 統計大家測出誰（不影響畫面）
+    SG.Cards.mark("quiz:" + p.id);
     box.innerHTML = `<article class="card fade-in f-${p.faction}">
       <div class="result-head">
         ${avatar(p, 96)}

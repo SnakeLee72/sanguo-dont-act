@@ -129,5 +129,8 @@
       <span class="go"><span class="go-t">換你當${esc(r.name)} </span>→</span></a>`;
   }).join("");
 
+  const cc = SG.Cards.count();
+  $("#cardsCta").textContent = `🃏 我的武將卡冊：已收集 ${cc.got} / ${cc.total} 張 →`;
+
   $("#quizFaces").innerHTML = PEOPLE.filter(p => p.role === "guest").slice(0, 6).map(p => avatar(p, 46)).join("");
 })();

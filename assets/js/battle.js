@@ -175,6 +175,7 @@
 
   /* ---------- 結局 ---------- */
   function end(b, hits) {
+    SG.Cards.mark("battle:" + b.id, "battle:any");
     const score = hits.filter(Boolean).length;
     const e = b.endings.find(x => score >= x.min);
     const eps = (b.episodes || []).map(c => epByCode[c]).filter(ep => ep && ep.status === "published");

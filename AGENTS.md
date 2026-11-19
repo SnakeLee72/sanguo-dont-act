@@ -27,13 +27,13 @@
 ## 2. 檔案結構（哪些可以改）
 
 ```
-index.html  episodes.html  wiki.html  request.html  map.html  battle.html  quiz.html   ← 7 個頁面
+index.html  episodes.html  wiki.html  request.html  map.html  battle.html  quiz.html  cards.html   ← 8 個頁面
 assets/
   css/site.css            樣式（設計 token 在 :root）
   js/config.js            站名、標語、平台連結、後端網址 apiUrl        ⚠️ 謹慎
   js/data.js              ★ 全站內容資料（集數、人物、成語、查核、候選人、題目、測驗）
   js/core.js              共用：導覽列、頁尾、播放器、資料儲存 Store、背景音樂 BGM
-  js/home.js wiki.js request.js battle.js map.js                      各頁邏輯（map.js 內含地圖的地區中心點、城市座標、海岸線）
+  js/home.js wiki.js request.js battle.js map.js cards.js             各頁邏輯（map.js 內含地圖的地區中心點、城市座標、海岸線）
   img/                    favicon、og-image.png（分享預覽圖）
   audio/bgm.mp3           背景音樂（96kbps）
 backend/google-apps-script.gs   後端程式（實際執行的是 Google 上的副本）  ⚠️ 謹慎
@@ -186,6 +186,17 @@ favicon.ico  site.webmanifest
 - 地區依東漢的「州」劃分，荊州、揚州、益州（漢中）再分成兩塊；疆界是**示意**，只標「主要由誰控制」。同一勢力的相鄰地區，名字只寫在其中一塊，避免地圖太擠。
 - 網址 `map.html#208` 會直接打開那一年。新增戰役時，記得在對應年份填 `battle`，戰役結尾會自動出現「在地圖上看」的連結。
 
+### 武將收集卡（`cards.html`，不需要另外填資料）
+每位 `PEOPLE` 自動有一張卡，任務由資料自動產生（邏輯在 `core.js` 的 `Cards`）：
+- 🎧 收聽他那一集（`episode` 是已上架的集數時才有；在網站上按播放就算）
+- 📜 打開他的人物檔案
+- ⚔️ 完成他當主角（`BATTLES.role`）的戰役；主持人則是「玩任一場」
+- 🎭 心理測驗測出他（他有出現在 `PERSONA_QUIZ` 的選項裡才有）
+
+**人物造型圖**：`assets/img/cards/<PEOPLE.id>.webp`（400×500，直式 4:5，約 30–45 KB），從該集 YouTube 縮圖（`https://i.ytimg.com/vi/<影片ID>/maxresdefault.jpg`）裁出人物的頭到腰；主持人取自「頻道預告片」縮圖。沒有圖的人物會自動改顯示大字，不會壞掉。新來賓上架後記得補一張，只能用節目自己的美術。
+
+完成任一任務解鎖，全部完成變金卡。所以**新增來賓時照 §4 填好 `episode`、加進 `PERSONA_QUIZ`，卡片就會自動出現**；預告集上架後，「收聽」任務也會自動加上。進度只存在訪客瀏覽器（localStorage `sgby_cards_v1`），不送到後端。
+
 ### PERSONA_QUIZ 心理測驗
 每題 `{ q, options: [{ t: "選項文字", p: ["人物id", ...] }] }`。選到的選項替列出的人物各加 1 分，最高分者為結果。新增來賓時把他加進至少 2 個選項，並注意不要讓某人出現次數遠多於其他人。
 
@@ -283,5 +294,7 @@ python -m http.server 8765
 | 2026-11-19 | 戰場示意圖改為古地圖手繪風；新增第二場：赤壁之戰（扮演周瑜）；首頁加入「你來當軍師」入口 |
 | 2026-11-19 | 新增第三場：夷陵之戰（扮演陸遜） |
 | 2026-11-19 | 新增「三國地圖時間軸」頁面（`map.html`、`TIMELINE`），導覽列加入「地圖」 |
+| 2026-11-19 | 地圖美術加強、加入年號；新增「武將收集卡」頁面（`cards.html`），導覽列加入「卡冊」 |
+| 2026-11-19 | 收集卡加入 12 位人物造型（取自節目縮圖）、卡面美術改版 |
 
 > 每次完成一批更新，請在上表新增一行（日期用 YYYY-MM-DD）。

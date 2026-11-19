@@ -100,6 +100,7 @@
 
   function openPlayer(code, mode) {
     const ep = epByCode[code]; if (!ep) return;
+    Cards.mark("listen:" + code);
     mode = mode || (ep.youtube ? "yt" : "sp");
     const ytSrc = ep.youtube ? `https://www.youtube-nocookie.com/embed/${ep.youtube}?autoplay=1&rel=0` : "";
     const spSrc = ep.spotify ? `https://open.spotify.com/embed/episode/${ep.spotify}?utm_source=generator` : "";
@@ -229,6 +230,53 @@
     useGuest() { const m = this.get(); if (m.guestDay !== today()) { m.guestDay = today(); m.guestUsed = 0; } m.guestUsed++; this.set(m); }
   };
 
+  /* ---------- 武將收集卡（進度只存在訪客自己的瀏覽器） ----------
+     每張卡的任務由資料自動產生：收聽那一集、讀人物檔案、完成他主演的戰役、心理測驗測出他。
+     完成任一個任務 → 解鎖；全部完成 → 金卡。 */
+  const Cards = {
+    _k: "sgby_cards_v1",
+    get() { try { const d = JSON.parse(localStorage.getItem(this._k)); return d && d.done ? d : { done: {}, seen: {} }; } catch (_) { return { done: {}, seen: {} }; } },
+    set(v) { try { localStorage.setItem(this._k, JSON.stringify(v)); } catch (_) {} },
+    missions(p) {
+      const ms = [], ep = epByCode[p.episode];
+      if (ep && ep.status === "published") ms.push({ key: "listen:" + ep.code, icon: "🎧", text: `收聽 ${ep.code}「${ep.title}」`, href: `episodes.html#${ep.code}` });
+      ms.push({ key: "profile:" + p.id, icon: "📜", text: `讀${p.name}的人物檔案`, href: links.person(p.id) });
+      (typeof BATTLES === "undefined" ? [] : BATTLES).filter(b => b.status === "published" && b.role === p.id)
+        .forEach(b => ms.push({ key: "battle:" + b.id, icon: "⚔️", text: `在「你來當軍師」完成${b.title}`, href: `battle.html#${b.id}` }));
+      if (p.role === "host") ms.push({ key: "battle:any", icon: "⚔️", text: `玩任一場「你來當軍師」，聽${p.name}吐槽`, href: "battle.html" });
+      if (PERSONA_QUIZ.some(q => q.options.some(o => o.p.includes(p.id)))) ms.push({ key: "quiz:" + p.id, icon: "🎭", text: `在心理測驗測出${p.name}`, href: "quiz.html" });
+      return ms;
+    },
+    state(p, d = this.get()) {
+      const ms = this.missions(p), n = ms.filter(m => d.done[m.key]).length;
+      const level = n === 0 ? "" : n === ms.length ? "gold" : "card";
+      return { ms, n, level, unlocked: n > 0, gold: level === "gold", isNew: !!level && d.seen[p.id] !== level };
+    },
+    count(d = this.get()) { const st = PEOPLE.map(p => this.state(p, d)); return { got: st.filter(s => s.unlocked).length, gold: st.filter(s => s.gold).length, total: PEOPLE.length }; },
+    mark(...keys) {
+      const d = this.get(), fresh = keys.filter(k => !d.done[k]); if (!fresh.length) return;
+      const before = {}; PEOPLE.forEach(p => before[p.id] = this.state(p, d).level);
+      fresh.forEach(k => d.done[k] = Date.now()); this.set(d);
+      const news = [];
+      PEOPLE.forEach(p => {
+        const lv = this.state(p, d).level;
+        if (lv === before[p.id]) return;
+        news.push(lv === "gold" ? `🌟 ${p.name}升級成金卡` : `🃏 獲得新卡：${p.name}`);
+      });
+      if (news.length) { setTimeout(() => toast(news.join("、") + "！到「卡冊」看看"), 700); this.badge(); }
+    },
+    seeAll() { const d = this.get(); PEOPLE.forEach(p => { const s = this.state(p, d); if (s.level) d.seen[p.id] = s.level; }); this.set(d); this.badge(); },
+    badge() {
+      const d = this.get(), n = PEOPLE.filter(p => this.state(p, d).isNew).length;
+      document.querySelectorAll('a[href="cards.html"]').forEach(a => {
+        let b = a.querySelector(".nav-badge");
+        if (!n) { if (b) b.remove(); return; }
+        if (!b) { b = document.createElement("span"); b.className = "nav-badge"; a.appendChild(b); }
+        b.textContent = n; b.setAttribute("aria-label", `${n} 張新卡`);
+      });
+    }
+  };
+
   /* ---------- 資料儲存：Google 試算表 or 示範模式 ---------- */
   const DEMO = !SITE.apiUrl;
   function seed(key) { // 示範模式用的假數字（固定，不會每次跳動）
@@ -329,7 +377,8 @@
     { key: "request", href: "request.html", label: "點播台", ico: "🙋" },
     { key: "map", href: "map.html", label: "地圖", ico: "🗺️" },
     { key: "battle", href: "battle.html", label: "當軍師", ico: "⚔️" },
-    { key: "quiz", href: "quiz.html", label: "你是誰", ico: "🎭" }
+    { key: "quiz", href: "quiz.html", label: "你是誰", ico: "🎭" },
+    { key: "cards", href: "cards.html", label: "卡冊", ico: "🃏" }
   ];
   function layout() {
     const cur = document.body.dataset.page;
@@ -363,9 +412,10 @@
     document.body.appendChild(footer);
   }
   layout();
+  Cards.badge();
   BGM.init();
   if (!DEMO) Store.stats(); // 一進頁面就先去拿統計數字，越早開始越快好
 
   window.SG = { $, $$, esc, FACTION, VERDICT, SOURCE_TYPE, personById, idiomById, storyById, epByCode, avatar, factionChip, verdictBadge,
-    thumb, epLabel, fmtDate, published, links, episodeCard, openModal, closeModal, openPlayer, toast, Store, Mine, today };
+    thumb, epLabel, fmtDate, published, links, episodeCard, openModal, closeModal, openPlayer, toast, Store, Mine, Cards, today };
 })();

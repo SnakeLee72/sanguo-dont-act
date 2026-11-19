@@ -35,7 +35,7 @@ body {
   font-family: var(--body); font-size: 17px; line-height: 1.75;
   padding-bottom: 76px; /* 手機底部導覽 */
 }
-@media (min-width: 900px) { body { padding-bottom: 0; } }
+@media (min-width: 1060px) { body { padding-bottom: 0; } }
 img { max-width: 100%; display: block; }
 a { color: inherit; }
 button, input, select, textarea { font: inherit; color: inherit; }
@@ -62,20 +62,20 @@ p { margin: 0; }
   background: var(--lantern); color: var(--curtain-deep); font-family: var(--head); font-weight: 700; font-size: 22px;
   box-shadow: 0 0 0 2px var(--curtain-deep), 0 0 0 4px var(--gold);
 }
-.brand-name { font-family: var(--head); font-size: 22px; font-weight: 700; letter-spacing: .08em; }
+.brand-name { font-family: var(--head); font-size: 22px; font-weight: 700; letter-spacing: .08em; white-space: nowrap; }
 .nav-desk { display: none; gap: 4px; }
 .nav-desk a {
-  text-decoration: none; padding: 8px 14px; border-radius: 999px; font-weight: 500; color: #F6DFC0;
+  text-decoration: none; padding: 8px 12px; border-radius: 999px; font-weight: 500; color: #F6DFC0; white-space: nowrap;
 }
 .nav-desk a:hover { background: rgba(255,255,255,.08); color: #fff; }
 .nav-desk a[aria-current="page"] { background: var(--lantern); color: var(--curtain-deep); font-weight: 700; }
 .top-cta { display: none; }
-@media (min-width: 900px) { .nav-desk { display: flex; } .top-cta { display: inline-flex; } }
+@media (min-width: 1060px) { .nav-desk { display: flex; } .top-cta { display: inline-flex; } }
 
 /* 手機底部導覽 */
 .nav-mobile {
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 60;
-  display: grid; grid-template-columns: repeat(7, 1fr);
+  display: grid; grid-template-columns: repeat(8, 1fr);
   background: var(--curtain-deep); border-top: 2px solid var(--gold);
   padding-bottom: env(safe-area-inset-bottom);
 }
@@ -84,8 +84,11 @@ p { margin: 0; }
   padding: 8px 0 10px; display: flex; flex-direction: column; align-items: center; gap: 2px;
 }
 .nav-mobile a .ico { font-size: 20px; line-height: 1; }
+.nav-mobile a, .nav-desk a { position: relative; }
+.nav-badge { position: absolute; top: 2px; right: 50%; margin-right: -22px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--lantern); color: var(--curtain-deep); font-size: 11px; font-weight: 900; line-height: 18px; text-align: center; }
+.nav-desk .nav-badge { top: -6px; right: -8px; margin: 0; }
 .nav-mobile a[aria-current="page"] { color: var(--lantern); font-weight: 700; }
-@media (min-width: 900px) { .nav-mobile { display: none; } }
+@media (min-width: 1060px) { .nav-mobile { display: none; } }
 
 /* ---------- 按鈕 ---------- */
 .btn {
@@ -239,7 +242,7 @@ p { margin: 0; }
   transition: all .25s ease; max-width: calc(100% - 32px); text-align: center;
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-@media (min-width: 900px) { .toast { bottom: 32px; } }
+@media (min-width: 1060px) { .toast { bottom: 32px; } }
 .demo-banner {
   background: #FFF2CC; border-bottom: 1px solid #F0D68A; color: #6B4E00; font-size: 14px; text-align: center; padding: 6px 16px;
 }
@@ -268,7 +271,7 @@ p { margin: 0; }
 .bgm-off { font-size: 20px; line-height: 1; }
 .bgm-btn.on .bgm-ico { display: flex; }
 .bgm-btn.on .bgm-off { display: none; }
-@media (min-width: 900px) { .bgm-btn { bottom: 24px; right: 24px; } }
+@media (min-width: 1060px) { .bgm-btn { bottom: 24px; right: 24px; } }
 
 /* ---------- 雜項 ---------- */
 .fade-in { animation: fadeUp .4s ease-out both; }

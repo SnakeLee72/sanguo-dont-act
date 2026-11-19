@@ -45,6 +45,7 @@
 
   function openPerson(id) {
     const p = personById[id]; if (!p) return;
+    SG.Cards.mark("profile:" + id);
     const ep = epByCode[p.episode];
     const relIdioms = IDIOMS.filter(i => i.people.includes(id));
     const relStories = STORIES.filter(s => s.people.includes(id));
