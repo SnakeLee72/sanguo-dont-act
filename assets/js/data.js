@@ -21,13 +21,23 @@ const HOSTS = [
 /* ---------------- 📻 節目單集 ---------------- */
 const EPISODES = [
   {
-    code: "EP10", type: "ep", status: "upcoming", person: "caocao",
-    title: "曹操來作客：主持人反轉大審問",
-    question: "平常都是他發合約，這次換他坐上來賓椅！",
+    code: "QA01", type: "sp", label: "聽眾問答", status: "upcoming", person: "",
+    title: "聽眾問答番外篇",
+    question: "十萬大軍上廁所怎麼辦？赤兔馬一天吃多少草？",
     lesson: "",
-    desc: "第十集特別企劃！曹操坐上來賓椅，由諸葛亮與小喬聯手發問。你想問曹操什麼？快到點播台投稿！",
+    desc: "十萬大軍上廁所怎麼辦？赤兔馬一天吃多少草？古代沒有手機怎麼傳簡訊？你還想問什麼？快到點播台投稿！",
     date: "", length: "", youtube: "", spotify: "",
-    related: { people: ["caocao"], idioms: ["wangmei"], stories: [] }
+    related: { people: [], idioms: [], stories: [] }
+  },
+  {
+    code: "EP10", type: "ep", status: "published", person: "caocao",
+    title: "曹操來作客",
+    question: "被罵成大反派的人，到底在想什麼？",
+    lesson: "每個人心裡都有光明與黑暗兩面；懂得信任別人、給人機會，你就是英雄；一旦被恐懼和多疑控制，就會變成自己最討厭的樣子。",
+    desc: "第十集里程碑特別企劃！平時最愛審問別人、動不動就發招募合約的曹操，這次坐上來賓審問椅，接受諸葛亮與小喬聯手發問。",
+    date: "2026-11-20", length: "18:10",
+    youtube: "0yt0wnfUFz8", spotify: "64yrgZec61MQphmlTgC9GT",
+    related: { people: ["caocao"], idioms: [], stories: ["tuxian", "fenxin", "lvboshe", "ningwo"] }
   },
   {
     code: "SP02", type: "sp", status: "published", person: "",
@@ -494,7 +504,15 @@ const STORIES = [
   { id: "jiupin", title: "曹丕用『九品中正制』選人才", verdict: "true", people: ["caocao"], episode: "SP02", claimLabel: "常見說法",
     novel: "曹操的兒子曹丕把人才評成九個等級來選官。", history: "是真的！220 年曹丕採用陳群的建議設立九品中正制。但後來越來越看家世，變成「上品無寒門，下品無勢族」。" },
   { id: "keju", title: "三國時代用『科舉考試』選官員", verdict: "fiction", verdictText: "沒這回事", people: [], episode: "SP02", claimLabel: "常見誤會",
-    novel: "古裝劇裡三國的人也要進京趕考、考狀元。", history: "別演了！科舉是隋朝才開始、唐朝才發揚光大的，三國時代完全沒有科舉考試。「名落孫山」更是宋朝的故事。" }
+    novel: "古裝劇裡三國的人也要進京趕考、考狀元。", history: "別演了！科舉是隋朝才開始、唐朝才發揚光大的，三國時代完全沒有科舉考試。「名落孫山」更是宋朝的故事。" },
+  { id: "tuxian", title: "許攸來投降，曹操光著腳跑出去迎接", verdict: "adapted", verdictText: "有出處，但不是正史正文", people: ["caocao"], episode: "EP10", claimLabel: "常見說法",
+    novel: "官渡之戰打到最緊張的時候，袁紹的謀士許攸半夜跑來投降，曹操高興到連鞋子都來不及穿，光著腳衝出帳篷迎接。", history: "這段出自裴松之注引的《曹瞞傳》，不是《三國志》正文。《曹瞞傳》是吳國人寫的，常常專挑曹操的糗事來寫，所以聽聽就好，記得它的出處。" },
+  { id: "fenxin", title: "曹操燒掉部下寫給袁紹的信", verdict: "true", people: ["caocao"], episode: "EP10", claimLabel: "常見說法",
+    novel: "官渡之戰打贏後，士兵搜出一大箱部下偷偷寫給袁紹的信，曹操看都沒看就一把火燒掉。", history: "是真的！《三國志・武帝紀》記載曹操在袁紹的文書裡找到許都和軍中的人寫的信，全部燒掉。裴松之注引《魏氏春秋》還記下他說的話：「當紹之強，孤猶不能自保，而況眾人乎！」——袁紹那麼強的時候，連我都不確定能不能撐住，何況是大家呢？" },
+  { id: "lvboshe", title: "曹操誤殺呂伯奢一家", verdict: "adapted", people: ["caocao"], episode: "EP10",
+    novel: "曹操逃難時借住呂伯奢家，聽見磨刀聲以為要害他，殺了全家，才發現人家是要殺豬請他吃飯；離開時在路上遇見買酒回來的呂伯奢，也把他殺了。", history: "《三國志》正文沒有記載這件事，只有裴松之注引了三種說法，而且說法不一：《魏書》說是呂家的人想搶曹操的東西，《世語》和孫盛《雜記》說是曹操起疑心才動手。路上殺掉呂伯奢本人，是《三國演義》第 4 回加上去的。" },
+  { id: "ningwo", title: "曹操說『寧教我負天下人，休教天下人負我』", verdict: "adapted", people: ["caocao"], episode: "EP10",
+    novel: "曹操殺錯人以後說：「寧教我負天下人，休教天下人負我！」", history: "這句話出自裴松之注引的孫盛《雜記》，原句是「寧我負人，毋人負我」，意思是寧可我對不起別人，也不要讓別人對不起我。《三國演義》把「人」放大成「天下人」，讓曹操看起來更壞。" },
 ];
 
 /* ---------------- 🗳️ 下一位來賓候選人 ---------------- */
@@ -515,7 +533,7 @@ const CANDIDATES = [
 
 /* ---------------- 📋 題目看板 ---------------- */
 const TOPICS = [
-  { id: "t-caocao", type: "人物", title: "曹操坐上來賓椅：主持人反轉大審問", status: "recording", episode: "EP10" },
+  { id: "t-caocao", type: "人物", title: "曹操坐上來賓椅：主持人反轉大審問", status: "aired", episode: "EP10" },
   { id: "t-food", type: "生活", title: "三國人每天吃什麼？有沒有刷牙？", status: "collecting" },
   { id: "t-diaochan", type: "故事", title: "貂蟬到底存不存在？", status: "collecting" },
   { id: "t-chibi-who", type: "故事", title: "赤壁之戰到底誰的功勞最大？", status: "collecting" },

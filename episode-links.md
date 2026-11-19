@@ -356,3 +356,29 @@
 🗳️ 下一位來賓由你投票決定 → https://sanguo-dont-act.pages.dev/request?from=spotify
 ```
 
+---
+
+## EP10 曹操來作客
+
+### 📺 YouTube
+
+```text
+📚 本集延伸｜三國別演了 官網
+👤 曹操人物檔案（正史 vs 小說）→ https://sanguo-dont-act.pages.dev/wiki?from=yt#p=caocao
+🔍 「許攸來投降，曹操光著腳跑出去迎接」是真的嗎？先猜再翻牌 → https://sanguo-dont-act.pages.dev/wiki?from=yt#s=tuxian
+🔍 「曹操燒掉部下寫給袁紹的信」是真的嗎？先猜再翻牌 → https://sanguo-dont-act.pages.dev/wiki?from=yt#s=fenxin
+🎭 測測你最像哪位三國來賓 → https://sanguo-dont-act.pages.dev/quiz?from=yt
+🗳️ 下一位來賓由你投票決定 → https://sanguo-dont-act.pages.dev/request?from=yt
+```
+
+### 🎧 Spotify
+
+```text
+📚 本集延伸｜三國別演了 官網
+👤 曹操人物檔案（正史 vs 小說）→ https://sanguo-dont-act.pages.dev/wiki?from=spotify#p=caocao
+🔍 「許攸來投降，曹操光著腳跑出去迎接」是真的嗎？先猜再翻牌 → https://sanguo-dont-act.pages.dev/wiki?from=spotify#s=tuxian
+🔍 「曹操燒掉部下寫給袁紹的信」是真的嗎？先猜再翻牌 → https://sanguo-dont-act.pages.dev/wiki?from=spotify#s=fenxin
+🎭 測測你最像哪位三國來賓 → https://sanguo-dont-act.pages.dev/quiz?from=spotify
+🗳️ 下一位來賓由你投票決定 → https://sanguo-dont-act.pages.dev/request?from=spotify
+```
+
