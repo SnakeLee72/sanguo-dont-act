@@ -36,26 +36,50 @@
 <style>
   .stage {
     position: relative; overflow: hidden; color: #FFF4DE;
-    background: radial-gradient(ellipse at 50% 0%, #C24A2C 0%, #7A1E1E 40%, var(--curtain-deep) 85%);
-    padding: 56px 0 0;
+    background:
+      radial-gradient(ellipse 70% 55% at 50% 8%, rgba(255,190,110,.22) 0%, transparent 70%),
+      radial-gradient(ellipse at 50% 0%, #C84D2E 0%, #7E1E1E 42%, var(--curtain-deep) 86%);
+    padding: 58px 0 0;
+  }
+  .stage::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 1;
+    background:
+      radial-gradient(circle at 22% 28%, rgba(255,215,140,.08) 0 2px, transparent 3px),
+      radial-gradient(circle at 76% 22%, rgba(255,215,140,.07) 0 2.5px, transparent 3.5px),
+      radial-gradient(circle at 64% 68%, rgba(255,200,120,.06) 0 2px, transparent 3px),
+      radial-gradient(circle at 34% 72%, rgba(255,200,120,.06) 0 1.5px, transparent 2.5px);
   }
   .stage .wrap { position: relative; z-index: 2; }
-  /* 左右布幕：每一條皺褶都會被滑鼠撥動 */
-  .drape { position: absolute; top: 0; bottom: 0; width: 9%; min-width: 30px; z-index: 1; display: flex; overflow: hidden; box-shadow: 0 0 30px rgba(0,0,0,.6); }
-  .drape.left { left: 0; border-radius: 0 0 60% 0; }
-  .drape.right { right: 0; border-radius: 0 0 0 60%; flex-direction: row-reverse; }
-  .drape i { flex: 1; transform-origin: 50% 0; background: linear-gradient(90deg, #4E1111, #8A2323 35%, #A0302A 50%, #7A1E1E 70%, #521313); }
-  .drape i.rustle { animation: rustle .9s cubic-bezier(.3,.7,.4,1); }
-  @keyframes rustle { 0% { transform: none; } 20% { transform: skewX(5deg) scaleX(1.08); } 45% { transform: skewX(-3.5deg) scaleX(.96); } 70% { transform: skewX(1.6deg); } 100% { transform: none; } }
-  /* 上方帷幔與流蘇 */
-  .valance { position: absolute; top: 0; left: 0; right: 0; height: 30px; z-index: 4; pointer-events: none;
-    background: radial-gradient(circle at 50% 0, #8A2323 15px, transparent 16px) 0 0 / 34px 30px repeat-x, linear-gradient(#6A1919, #6A1919) 0 0 / 100% 12px no-repeat;
-    filter: drop-shadow(0 4px 4px rgba(0,0,0,.35)); }
-  .valance::after { content: ""; position: absolute; left: 0; right: 0; top: 11px; height: 2px; background: var(--gold); opacity: .8; }
-  .tassels { position: absolute; top: 14px; left: 0; right: 0; height: 30px; z-index: 4; display: flex; justify-content: space-around; padding: 0 10%; }
-  .tassel { width: 14px; height: 26px; position: relative; transform-origin: 50% 0; cursor: pointer; }
-  .tassel::before { content: ""; position: absolute; left: 6px; top: 0; width: 2px; height: 9px; background: var(--gold); }
-  .tassel::after { content: ""; position: absolute; left: 2px; top: 8px; width: 10px; height: 16px; border-radius: 4px 4px 2px 2px; background: repeating-linear-gradient(90deg, var(--lantern) 0 2px, var(--gold) 2px 3px); }
+  /* 左右戲台布幕：整幅絲絨軟布＋金繩束腰，滑鼠拂過時整片布料自然連動擺動 */
+  .drape {
+    position: absolute; top: 0; bottom: 34px; width: clamp(86px, 11.5vw, 168px); z-index: 1;
+    pointer-events: none; filter: drop-shadow(0 12px 24px rgba(15,3,3,.65));
+  }
+  .drape.left { left: 0; }
+  .drape.right { right: 0; }
+  .drape-svg { display: block; width: 100%; height: 100%; overflow: visible; }
+  .drape.right .drape-svg { transform: scaleX(-1); }
+  @media (max-width: 899px) {
+    .drape { width: clamp(34px, 8.5vw, 64px); opacity: .9; }
+  }
+  /* 上方華蓋帷幔與流蘇 */
+  .valance {
+    position: absolute; top: 0; left: 0; right: 0; height: 36px; z-index: 4; pointer-events: none;
+    background:
+      radial-gradient(ellipse 22px 20px at 50% 12px, #9E2924 0%, #7C1D1D 65%, #4A1010 92%, transparent 96%) 0 0 / 44px 36px repeat-x,
+      radial-gradient(ellipse 22px 16px at 50% 14px, transparent 84%, rgba(240,178,62,.85) 86% 93%, transparent 95%) 0 0 / 44px 36px repeat-x,
+      linear-gradient(180deg, #3D0D0D 0%, #6E1A1A 14px, transparent 15px);
+    filter: drop-shadow(0 6px 8px rgba(0,0,0,.45));
+  }
+  .valance::after {
+    content: ""; position: absolute; left: 0; right: 0; top: 12px; height: 3px;
+    background: linear-gradient(90deg, #9C6510, #F7D774 25%, #C88A22 50%, #F7D774 75%, #9C6510);
+    box-shadow: 0 1px 4px rgba(0,0,0,.45);
+  }
+  .tassels { position: absolute; top: 15px; left: 0; right: 0; height: 32px; z-index: 4; display: flex; justify-content: space-around; padding: 0 11%; pointer-events: none; }
+  .tassel { width: 14px; height: 28px; position: relative; transform-origin: 50% 0; cursor: pointer; pointer-events: auto; }
+  .tassel::before { content: ""; position: absolute; left: 5px; top: 0; width: 4px; height: 9px; border-radius: 2px; background: linear-gradient(180deg, #F7D774, var(--gold)); }
+  .tassel::after { content: ""; position: absolute; left: 2px; top: 8px; width: 10px; height: 17px; border-radius: 4px 4px 2px 2px; background: repeating-linear-gradient(90deg, var(--lantern) 0 2px, #B87918 2px 3px); box-shadow: 0 3px 6px rgba(0,0,0,.35); }
   .tassel.swing { animation: swing 1.4s ease-out; }
   /* 燈籠 */
   .hl { position: absolute; top: 0; z-index: 5; width: 46px; background: none; border: 0; padding: 0; cursor: pointer; transform-origin: 50% 0; animation: idle 5s ease-in-out infinite; }
@@ -77,7 +101,7 @@
   .hl:focus-visible { outline: 2px dashed var(--lantern); outline-offset: 4px; border-radius: 8px; }
   @media (max-width: 899px) { .hl.wide-only { display: none; } .stage { padding-top: 104px; } }
   /* 舞台聚光燈會跟著滑鼠移動 */
-  .spot { position: absolute; top: -40px; width: 260px; height: 520px; background: radial-gradient(ellipse at 50% 0%, rgba(255,226,160,.28), transparent 70%); pointer-events: none; transition: transform 1.2s cubic-bezier(.2,.7,.3,1); }
+  .spot { position: absolute; top: -40px; width: 320px; height: 560px; background: radial-gradient(ellipse at 50% 0%, rgba(255,226,160,.32), rgba(255,195,100,.12) 42%, transparent 72%); pointer-events: none; transition: transform 1.2s cubic-bezier(.2,.7,.3,1); }
   /* 標題的字滑過會跳一下 */
   .hero-title .ch { display: inline-block; transition: transform .25s cubic-bezier(.3,1.6,.5,1), text-shadow .25s; cursor: default; }
   .hero-title .ch:hover { transform: translateY(-10px) rotate(-4deg); text-shadow: 0 10px 0 rgba(0,0,0,.25); }
@@ -87,9 +111,9 @@
   .host:hover .bubble { transform: rotate(-1.2deg) translateX(3px); }
   .stat { transition: transform .25s, background .25s, box-shadow .25s; }
   .stat:hover { transform: translateY(-4px); background: rgba(0,0,0,.35); box-shadow: 0 0 0 1px rgba(240,178,62,.5), 0 10px 20px -10px rgba(0,0,0,.6); }
-  @media (prefers-reduced-motion: reduce) { .hl, .hl-in, .drape i, .tassel, .hero-title .ch, .host .avatar, .spot { animation: none !important; transition: none !important; } }
-  .hero-grid { display: grid; gap: 32px; align-items: center; padding: 0 4%; }
-  @media (min-width: 900px) { .hero-grid { grid-template-columns: 1.15fr 1fr; } }
+  @media (prefers-reduced-motion: reduce) { .hl, .hl-in, .drape, .tassel, .hero-title .ch, .host .avatar, .spot { animation: none !important; transition: none !important; } }
+  .hero-grid { display: grid; gap: 32px; align-items: center; padding: 0 6.5%; }
+  @media (min-width: 900px) { .hero-grid { grid-template-columns: 1.15fr 1fr; padding: 0 4.5%; } }
   .hero-kicker { display: inline-flex; gap: 8px; align-items: center; background: rgba(0,0,0,.25); border: 1px solid rgba(240,178,62,.5); color: var(--lantern); border-radius: 999px; padding: 4px 14px; font-weight: 700; font-size: 14px; }
   .onair { width: 9px; height: 9px; border-radius: 50%; background: #FF4D3D; box-shadow: 0 0 0 0 rgba(255,77,61,.7); animation: rec 1.6s infinite; }
   @keyframes rec { 70% { box-shadow: 0 0 0 10px rgba(255,77,61,0); } 100% { box-shadow: 0 0 0 0 rgba(255,77,61,0); } }
@@ -99,7 +123,19 @@
   .hero-tagline { font-weight: 700; color: var(--lantern); margin-top: 6px; letter-spacing: .05em; }
   .hero-about { color: #F0D3B0; margin-top: 14px; max-width: 560px; }
   .hero-btns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
-  .stage-floor { margin-top: 40px; height: 34px; background: linear-gradient(#6B3A1E, #3E200F); border-top: 4px solid var(--gold); }
+  .stage-floor {
+    position: relative; z-index: 3; margin-top: 40px; height: 34px;
+    background:
+      radial-gradient(ellipse 65% 100% at 50% 0%, rgba(255,195,95,.28) 0%, transparent 75%),
+      repeating-linear-gradient(90deg, rgba(25,10,3,.22) 0 1px, transparent 1px 72px),
+      linear-gradient(180deg, #7A4424 0%, #562D16 45%, #381B0B 100%);
+    border-top: 4px solid var(--gold);
+    box-shadow: 0 -8px 24px rgba(0,0,0,.45), inset 0 2px 4px rgba(255,220,140,.35);
+  }
+  .stage-floor::after {
+    content: ""; position: absolute; left: 0; right: 0; top: 4px; height: 2px;
+    background: repeating-linear-gradient(90deg, rgba(247,215,116,.55) 0 12px, transparent 12px 20px);
+  }
 
   .hosts { display: grid; gap: 14px; }
   .host { display: flex; gap: 12px; align-items: center; }
@@ -126,8 +162,18 @@
   .rank-row:last-child { border: 0; }
   .rank-no { font-family: var(--head); font-size: 22px; color: var(--gold); text-align: center; }
 
-  .portal { text-decoration: none; padding: 22px; display: flex; flex-direction: column; gap: 6px; transition: transform .2s; }
-  .portal:hover { transform: translateY(-3px); }
+  .portals-grid { display: grid; gap: 18px; grid-template-columns: 1fr; }
+  @media (min-width: 640px) and (max-width: 959px) {
+    .portals-grid { grid-template-columns: repeat(2, 1fr); }
+    .portals-grid > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+  }
+  @media (min-width: 960px) {
+    .portals-grid { grid-template-columns: repeat(6, 1fr); }
+    .portals-grid > :nth-child(-n+3) { grid-column: span 2; }
+    .portals-grid > :nth-child(n+4) { grid-column: span 3; }
+  }
+  .portal { text-decoration: none; padding: 22px; display: flex; flex-direction: column; gap: 6px; transition: transform .2s, border-color .2s; }
+  .portal:hover { transform: translateY(-3px); border-color: var(--gold); }
   .portal .big { font-size: 36px; }
   .portal h3 { font-size: 24px; }
 </style>
@@ -138,7 +184,7 @@
   <!-- 戲台主視覺 -->
   <section class="stage" aria-labelledby="heroTitle">
     <div class="spot" style="left:12%"></div><div class="spot" style="right:14%"></div>
-    <div class="drape left" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="drape right" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="drape left" aria-hidden="true"></div><div class="drape right" aria-hidden="true"></div>
     <div class="valance" aria-hidden="true"></div>
     <div class="tassels" aria-hidden="true"><span class="tassel"></span><span class="tassel"></span><span class="tassel"></span><span class="tassel"></span><span class="tassel"></span><span class="tassel"></span></div>
     <button class="hl" type="button" style="left:max(2px, calc(4.5% - 23px))" aria-label="點燈籠猜一個成語"><span class="hl-in"><span class="hl-cord" style="height:34px"></span><span class="hl-cap"></span><span class="hl-body"><span>三</span></span><span class="hl-cap"></span><span class="hl-tail"></span></span></button>
@@ -196,8 +242,8 @@
   <!-- 小百科入口 -->
   <section class="section section-alt">
     <div class="wrap">
-      <div class="sec-head"><h2><span class="kicker">ENCYCLOPEDIA</span>三國小百科</h2><p>節目裡聊過的人物、成語、故事，全部整理在這裡。</p></div>
-      <div class="grid g3" id="portals"></div>
+      <div class="sec-head"><h2><span class="kicker">ENCYCLOPEDIA</span>三國小百科</h2><p>節目裡聊過的人物、成語、故事，還有天下地圖與東漢城池都在這裡。</p></div>
+      <div class="portals-grid" id="portals"></div>
       <h3 style="font-size:22px;margin:34px 0 14px">今天認識誰？</h3>
       <div class="grid g4" id="randomPeople"></div>
     </div>

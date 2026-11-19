@@ -49,6 +49,7 @@
       <div class="toolbar">
         <div class="seg" id="filters" role="group" aria-label="節目分類"></div>
         <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <span class="chip" id="heardStat" style="font-size:14px;padding:5px 12px"></span>
           <input class="search" id="q" type="search" placeholder="🔍 搜尋人物或關鍵字（例如：勇敢）" aria-label="搜尋節目" />
           <div class="seg" role="group" aria-label="排序">
             <button id="sortBtn" aria-pressed="false">⇅ 從第一集開始</button>
@@ -78,17 +79,28 @@
 <script src="assets/js/core.js"></script>
 <script>
 (function () {
-  const { $, $$, episodeCard, personById, openPlayer, epByCode } = SG;
+  const { $, $$, episodeCard, personById, openPlayer, epByCode, published, Cards } = SG;
   $("#ytBtn").href = SITE.youtubeSubscribe; $("#spBtn").href = SITE.spotify;
 
-  const FILTERS = [["all", "全部"], ["ep", "人物來作客"], ["sp", "特別篇"], ["mv", "MV・預告片"]];
+  const FILTERS = [["all", "全部"], ["ep", "人物來作客"], ["sp", "特別篇"], ["mv", "MV・預告片"], ["unheard", "尚未收聽"]];
   let filter = "all", oldestFirst = false, q = "";
   $("#filters").innerHTML = FILTERS.map(([k, l]) => `<button data-f="${k}" aria-pressed="${k === filter}">${l}</button>`).join("");
 
+  function updateHeardStat() {
+    const pub = published();
+    const n = pub.filter(e => Cards.has("listen:" + e.code)).length;
+    $("#heardStat").textContent = `🎧 已收聽 ${n} / ${pub.length} 集`;
+  }
+
   function render() {
     $$("#filters button").forEach(b => b.setAttribute("aria-pressed", b.dataset.f === filter));
+    updateHeardStat();
     const kw = q.trim().toLowerCase();
-    let list = EPISODES.filter(e => filter === "all" || e.type === filter).filter(e => {
+    let list = EPISODES.filter(e => {
+      if (filter === "all") return true;
+      if (filter === "unheard") return e.status !== "upcoming" && !Cards.has("listen:" + e.code);
+      return e.type === filter;
+    }).filter(e => {
       if (!kw) return true;
       const g = personById[e.person];
       return [e.code, e.title, e.question, e.desc, e.lesson, g && g.name].join(" ").toLowerCase().includes(kw);
@@ -97,6 +109,7 @@
     $("#list").innerHTML = list.map(episodeCard).join("");
     $("#empty").classList.toggle("hidden", list.length > 0);
   }
+  window.addEventListener("sg:heard", updateHeardStat);
   $("#filters").addEventListener("click", e => { const b = e.target.closest("[data-f]"); if (b) { filter = b.dataset.f; render(); } });
   $("#q").addEventListener("input", e => { q = e.target.value; render(); });
   $("#sortBtn").addEventListener("click", e => {

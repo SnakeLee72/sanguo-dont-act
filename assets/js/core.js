@@ -56,10 +56,12 @@
     }
     const rel = (ep.related?.people || []).map(id => personById[id]).filter(Boolean)
       .map(p => `<a class="chip chip-link" href="${links.person(p.id)}">${esc(p.name)}</a>`).join("");
+    const heard = Cards.has("listen:" + ep.code);
     return `<article class="card ep-card fade-in" id="${esc(ep.code)}">
-      <div class="ep-thumb">
+      <div class="ep-thumb" data-thumb-ep="${esc(ep.code)}">
         ${ep.youtube ? `<img loading="lazy" src="${thumb(ep)}" alt="${esc(ep.code)} ${esc(ep.title)} 封面" />` : ""}
         <span class="ep-code">${esc(epLabel(ep))}</span>
+        ${heard ? `<span class="ep-heard">✓ 已收聽</span>` : ""}
         ${ep.length ? `<span class="ep-len">${esc(ep.length)}</span>` : ""}
         <button class="ep-play" data-play="${esc(ep.code)}" aria-label="播放 ${esc(ep.title)}"><span>▶</span></button>
       </div>
@@ -101,6 +103,14 @@
   function openPlayer(code, mode) {
     const ep = epByCode[code]; if (!ep) return;
     Cards.mark("listen:" + code);
+    $$(`[data-thumb-ep="${code}"]`).forEach(th => {
+      if (!th.querySelector(".ep-heard")) {
+        const b = document.createElement("span");
+        b.className = "ep-heard"; b.textContent = "✓ 已收聽";
+        th.appendChild(b);
+      }
+    });
+    window.dispatchEvent(new CustomEvent("sg:heard", { detail: code }));
     mode = mode || (ep.youtube ? "yt" : "sp");
     const ytSrc = ep.youtube ? `https://www.youtube-nocookie.com/embed/${ep.youtube}?autoplay=1&rel=0` : "";
     const spSrc = ep.spotify ? `https://open.spotify.com/embed/episode/${ep.spotify}?utm_source=generator` : "";
@@ -110,6 +120,9 @@
       ...(rel.idioms || []).map(id => idiomById[id] && `<a class="chip chip-link" href="${links.idiom(id)}">📖 ${esc(idiomById[id].word)}</a>`),
       ...(rel.stories || []).map(id => storyById[id] && `<a class="chip chip-link" href="${links.story(id)}">🔍 ${esc(storyById[id].title)}</a>`)
     ].filter(Boolean).join("");
+    const pub = published(), idx = pub.findIndex(e => e.code === code);
+    const prevEp = idx >= 0 ? pub[idx + 1] : null;
+    const nextEp = idx > 0 ? pub[idx - 1] : null;
     openModal(`
       <div class="video" id="playerArea">${mode === "yt" && ytSrc
         ? `<iframe src="${ytSrc}" title="${esc(ep.title)}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`
@@ -117,18 +130,39 @@
       <div class="card-pad">
         <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between">
           <div><span class="chip">${esc(epLabel(ep))}</span> <b style="font-family:var(--head);font-size:22px">${esc(ep.title)}</b></div>
-          <div class="seg" role="tablist" aria-label="收聽方式">
-            ${ytSrc ? `<button data-mode="yt" aria-selected="${mode === "yt"}">📺 看影片</button>` : ""}
-            ${spSrc ? `<button data-mode="sp" aria-selected="${mode === "sp"}">🎧 聽 Podcast</button>` : ""}
+          <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+            <div class="seg" role="tablist" aria-label="收聽方式">
+              ${ytSrc ? `<button data-mode="yt" aria-selected="${mode === "yt"}">📺 看影片</button>` : ""}
+              ${spSrc ? `<button data-mode="sp" aria-selected="${mode === "sp"}">🎧 聽 Podcast</button>` : ""}
+            </div>
+            <button class="btn btn-line btn-sm" type="button" id="shareEpBtn">🔗 分享本集</button>
           </div>
         </div>
         <p class="ep-q" style="margin-top:10px">${esc(ep.question)}</p>
         <p class="muted" style="margin-top:6px">${esc(ep.desc)}</p>
         ${ep.lesson ? `<p class="ep-lesson" style="margin-top:12px">💡 本集核心句：${esc(ep.lesson)}</p>` : ""}
         ${relHtml ? `<p class="small muted" style="margin-top:16px">本集小百科</p><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px">${relHtml}</div>` : ""}
+        ${(prevEp || nextEp) ? `<div class="player-nav">
+          ${prevEp ? `<button class="btn btn-line btn-sm" type="button" data-nav-ep="${esc(prevEp.code)}">← 上一集：${esc(epLabel(prevEp))} ${esc(prevEp.title)}</button>` : `<span></span>`}
+          ${nextEp ? `<button class="btn btn-line btn-sm" type="button" data-nav-ep="${esc(nextEp.code)}">下一集：${esc(epLabel(nextEp))} ${esc(nextEp.title)} →</button>` : `<span></span>`}
+        </div>` : ""}
       </div>`, { onClose: () => setTimeout(() => { if (!$("#modal")) BGM.release(); }, 0) });
     BGM.hold(); // 看影片、聽節目時先暫停背景音樂
     $$("#modal [data-mode]").forEach(b => b.addEventListener("click", () => openPlayer(code, b.dataset.mode)));
+    $$("#modal [data-nav-ep]").forEach(b => b.addEventListener("click", () => openPlayer(b.dataset.navEp, mode)));
+    const shareBtn = $("#shareEpBtn");
+    if (shareBtn) {
+      shareBtn.addEventListener("click", async () => {
+        const shareUrl = `https://sanguo-dont-act.pages.dev/episodes#${encodeURIComponent(ep.code)}`;
+        const shareText = `《三國別演了》${epLabel(ep)} ${ep.title}｜${ep.question}\n${shareUrl}`;
+        try {
+          await navigator.clipboard.writeText(shareText);
+          toast("📋 已複製本集連結，可以貼給朋友了！");
+        } catch (_) {
+          prompt("複製以下連結分享給朋友：", shareUrl);
+        }
+      });
+    }
   }
 
   /* ---------- 背景音樂 ----------
@@ -181,9 +215,10 @@
     init() {
       const b = this._btn = document.createElement("button");
       b.className = "bgm-btn"; b.type = "button";
-      b.innerHTML = `<span class="bgm-ico" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="bgm-off" aria-hidden="true">🎵</span>`;
+      b.innerHTML = `<span class="bgm-ico" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="bgm-off" aria-hidden="true">🎵</span><span>音樂</span>`;
       b.addEventListener("click", () => this.toggle());
-      document.body.appendChild(b);
+      const slot = $("#topRight");
+      if (slot) slot.prepend(b); else document.body.appendChild(b);
       this.ui();
       // 第一次互動時開始播放（點音樂按鈕或播放節目時除外）
       const start = (e) => {
@@ -192,7 +227,7 @@
         if (!this.on || this._held) return;
         let first = true; try { first = !+sessionStorage.getItem("sgby_bgm_t"); } catch (_) {}
         this.play();
-        if (first) setTimeout(() => { if (this._a && !this._a.paused) toast("🎵 背景音樂播放中，右下角按鈕可以關閉"); }, 400);
+        if (first) setTimeout(() => { if (this._a && !this._a.paused) toast("🎵 背景音樂播放中，右上角「音樂」鈕可以關閉"); }, 400);
       };
       const off = () => ["pointerdown", "keydown"].forEach(t => document.removeEventListener(t, start, true));
       ["pointerdown", "keydown"].forEach(t => document.addEventListener(t, start, true));
@@ -237,6 +272,7 @@
     _k: "sgby_cards_v1",
     get() { try { const d = JSON.parse(localStorage.getItem(this._k)); return d && d.done ? d : { done: {}, seen: {} }; } catch (_) { return { done: {}, seen: {} }; } },
     set(v) { try { localStorage.setItem(this._k, JSON.stringify(v)); } catch (_) {} },
+    has(key) { return !!this.get().done[key]; },
     missions(p) {
       const ms = [], ep = epByCode[p.episode];
       if (ep && ep.status === "published") ms.push({ key: "listen:" + ep.code, icon: "🎧", text: `收聽 ${ep.code}「${ep.title}」`, href: `episodes.html#${ep.code}` });
@@ -413,7 +449,9 @@
     header.innerHTML = `<div class="wrap">
       <a class="brand" href="index.html" aria-label="三國別演了 首頁"><span class="brand-mark">演</span><span class="brand-name">${esc(SITE.name)}</span></a>
       <nav class="nav-desk" aria-label="主選單">${PAGES.map(p => `<a href="${p.href}"${cur_(p)}>${p.label}</a>`).join("")}</nav>
-      <a class="btn btn-gold btn-sm top-cta" href="${SITE.youtubeSubscribe}" target="_blank" rel="noopener">▶ 訂閱頻道</a>
+      <div class="top-right" id="topRight">
+        <a class="btn btn-gold btn-sm top-cta" href="${SITE.youtubeSubscribe}" target="_blank" rel="noopener">▶ 訂閱頻道</a>
+      </div>
     </div>`;
     document.body.prepend(header);
     if (DEMO) {
