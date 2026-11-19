@@ -160,10 +160,10 @@ favicon.ico  site.webmanifest
   sides: { cao: { name: "曹操軍", flag: "曹", color: "var(--wei)" }, yuan: { … } },   // 顏色用陣營 token
   terrain: [{ type: "river", name: "黃河", label: 27, d: "SVG path" },
             { type: "mountains", at: [[x, y, 大小]] }, { type: "grass", at: [[x, y]] },
-            { type: "lake", name: "洞庭湖", x, y, rx, ry }],
+            { type: "lake", name: "洞庭湖", x, y, rx, ry }, { type: "camps", side: "liu", at: [[x, y]] }],   // camps：一整排小營帳（連營）
   places: { guandu: { x, y, name: "官渡", side: "cao", icon: "city|capital|camp|grain|ford" } },   // 400×300 示意圖座標
   steps: [{ id: "1", place, map: { focus: [地點id], arrows: [[從, 到, "sides 的 key 或 feint"]],
-                                   fx: [[地點id, "clash|fire|flag", 陣營]] },
+                                   fx: [[地點id 或 [x, y], "clash|fire|flag", 陣營]] },
             scene, q, options: [{ k: "a", t: "選項", who: "主持人id", say: "吐槽", real: true }],
             reveal: "史官揭曉（必須有出處）", source: "《三國志・○○傳》", lesson }],
   myths: [{ verdict, verdictText, claim: "《三國演義》這樣演｜常見說法", text, truth }],
@@ -267,5 +267,6 @@ python -m http.server 8765
 | 2026-11-19 | 新增 SP02 選舉季特別企劃、頻道預告片、官方標語；建立本指南與 `tools/check_data.js` |
 | 2026-11-19 | 新增「你來當軍師」頁面（`battle.html`、`BATTLES`），第一場：官渡之戰 |
 | 2026-11-19 | 戰場示意圖改為古地圖手繪風；新增第二場：赤壁之戰（扮演周瑜）；首頁加入「你來當軍師」入口 |
+| 2026-11-19 | 新增第三場：夷陵之戰（扮演陸遜） |
 
 > 每次完成一批更新，請在上表新增一行（日期用 YYYY-MM-DD）。

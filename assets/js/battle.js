@@ -41,12 +41,16 @@
         <circle class="ring" r="16"/>${(ICON[p.icon] || ICON.city)(c)}
         <text x="${right ? -14 : 14}" y="5" text-anchor="${right ? "end" : "start"}">${esc(p.name)}</text></g>`;
     };
-    const fx = ([id, kind, side]) => P[id] && FX[kind] ? `<g transform="translate(${P[id].x} ${P[id].y})">${FX[kind](sideOf(side || P[id].side))}</g>` : "";
+    const fx = ([at, kind, side]) => {
+      const pt = Array.isArray(at) ? { x: at[0], y: at[1] } : P[at];
+      return pt && FX[kind] ? `<g transform="translate(${pt.x} ${pt.y})">${FX[kind](sideOf(side || pt.side))}</g>` : "";
+    };
     const terrain = t => {
       if (t.type === "river") return `<path id="rv-${b.id}" d="${t.d}" class="river-bank"/><path d="${t.d}" class="river"/><path d="${t.d}" class="river-flow"/>
         <text class="river-name" dy="${t.below ? 18 : -9}"><textPath href="#rv-${b.id}" startOffset="${t.label || 10}%">${esc([...t.name].join("　"))}</textPath></text>`;
       if (t.type === "lake") return `<ellipse cx="${t.x}" cy="${t.y}" rx="${t.rx + 6}" ry="${t.ry + 5}" class="lake-bank"/><ellipse cx="${t.x}" cy="${t.y}" rx="${t.rx}" ry="${t.ry}" class="lake"/><text x="${t.x}" y="${t.y + 4}" class="lake-name">${esc(t.name)}</text>`;
       if (t.type === "mountains") return t.at.map(([x, y, s]) => `<g class="mtn" transform="translate(${x} ${y}) scale(${s / 10})"><path d="M-12 0 0-13 12 0z" class="mtn-body"/><path d="M0-13-3-5 0-7 2-3 4 0" class="mtn-shade"/></g>`).join("");
+      if (t.type === "camps") return t.at.map(([x, y]) => `<g transform="translate(${x} ${y}) scale(.6)">${ICON.camp(sideOf(t.side).color)}</g>`).join("");
       if (t.type === "grass") return t.at.map(([x, y]) => `<path class="grass" d="M${x - 4} ${y}q2-5 4-6M${x} ${y}v-7M${x + 4} ${y}q-2-5-4-6"/>`).join("");
       return "";
     };

@@ -73,6 +73,7 @@ BATTLES.forEach(b => {
   if (!["published", "upcoming"].includes(b.status)) errs.push(`${where} status 必須是 published / upcoming`);
   if (!b.sides || !Object.keys(b.sides).length) errs.push(`${where} 缺少 sides`);
   Object.values(b.places).forEach(p => (!p.side || (b.sides || {})[p.side]) || errs.push(`${where} 地點 ${p.name} 的 side 不在 sides 裡`));
+  b.terrain.filter(t => t.type === "camps").forEach(t => (b.sides || {})[t.side] || errs.push(`${where} camps 的 side 不在 sides 裡: ${t.side}`));
   if (!P.has(b.role)) errs.push(`${where} role 找不到人物: ${b.role}`);
   (b.people || []).forEach(x => P.has(x) || errs.push(`${where} people 找不到: ${x}`));
   (b.episodes || []).forEach(x => E.has(x) || errs.push(`${where} episodes 找不到: ${x}`));
@@ -87,7 +88,7 @@ BATTLES.forEach(b => {
       if (!HOSTS.some(h => h.id === o.who)) errs.push(`${w} 選項 ${o.k} 的 who 必須是主持人 id`);
     });
     dup(s.options, "k", w + " options");
-    [...(s.map.focus || []), ...(s.map.arrows || []).flatMap(a => a.slice(0, 2)), ...(s.map.fx || []).map(f => f[0])].forEach(x => b.places[x] || errs.push(`${w} 地圖找不到地點: ${x}`));
+    [...(s.map.focus || []), ...(s.map.arrows || []).flatMap(a => a.slice(0, 2)), ...(s.map.fx || []).map(f => f[0]).filter(x => !Array.isArray(x))].forEach(x => b.places[x] || errs.push(`${w} 地圖找不到地點: ${x}`));
     (s.map.arrows || []).forEach(a => a[2] === "feint" || (b.sides || {})[a[2]] || errs.push(`${w} 箭頭陣營要是 sides 的 key 或 feint: ${a[2]}`));
     (s.map.fx || []).forEach(f => ["clash", "fire", "flag"].includes(f[1]) || errs.push(`${w} fx 只能是 clash / fire / flag: ${f[1]}`));
     ["scene", "q", "reveal", "source", "lesson"].forEach(k => s[k] || errs.push(`${w} 缺少 ${k}`));
