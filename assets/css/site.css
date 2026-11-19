@@ -18,6 +18,7 @@
   --wu: #B23A2E;
   --qun: #6B5B4B;
   --river: #5B8DB8;
+  --jin: #6B4E8C;
   --ok: #2E7D4F;
   --bad: #B23A2E;
   --adapt: #B7791F;
@@ -74,7 +75,7 @@ p { margin: 0; }
 /* 手機底部導覽 */
 .nav-mobile {
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 60;
-  display: grid; grid-template-columns: repeat(6, 1fr);
+  display: grid; grid-template-columns: repeat(7, 1fr);
   background: var(--curtain-deep); border-top: 2px solid var(--gold);
   padding-bottom: env(safe-area-inset-bottom);
 }

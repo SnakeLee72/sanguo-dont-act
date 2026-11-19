@@ -5,9 +5,9 @@ const file = path.join(__dirname, "..", "assets", "js", "data.js");
 const ctx = {};
 try {
   vm.runInNewContext(fs.readFileSync(file, "utf8") +
-    "\n;this.D={HOSTS,EPISODES,PEOPLE,IDIOMS,STORIES,CANDIDATES,TOPICS,PERSONA_QUIZ,BATTLES};", ctx);
+    "\n;this.D={HOSTS,EPISODES,PEOPLE,IDIOMS,STORIES,CANDIDATES,TOPICS,PERSONA_QUIZ,BATTLES,TIMELINE};", ctx);
 } catch (e) { console.error("❌ data.js 語法錯誤：", e.message); process.exit(1); }
-const { HOSTS, EPISODES, PEOPLE, IDIOMS, STORIES, CANDIDATES, TOPICS, PERSONA_QUIZ, BATTLES } = ctx.D;
+const { HOSTS, EPISODES, PEOPLE, IDIOMS, STORIES, CANDIDATES, TOPICS, PERSONA_QUIZ, BATTLES, TIMELINE } = ctx.D;
 const errs = [];
 const ID = /^[a-z0-9-]+$/;
 const FACTIONS = ["wei", "shu", "wu", "qun"];
@@ -97,5 +97,22 @@ BATTLES.forEach(b => {
   if (!(b.endings || []).some(e => e.min === 0)) errs.push(`${where} endings 需要一個 min: 0 的結局`);
 });
 
+const MAP_REGIONS = ["liang", "sili", "bing", "you", "ji", "qing", "yan", "xu", "yu", "huainan", "jiangdong", "jingbei", "jingnan", "hanzhong", "yi", "jiao"];
+const MAP_CITIES = ["luoyang", "changan", "xu", "ye", "chengdu", "jianye", "xiangyang", "jiangling", "wuchang"];
+const POWERS = ["han", "cao", "sun", "liu", "qun", "jin"];
+TIMELINE.forEach((k, n) => {
+  const w = `TIMELINE ${k.year}`;
+  if (n && k.year <= TIMELINE[n - 1].year) errs.push(`${w} 年份要由小到大排列，且不可重複`);
+  ["title", "text", "source"].forEach(f => k[f] || errs.push(`${w} 缺少 ${f}`));
+  MAP_REGIONS.forEach(r => k.regions[r] || errs.push(`${w} regions 缺少 ${r}`));
+  Object.entries(k.regions).forEach(([r, v]) => {
+    if (!MAP_REGIONS.includes(r)) errs.push(`${w} 沒有這個地區: ${r}`);
+    if (!Array.isArray(v) || !POWERS.includes(v[0])) errs.push(`${w} ${r} 的勢力要是 ${POWERS.join(" / ")}`);
+  });
+  (k.capitals || []).forEach(c => MAP_CITIES.includes(c) || errs.push(`${w} capitals 沒有這個城市: ${c}`));
+  if (k.battle && !BATTLES.some(b => b.id === k.battle)) errs.push(`${w} battle 找不到戰役: ${k.battle}`);
+  (k.guests || []).forEach(x => P.has(x) || errs.push(`${w} guests 找不到人物: ${x}`));
+});
+
 if (errs.length) { console.error("❌ 發現 " + errs.length + " 個問題：\n- " + errs.join("\n- ")); process.exit(1); }
-console.log(`✅ OK｜集數 ${EPISODES.length}・人物 ${PEOPLE.length}・成語 ${IDIOMS.length}・查核 ${STORIES.length}・候選人 ${CANDIDATES.length}・題目 ${TOPICS.length}・戰役 ${BATTLES.length}`);
+console.log(`✅ OK｜集數 ${EPISODES.length}・人物 ${PEOPLE.length}・成語 ${IDIOMS.length}・查核 ${STORIES.length}・候選人 ${CANDIDATES.length}・題目 ${TOPICS.length}・戰役 ${BATTLES.length}・地圖年份 ${TIMELINE.length}`);

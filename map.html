@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>三國地圖時間軸｜三國別演了</title>
+<meta name="description" content="拉動時間軸，看東漢末年到三國鼎立，魏蜀吳的地盤怎麼變化。點地圖上的戰役，就能換你當軍師！" />
+<!-- meta:start -->
+<link rel="canonical" href="https://sanguo-dont-act.pages.dev/map" />
+<link rel="icon" href="assets/img/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png" />
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png" />
+<link rel="manifest" href="site.webmanifest" />
+<meta name="theme-color" content="#4D1414" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="三國別演了" />
+<meta property="og:locale" content="zh_TW" />
+<meta property="og:title" content="三國地圖時間軸｜三國別演了" />
+<meta property="og:description" content="拉動時間軸，看東漢末年到三國鼎立，魏蜀吳的地盤怎麼變化。點地圖上的戰役，就能換你當軍師！" />
+<meta property="og:url" content="https://sanguo-dont-act.pages.dev/map" />
+<meta property="og:image" content="https://sanguo-dont-act.pages.dev/assets/img/og-image.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="三國地圖時間軸｜三國別演了" />
+<meta name="twitter:description" content="拉動時間軸，看東漢末年到三國鼎立，魏蜀吳的地盤怎麼變化。點地圖上的戰役，就能換你當軍師！" />
+<meta name="twitter:image" content="https://sanguo-dont-act.pages.dev/assets/img/og-image.png" />
+<link rel="preconnect" href="https://script.google.com" crossorigin />
+<link rel="preconnect" href="https://script.googleusercontent.com" crossorigin />
+<link rel="preconnect" href="https://i.ytimg.com" />
+<!-- meta:end -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/site.css" />
+<style>
+  .tl-box { max-width: 880px; margin: 0 auto; display: grid; gap: 14px; }
+  .tl-head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+  .tl-year { font-family: var(--head); font-size: clamp(30px, 6vw, 44px); font-weight: 700; color: var(--curtain); line-height: 1; }
+  .tl-title { font-size: clamp(22px, 4vw, 30px); }
+  .tl-map { border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); }
+  .tl-map svg { display: block; width: 100%; height: auto; }
+  .tl-map text { font-family: var(--head); }
+  .tl-paper { fill: var(--paper-2); }
+  .tl-cell { fill: var(--paper-2); fill-opacity: .62; transition: fill .8s ease; }
+  .tl-border { fill: none; stroke: var(--paper); stroke-width: 2.2; stroke-linejoin: round; opacity: .9; }
+  .tl-sea { fill: #CFE0EC; stroke: var(--river); stroke-width: 1.2; }
+  .tl-island { fill: var(--paper-2); stroke: var(--river); stroke-width: 1; }
+  .tl-wave { fill: none; stroke: var(--river); stroke-width: 1.4; opacity: .55; }
+  .tl-sea-name { fill: var(--river); font-size: 17px; font-weight: 700; }
+  .tl-river { fill: none; stroke: var(--river); stroke-width: 5; stroke-linecap: round; opacity: .9; }
+  .tl-river.small { stroke-width: 2.6; }
+  .tl-river-name { fill: var(--river); font-size: 15px; font-weight: 700; paint-order: stroke; stroke: var(--paper); stroke-width: 3px; }
+  .tl-river-name.small { font-size: 12px; }
+  .tl-owner { font-size: 22px; font-weight: 700; fill: var(--ink); text-anchor: middle; paint-order: stroke; stroke: var(--paper); stroke-width: 4px; stroke-linejoin: round; }
+  .tl-rname { font-size: 13px; fill: var(--ink); opacity: .75; text-anchor: middle; paint-order: stroke; stroke: var(--paper); stroke-width: 3px; }
+  .tl-city path { fill: var(--curtain); stroke: var(--paper); stroke-width: 1.2; }
+  .tl-city text, .tl-mark text { font-size: 15px; font-weight: 700; fill: var(--curtain-deep); paint-order: stroke; stroke: var(--paper); stroke-width: 4px; stroke-linejoin: round; }
+  .tl-mark circle { fill: var(--lantern); stroke: var(--curtain); stroke-width: 1.5; }
+  .tl-battle { cursor: pointer; }
+  .tl-bdot { fill: var(--curtain); stroke: var(--lantern); stroke-width: 2; }
+  .tl-ring { fill: none; stroke: var(--lantern); stroke-width: 3; animation: tlring 1.8s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+  @keyframes tlring { from { transform: scale(.8); opacity: 1; } to { transform: scale(1.8); opacity: 0; } }
+  .tl-sword { stroke: #fff; stroke-width: 2.6; stroke-linecap: round; }
+  .tl-btext { font-size: 17px; font-weight: 700; fill: var(--curtain); paint-order: stroke; stroke: var(--paper); stroke-width: 5px; stroke-linejoin: round; text-decoration: underline; }
+  .tl-battle:hover .tl-bdot { fill: var(--curtain-deep); }
+  .tl-frame { fill: none; stroke: var(--gold); stroke-width: 2; }
+  .tl-frame.thin { stroke-width: .8; }
+  .tl-note { font-size: 12px; fill: var(--muted); font-family: var(--body) !important; }
+  .tl-map .compass circle { fill: var(--paper); stroke: var(--gold); stroke-width: 1.4; }
+  .tl-map .compass .needle { fill: var(--muted); opacity: .5; }
+  .tl-map .compass .needle-n { fill: var(--curtain); }
+  .tl-map .compass text { font-size: 14px; font-weight: 700; fill: var(--curtain); text-anchor: middle; }
+  .fade { animation: tlfade .6s ease-out both; }
+  @keyframes tlfade { from { opacity: 0; } to { opacity: 1; } }
+  @media (max-width: 560px) {
+    .tl-owner { font-size: 30px; } .tl-rname { font-size: 18px; } .tl-rname.sub { display: none; }
+    .tl-city text, .tl-mark text { font-size: 20px; } .tl-btext { font-size: 22px; }
+    .tl-river-name { font-size: 19px; } .tl-sea-name { font-size: 20px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .tl-map *, .fade { animation: none !important; transition: none !important; } }
+
+  .tl-legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 14px; color: var(--muted); }
+  .tl-legend b { display: inline-block; width: 14px; height: 14px; border-radius: 4px; vertical-align: -2px; margin-right: 5px; opacity: .8; }
+  .tl-ctrl { display: grid; grid-template-columns: auto 1fr auto auto; gap: 10px; align-items: center; }
+  .tl-range { position: relative; padding-bottom: 26px; }
+  .tl-range input { width: 100%; accent-color: var(--curtain); height: 28px; margin: 0; }
+  .tl-ticks { position: absolute; left: 10px; right: 10px; top: 28px; height: 22px; }
+  .tl-ticks button { position: absolute; transform: translateX(-50%); background: none; border: 0; padding: 0 2px; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .tl-ticks button.on { color: var(--curtain); font-weight: 900; }
+  @media (max-width: 560px) {
+    .tl-ctrl { grid-template-columns: auto 1fr auto; }
+    .tl-ctrl #tlPlay { grid-column: 1 / -1; justify-self: center; }
+    .tl-ticks button:nth-child(even) { top: 13px; }
+    .tl-range { padding-bottom: 36px; }
+  }
+  .tl-info .tl-text { font-size: 17px; line-height: 1.8; }
+  .src { font-size: 13px; color: var(--muted); }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tl-cta { display: flex; gap: 10px; align-items: center; text-decoration: none; color: var(--ink); background: #FFF6E2; border: 2px solid var(--lantern); border-radius: 14px; padding: 12px 14px; font-size: 16px; }
+  .tl-cta:hover { border-color: var(--curtain); }
+  .tl-cta b { color: var(--curtain); }
+</style>
+</head>
+<body data-page="map">
+<main>
+  <section class="page-hero">
+    <div class="lanterns" aria-hidden="true"><span class="lantern"></span><span class="lantern"></span><span class="lantern"></span></div>
+    <div class="wrap">
+      <h1>🗺️ 三國地圖時間軸</h1>
+      <p>拉動時間軸，看從黃巾之亂到晉朝統一，天下的地盤怎麼一步步變成魏、蜀、吳三分，最後又合而為一。</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="wrap">
+      <div class="tl-box" id="tl"></div>
+    </div>
+  </section>
+</main>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/map.js"></script>
+</body>
+</html>

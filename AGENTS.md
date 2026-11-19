@@ -27,13 +27,13 @@
 ## 2. 檔案結構（哪些可以改）
 
 ```
-index.html  episodes.html  wiki.html  request.html  battle.html  quiz.html   ← 6 個頁面
+index.html  episodes.html  wiki.html  request.html  map.html  battle.html  quiz.html   ← 7 個頁面
 assets/
   css/site.css            樣式（設計 token 在 :root）
   js/config.js            站名、標語、平台連結、後端網址 apiUrl        ⚠️ 謹慎
   js/data.js              ★ 全站內容資料（集數、人物、成語、查核、候選人、題目、測驗）
   js/core.js              共用：導覽列、頁尾、播放器、資料儲存 Store、背景音樂 BGM
-  js/home.js wiki.js request.js battle.js                             各頁邏輯
+  js/home.js wiki.js request.js battle.js map.js                      各頁邏輯（map.js 內含地圖的地區中心點、城市座標、海岸線）
   img/                    favicon、og-image.png（分享預覽圖）
   audio/bgm.mp3           背景音樂（96kbps）
 backend/google-apps-script.gs   後端程式（實際執行的是 Google 上的副本）  ⚠️ 謹慎
@@ -172,6 +172,20 @@ favicon.ico  site.webmanifest
 - 每一步**剛好一個** `real: true`；`who` 只能是 HOSTS 的 id。`reveal` 一律要有史書出處，裴注、野史要標明。
 - 戰役 id 與步驟 id 上線後不可改（投票鍵用到）。新戰役 `status: "upcoming"` 不會顯示。
 
+### TIMELINE 三國地圖時間軸
+`map.html` 的資料。每個關鍵年份一筆，依年份由小到大排列。
+```js
+{ year: 208, title: "赤壁之戰", text: "這一年發生什麼（白話）", source: "《三國志・○○傳》",
+  regions: { liang: ["qun", "馬超・韓遂"], ji: ["cao", "曹操"], … },   // 16 個地區都要填：[勢力, 地圖上顯示的名字（可留空）]
+  capitals: ["xu", "ye"],              // 要標出的都城（城市 id 見 data.js 註解）
+  battle: "chibi",                     // 選填：BATTLES 的 id，地圖上會出現可點的戰役標記
+  marks: [{ x, y, label: "樊城" }],     // 選填：其他地點標記（600×480 座標）
+  guests: ["zhouyu", "zhugeliang"] }   // 這個時期相關的 PEOPLE id
+```
+- 勢力：`han` 東漢｜`cao` 曹操・魏｜`sun` 孫氏・吳｜`liu` 劉備・蜀漢｜`qun` 其他群雄｜`jin` 晉。
+- 地區依東漢的「州」劃分，荊州、揚州、益州（漢中）再分成兩塊；疆界是**示意**，只標「主要由誰控制」。同一勢力的相鄰地區，名字只寫在其中一塊，避免地圖太擠。
+- 網址 `map.html#208` 會直接打開那一年。新增戰役時，記得在對應年份填 `battle`，戰役結尾會自動出現「在地圖上看」的連結。
+
 ### PERSONA_QUIZ 心理測驗
 每題 `{ q, options: [{ t: "選項文字", p: ["人物id", ...] }] }`。選到的選項替列出的人物各加 1 分，最高分者為結果。新增來賓時把他加進至少 2 個選項，並注意不要讓某人出現次數遠多於其他人。
 
@@ -268,5 +282,6 @@ python -m http.server 8765
 | 2026-11-19 | 新增「你來當軍師」頁面（`battle.html`、`BATTLES`），第一場：官渡之戰 |
 | 2026-11-19 | 戰場示意圖改為古地圖手繪風；新增第二場：赤壁之戰（扮演周瑜）；首頁加入「你來當軍師」入口 |
 | 2026-11-19 | 新增第三場：夷陵之戰（扮演陸遜） |
+| 2026-11-19 | 新增「三國地圖時間軸」頁面（`map.html`、`TIMELINE`），導覽列加入「地圖」 |
 
 > 每次完成一批更新，請在上表新增一行（日期用 YYYY-MM-DD）。

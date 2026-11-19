@@ -12,6 +12,7 @@
 | 🎧 節目 | `episodes.html` | 全部單集，可篩選、搜尋、排序；站內直接看 YouTube 或聽 Spotify |
 | 📜 小百科 | `wiki.html` | **人物檔案**（正史記載＋小說 vs 正史對照）、**成語**（典故＋造句）、**史實查核**（先猜再翻牌） |
 | 🙋 點播台 | `request.html` | **下一位來賓投票**、**題目看板**（募集中 / 錄製中 / 已播出）、**許願牆**、**投稿表單** |
+| 🗺️ 地圖 | `map.html` | 三國地圖時間軸：184–280 年十個關鍵年份的勢力變化，可點戰役進入「你來當軍師」 |
 | ⚔️ 當軍師 | `battle.html` | 「你來當軍師」戰役抉擇遊戲：戰場示意圖、主持人吐槽、史官揭曉、全國聽眾選擇比例 |
 | 🎭 你是誰 | `quiz.html` | 「你是哪位三國來賓」心理測驗，測完直接收聽那一集 |
 
@@ -20,7 +21,7 @@
 
 ```
 互動網頁/
-├─ index.html  episodes.html  wiki.html  request.html  battle.html  quiz.html
+├─ index.html  episodes.html  wiki.html  request.html  map.html  battle.html  quiz.html
 ├─ assets/
 │  ├─ css/site.css          樣式
 │  └─ js/

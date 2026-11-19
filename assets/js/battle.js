@@ -194,6 +194,7 @@
         <h3 style="font-size:22px;margin-top:6px">延伸收聽・小百科</h3>
         <div class="row">
           ${eps.map(ep => `<button class="btn btn-red btn-sm" data-play="${esc(ep.code)}">▶ ${esc(ep.code)} ${esc(ep.title)}</button>`).join("")}
+          ${(() => { const k = TIMELINE.find(t => t.battle === b.id); return k ? `<a class="chip chip-link" href="map.html#${k.year}" style="padding:6px 12px">🗺️ 在地圖上看 ${k.year} 年的天下</a>` : ""; })()}
           ${(b.stories || []).map(id => storyById[id] && `<a class="chip chip-link" href="${links.story(id)}" style="padding:6px 12px">🔍 ${esc(storyById[id].title)}</a>`).join("")}
           ${b.people.map(id => personById[id] && `<a class="chip chip-link" href="${links.person(id)}" style="padding:6px 12px">${avatar(personById[id], 26)} ${esc(personById[id].name)}的人物檔案</a>`).join("")}
         </div>
