@@ -27,13 +27,13 @@
 ## 2. 檔案結構（哪些可以改）
 
 ```
-index.html  episodes.html  wiki.html  request.html  quiz.html   ← 5 個頁面
+index.html  episodes.html  wiki.html  request.html  battle.html  quiz.html   ← 6 個頁面
 assets/
   css/site.css            樣式（設計 token 在 :root）
   js/config.js            站名、標語、平台連結、後端網址 apiUrl        ⚠️ 謹慎
   js/data.js              ★ 全站內容資料（集數、人物、成語、查核、候選人、題目、測驗）
   js/core.js              共用：導覽列、頁尾、播放器、資料儲存 Store、背景音樂 BGM
-  js/home.js wiki.js request.js                                       各頁邏輯
+  js/home.js wiki.js request.js battle.js                             各頁邏輯
   img/                    favicon、og-image.png（分享預覽圖）
   audio/bgm.mp3           背景音樂（96kbps）
 backend/google-apps-script.gs   後端程式（實際執行的是 Google 上的副本）  ⚠️ 謹慎
@@ -150,6 +150,23 @@ favicon.ico  site.webmanifest
 ### TOPICS 題目看板
 `{ id: "t-xxx", type: "人物|故事|成語|生活|詩詞", title, status: "collecting|recording|aired", episode }`
 
+### BATTLES 你來當軍師（戰役抉擇）
+`battle.html` 的資料。每場戰役約 5 個關鍵時刻，玩家扮演 `role` 做決定，每一步揭曉真實歷史。
+```js
+{ id: "guandu", title: "官渡之戰", year: "西元 200 年", role: "caocao", foe: "袁紹", status: "published",
+  teaser, intro, introSay: { who: "caocao", say: "開場白" },
+  people: [], episodes: [],                 // 結尾的延伸連結
+  terrain: [{ type: "river", name: "黃河", d: "SVG path" }],
+  places: { guandu: { x, y, name: "官渡", side: "cao|yuan|" } },   // 400×300 示意圖座標
+  steps: [{ id: "1", place, map: { focus: [地點id], arrows: [[從, 到, "cao|yuan|feint"]] },
+            scene, q, options: [{ k: "a", t: "選項", who: "主持人id", say: "吐槽", real: true }],
+            reveal: "史官揭曉（必須有出處）", source: "《三國志・○○傳》", lesson }],
+  myths: [{ verdict, verdictText, claim: "《三國演義》這樣演｜常見說法", text, truth }],
+  endings: [{ min: 5, title, text }, …, { min: 0, … }] }
+```
+- 每一步**剛好一個** `real: true`；`who` 只能是 HOSTS 的 id。`reveal` 一律要有史書出處，裴注、野史要標明。
+- 戰役 id 與步驟 id 上線後不可改（投票鍵用到）。新戰役 `status: "upcoming"` 不會顯示。
+
 ### PERSONA_QUIZ 心理測驗
 每題 `{ q, options: [{ t: "選項文字", p: ["人物id", ...] }] }`。選到的選項替列出的人物各加 1 分，最高分者為結果。新增來賓時把他加進至少 2 個選項，並注意不要讓某人出現次數遠多於其他人。
 
@@ -171,7 +188,7 @@ favicon.ico  site.webmanifest
 - 字體：標題 LXGW WenKai TC，內文 Noto Sans TC。
 - 必須支援手機（375px 寬）且不能出現橫向捲動；手機有底部導覽列，固定元件要避開（`bottom` ≥ 92px）。
 - 圖示與分享預覽圖在 `assets/img/`；改圖請維持 og-image 1200×630。
-- 五個頁面的 `<head>` 有 `<!-- meta:start -->…<!-- meta:end -->` 區塊（分享預覽、favicon），新增頁面時照抄並修改 title / description / url。
+- 每個頁面的 `<head>` 有 `<!-- meta:start -->…<!-- meta:end -->` 區塊（分享預覽、favicon），新增頁面時照抄並修改 title / description / url。
 
 ---
 
@@ -185,6 +202,7 @@ favicon.ico  site.webmanifest
   - `poll:<STORIES.id>:<true|fiction>` 首頁每日史實查核
   - `wish:<投稿id>` 許願牆按讚
   - `persona:<PEOPLE.id>` 測驗結果統計
+  - `poll:<BATTLES.id>-<步驟id>:<選項k>` 你來當軍師各選項人數（借用 poll 前綴，不必改後端；check_data 會檢查不和 STORIES 撞名）
   後端只接受符合 `^(guest|topic|poll|wish|persona):[a-z0-9:_-]{1,50}$` 的鍵。
 - 讀取統計（唯讀、可用來確認後端正常）：`GET <apiUrl>?action=stats`。**測試時不要對正式後端送出投票或投稿**；若必須測試，在瀏覽器攔截 POST，或事後告知站長清除。
 - 前端行為：統計數字在同一分頁快取 90 秒（sessionStorage `sgby_stats_v1`），投票會先在畫面加 1 再背景送出；每日投票上限記在訪客瀏覽器 localStorage。
@@ -202,7 +220,7 @@ python -m http.server 8765
 
 改完至少確認：
 - [ ] `node tools/check_data.js` 顯示 ✅ OK
-- [ ] 五個頁面都打得開，瀏覽器主控台沒有錯誤
+- [ ] 所有頁面都打得開，瀏覽器主控台沒有錯誤
 - [ ] 手機寬度（375px）沒有橫向捲動
 - [ ] 新集數：首頁「最新一集」正確、節目頁播放器可以播放、相關小百科連結點得開
 - [ ] 小百科新條目：`wiki.html#p=<id>`、`#i=<id>`、`#s=<id>` 都能直接開到該條目
@@ -242,5 +260,6 @@ python -m http.server 8765
 |---|---|
 | 2026-11-18 | 網站上線（EP01–EP09、SP01、主題曲 MV）、Google 試算表後端、Cloudflare Pages |
 | 2026-11-19 | 新增 SP02 選舉季特別企劃、頻道預告片、官方標語；建立本指南與 `tools/check_data.js` |
+| 2026-11-19 | 新增「你來當軍師」頁面（`battle.html`、`BATTLES`），第一場：官渡之戰 |
 
 > 每次完成一批更新，請在上表新增一行（日期用 YYYY-MM-DD）。

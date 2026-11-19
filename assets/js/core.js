@@ -327,6 +327,7 @@
     { key: "episodes", href: "episodes.html", label: "節目", ico: "🎧" },
     { key: "wiki", href: "wiki.html", label: "小百科", ico: "📜" },
     { key: "request", href: "request.html", label: "點播台", ico: "🙋" },
+    { key: "battle", href: "battle.html", label: "當軍師", ico: "⚔️" },
     { key: "quiz", href: "quiz.html", label: "你是誰", ico: "🎭" }
   ];
   function layout() {

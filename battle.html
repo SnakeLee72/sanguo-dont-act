@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>你來當軍師｜三國別演了</title>
+<meta name="description" content="換你當曹操！官渡之戰五個關鍵決定，每一步都有主持人吐槽、史官揭曉真實歷史，還能看全國聽眾怎麼選。" />
+<!-- meta:start -->
+<link rel="canonical" href="https://sanguo-dont-act.pages.dev/battle" />
+<link rel="icon" href="assets/img/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png" />
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png" />
+<link rel="manifest" href="site.webmanifest" />
+<meta name="theme-color" content="#4D1414" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="三國別演了" />
+<meta property="og:locale" content="zh_TW" />
+<meta property="og:title" content="你來當軍師｜三國別演了" />
+<meta property="og:description" content="換你當曹操！官渡之戰五個關鍵決定，每一步都有主持人吐槽、史官揭曉真實歷史，還能看全國聽眾怎麼選。" />
+<meta property="og:url" content="https://sanguo-dont-act.pages.dev/battle" />
+<meta property="og:image" content="https://sanguo-dont-act.pages.dev/assets/img/og-image.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="你來當軍師｜三國別演了" />
+<meta name="twitter:description" content="換你當曹操！官渡之戰五個關鍵決定，每一步都有主持人吐槽、史官揭曉真實歷史，還能看全國聽眾怎麼選。" />
+<meta name="twitter:image" content="https://sanguo-dont-act.pages.dev/assets/img/og-image.png" />
+<link rel="preconnect" href="https://script.google.com" crossorigin />
+<link rel="preconnect" href="https://script.googleusercontent.com" crossorigin />
+<link rel="preconnect" href="https://i.ytimg.com" />
+<!-- meta:end -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/site.css" />
+<style>
+  .b-box { max-width: 760px; margin: 0 auto; display: grid; gap: 16px; }
+  .steps { display: flex; gap: 6px; }
+  .steps i { flex: 1; height: 6px; border-radius: 6px; background: var(--line); }
+  .steps i.on { background: var(--curtain); }
+  .steps i.hit { background: var(--ok); }
+
+  /* 戰場示意圖 */
+  .map { background: var(--paper-2); border-radius: 14px; overflow: hidden; border: 1px solid var(--line); position: relative; }
+  .map svg { display: block; width: 100%; height: auto; }
+  .map .note { position: absolute; right: 10px; bottom: 6px; font-size: 11px; color: var(--muted); }
+  .map .river { fill: none; stroke: var(--river); stroke-width: 9; stroke-linecap: round; opacity: .75; }
+  .map .river-name { fill: var(--river); font-size: 12px; font-weight: 700; letter-spacing: 4px; }
+  .map .pl circle.dot { stroke: #fff; stroke-width: 2; }
+  .map .pl.cao circle.dot { fill: var(--wei); }
+  .map .pl.yuan circle.dot { fill: var(--qun); }
+  .map .pl.none circle.dot { fill: var(--muted); }
+  .map .pl text { font-size: 13px; font-weight: 700; fill: var(--ink); paint-order: stroke; stroke: var(--paper-2); stroke-width: 4px; }
+  .map .pl .ring { fill: none; stroke: var(--lantern); stroke-width: 3; opacity: 0; }
+  .map .pl.focus .ring { opacity: 1; animation: ring 1.6s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+  @keyframes ring { from { transform: scale(.6); opacity: 1; } to { transform: scale(1.8); opacity: 0; } }
+  .map .arw { fill: none; stroke-width: 3.5; stroke-linecap: round; stroke-dasharray: 400; stroke-dashoffset: 400; animation: draw 1.2s ease-out forwards; }
+  .map .arw.cao { stroke: var(--wei); }
+  .map .arw.yuan { stroke: var(--qun); }
+  .map .arw.feint { stroke: var(--wei); stroke-dasharray: 6 6; stroke-dashoffset: 0; animation: none; opacity: .7; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
+  .legend b { display: inline-block; width: 18px; height: 4px; border-radius: 2px; vertical-align: middle; margin-right: 4px; }
+
+  .scene { font-size: 17px; line-height: 1.8; }
+  .q-title { font-size: clamp(22px, 4vw, 28px); }
+  .opts { display: grid; gap: 10px; }
+  .opt { text-align: left; border: 2px solid var(--line); background: var(--card); color: var(--ink); border-radius: 14px; padding: 14px 16px; font-size: 17px; font-weight: 500; transition: all .15s; display: flex; gap: 10px; align-items: flex-start; }
+  .opt .k { flex: 0 0 28px; height: 28px; border-radius: 50%; background: var(--paper-2); display: grid; place-items: center; font-weight: 900; color: var(--curtain); }
+  .opt:not(:disabled):hover { border-color: var(--curtain); transform: translateX(3px); }
+  .opt:disabled { cursor: default; opacity: .55; }
+  .opt.picked { opacity: 1; border-color: var(--curtain); background: #FFF6F3; }
+  .opt.real { opacity: 1; border-color: var(--ok); }
+  .opt .tag { margin-left: auto; flex: 0 0 auto; font-size: 13px; font-weight: 700; padding: 2px 8px; border-radius: 8px; color: #fff; background: var(--ok); align-self: center; }
+
+  .say { display: flex; gap: 12px; align-items: flex-start; }
+  .bubble { background: var(--card); border: 2px solid var(--line); border-radius: 4px 16px 16px 16px; padding: 10px 14px; font-size: 16px; }
+  .bubble b { display: block; font-size: 13px; color: var(--muted); }
+  .reveal { border: 2px solid var(--gold); background: #FFF9EC; border-radius: 16px; padding: 18px; display: grid; gap: 10px; }
+  .reveal h3 { font-size: 20px; }
+  .src { font-size: 13px; color: var(--muted); }
+  .bars { display: grid; gap: 6px; }
+  .crowd-row { display: grid; grid-template-columns: 26px 1fr 44px; gap: 8px; align-items: center; font-size: 14px; }
+  .crowd-row .track { height: 12px; background: var(--paper-2); border-radius: 6px; overflow: hidden; }
+  .crowd-row .fill { height: 100%; background: var(--muted); border-radius: 6px; width: 0; transition: width .8s ease-out; }
+  .crowd-row.mine .fill { background: var(--curtain); }
+  .crowd-row.real .fill { background: var(--ok); }
+  .crowd-row .pct { text-align: right; font-variant-numeric: tabular-nums; }
+
+  .battle-card { display: grid; grid-template-columns: 1fr; gap: 0; overflow: hidden; }
+  .end-head { padding: 28px 22px; text-align: center; color: #fff; background: linear-gradient(135deg, var(--curtain), var(--curtain-deep)); }
+  .end-head h2 { font-size: clamp(30px, 7vw, 44px); margin-top: 6px; color: var(--lantern); }
+  .score { font-size: 15px; opacity: .9; }
+  .myth { border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: grid; gap: 6px; background: var(--card); }
+  .myth .claim { font-weight: 700; }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; }
+</style>
+</head>
+<body data-page="battle">
+<main>
+  <section class="page-hero">
+    <div class="lanterns" aria-hidden="true"><span class="lantern"></span><span class="lantern"></span><span class="lantern"></span></div>
+    <div class="wrap">
+      <h1>⚔️ 你來當軍師</h1>
+      <p>回到歷史的關鍵時刻，換你做決定！每一步都有主持人吐槽，最後由史官揭曉：當年到底是怎麼選的？</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="wrap">
+      <div class="b-box" id="box"></div>
+    </div>
+  </section>
+</main>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/battle.js"></script>
+</body>
+</html>

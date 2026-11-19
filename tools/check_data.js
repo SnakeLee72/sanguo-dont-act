@@ -5,9 +5,9 @@ const file = path.join(__dirname, "..", "assets", "js", "data.js");
 const ctx = {};
 try {
   vm.runInNewContext(fs.readFileSync(file, "utf8") +
-    "\n;this.D={HOSTS,EPISODES,PEOPLE,IDIOMS,STORIES,CANDIDATES,TOPICS,PERSONA_QUIZ};", ctx);
+    "\n;this.D={HOSTS,EPISODES,PEOPLE,IDIOMS,STORIES,CANDIDATES,TOPICS,PERSONA_QUIZ,BATTLES};", ctx);
 } catch (e) { console.error("❌ data.js 語法錯誤：", e.message); process.exit(1); }
-const { HOSTS, EPISODES, PEOPLE, IDIOMS, STORIES, CANDIDATES, TOPICS, PERSONA_QUIZ } = ctx.D;
+const { HOSTS, EPISODES, PEOPLE, IDIOMS, STORIES, CANDIDATES, TOPICS, PERSONA_QUIZ, BATTLES } = ctx.D;
 const errs = [];
 const ID = /^[a-z0-9-]+$/;
 const FACTIONS = ["wei", "shu", "wu", "qun"];
@@ -65,5 +65,31 @@ TOPICS.forEach(t => {
 PERSONA_QUIZ.forEach((q, n) => q.options.forEach(o => o.p.forEach(x => P.has(x) || errs.push(`PERSONA_QUIZ 第${n + 1}題 找不到人物: ${x}`))));
 HOSTS.forEach(h => P.has(h.id) || errs.push(`HOSTS ${h.id} 在 PEOPLE 裡找不到`));
 
+dup(BATTLES, "id", "BATTLES");
+BATTLES.forEach(b => {
+  const where = `BATTLES ${b.id}`;
+  if (!ID.test(b.id)) errs.push(`${where} id 格式錯誤`);
+  if (S.has(b.id) || b.steps.some(s => S.has(`${b.id}-${s.id}`))) errs.push(`${where} id 和 STORIES 撞名（投票鍵都用 poll:）`);
+  if (!["published", "upcoming"].includes(b.status)) errs.push(`${where} status 必須是 published / upcoming`);
+  if (!P.has(b.role)) errs.push(`${where} role 找不到人物: ${b.role}`);
+  (b.people || []).forEach(x => P.has(x) || errs.push(`${where} people 找不到: ${x}`));
+  (b.episodes || []).forEach(x => E.has(x) || errs.push(`${where} episodes 找不到: ${x}`));
+  dup(b.steps, "id", where + " steps");
+  b.steps.forEach(s => {
+    const w = `${where} 第${s.id}步`;
+    if (!/^[a-z0-9]+$/.test(s.id)) errs.push(`${w} id 只能用英文小寫/數字`);
+    if (s.options.filter(o => o.real).length !== 1) errs.push(`${w} 必須剛好有一個 real: true`);
+    s.options.forEach(o => {
+      if (!/^[a-z]$/.test(o.k)) errs.push(`${w} 選項 k 必須是一個小寫字母`);
+      if (!HOSTS.some(h => h.id === o.who)) errs.push(`${w} 選項 ${o.k} 的 who 必須是主持人 id`);
+    });
+    dup(s.options, "k", w + " options");
+    [...(s.map.focus || []), ...(s.map.arrows || []).flatMap(a => a.slice(0, 2))].forEach(x => b.places[x] || errs.push(`${w} 地圖找不到地點: ${x}`));
+    ["scene", "q", "reveal", "source", "lesson"].forEach(k => s[k] || errs.push(`${w} 缺少 ${k}`));
+  });
+  (b.myths || []).forEach(m => ["true", "fiction", "adapted"].includes(m.verdict) || errs.push(`${where} myths verdict 錯誤`));
+  if (!(b.endings || []).some(e => e.min === 0)) errs.push(`${where} endings 需要一個 min: 0 的結局`);
+});
+
 if (errs.length) { console.error("❌ 發現 " + errs.length + " 個問題：\n- " + errs.join("\n- ")); process.exit(1); }
-console.log(`✅ OK｜集數 ${EPISODES.length}・人物 ${PEOPLE.length}・成語 ${IDIOMS.length}・查核 ${STORIES.length}・候選人 ${CANDIDATES.length}・題目 ${TOPICS.length}`);
+console.log(`✅ OK｜集數 ${EPISODES.length}・人物 ${PEOPLE.length}・成語 ${IDIOMS.length}・查核 ${STORIES.length}・候選人 ${CANDIDATES.length}・題目 ${TOPICS.length}・戰役 ${BATTLES.length}`);
