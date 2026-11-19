@@ -438,9 +438,7 @@
   $("#portals").innerHTML = [
     ["#people", "👤", "人物檔案", `${PEOPLE.length} 位`, "來賓與主持人的正史檔案，還有小說把他們「演」成什麼樣子。"],
     ["#idioms", "📖", "成語典故", `${IDIOMS.length} 則`, "望梅止渴、三顧茅廬……每個成語背後的真實故事與造句。"],
-    ["#stories", "🔍", "史實查核", `${STORIES.length} 個`, "先猜再翻牌！草船借箭、空城計，到底是真是假？"],
-    ["map.html", "🗺️", "三國地圖時間軸", `${typeof TIMELINE !== "undefined" ? TIMELINE.length : 10} 個年份`, "從黃巾之亂到三分歸晉，拉動時間軸看魏、蜀、吳的地盤怎麼變化。"],
-    ["city.html", "🏯", "走進三國城池", `${typeof CITY_SPOTS !== "undefined" ? CITY_SPOTS.length : 11} 個地點`, "走進 2.5D 東漢郡城，點一點城門、市集、太守府，看三國人怎麼生活。"]
+    ["#stories", "🔍", "史實查核", `${STORIES.length} 個`, "先猜再翻牌！草船借箭、空城計，到底是真是假？"]
   ].map(([h, i, t, n, d]) => `
     <a class="card portal" href="${h[0] === "#" ? "wiki.html" + h : h}">
       <span class="big" aria-hidden="true">${i}</span>
