@@ -81,7 +81,7 @@
   const { $, $$, episodeCard, personById, openPlayer, epByCode } = SG;
   $("#ytBtn").href = SITE.youtubeSubscribe; $("#spBtn").href = SITE.spotify;
 
-  const FILTERS = [["all", "全部"], ["ep", "人物來作客"], ["sp", "特別篇"], ["mv", "主題曲 MV"]];
+  const FILTERS = [["all", "全部"], ["ep", "人物來作客"], ["sp", "特別篇"], ["mv", "MV・預告片"]];
   let filter = "all", oldestFirst = false, q = "";
   $("#filters").innerHTML = FILTERS.map(([k, l]) => `<button data-f="${k}" aria-pressed="${k === filter}">${l}</button>`).join("");
 

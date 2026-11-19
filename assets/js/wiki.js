@@ -119,10 +119,10 @@
     return `<article class="card story fade-in" id="story-${s.id}">
       <h3>${esc(s.title)}</h3>
       <div class="tagrow">${peopleChips(s.people)}</div>
-      <p><b style="color:var(--bad)">🎭 小說這樣演：</b>${esc(s.novel)}</p>
+      <p><b style="color:var(--bad)">${s.claimLabel ? "💬 " + esc(s.claimLabel) : "🎭 小說這樣演"}：</b>${esc(s.novel)}</p>
       ${mine ? `
         <div class="reveal fade-in">
-          <p style="font-weight:700">${mine === s.verdict ? "✅ 猜對了！" : "❌ 被演到了！"}　${verdictBadge(s.verdict)}</p>
+          <p style="font-weight:700">${mine === s.verdict ? "✅ 猜對了！" : "❌ 被演到了！"}　${verdictBadge(s.verdict, s.verdictText)}</p>
           <p style="margin-top:6px"><b style="color:var(--ok)">📜 史官查核：</b>${esc(s.history)}</p>
         </div>
         <div style="margin-top:auto">${epButton(s.episode, "延伸收聽")}</div>`

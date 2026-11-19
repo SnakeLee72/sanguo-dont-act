@@ -13,9 +13,9 @@
    ============================================================ */
 
 const HOSTS = [
-  { id: "caocao", name: "曹操", role: "動機追問 × 招募官", line: "人才！這是人才啊！合約呢？", faction: "wei" },
-  { id: "zhugeliang", name: "諸葛亮", role: "歷史現場還原 × 策略分析", line: "莫急，容亮翻一下訪綱。", faction: "shu" },
-  { id: "xiaoqiao", name: "小喬", role: "靈魂拷問主持人", line: "等等——這段是不是又在演？", faction: "wu" }
+  { id: "caocao", name: "曹操", role: "問動機 × 招募官", line: "人才！這是人才啊！合約呢？", faction: "wei" },
+  { id: "zhugeliang", name: "諸葛亮", role: "想辦法 × 還原歷史現場", line: "莫急，容亮翻一下訪綱。", faction: "shu" },
+  { id: "xiaoqiao", name: "小喬", role: "問真話 × 靈魂拷問", line: "等等——這段是不是又在演？", faction: "wu" }
 ];
 
 /* ---------------- 📻 節目單集 ---------------- */
@@ -28,6 +28,26 @@ const EPISODES = [
     desc: "第十集特別企劃！曹操坐上來賓椅，由諸葛亮與小喬聯手發問。你想問曹操什麼？快到點播台投稿！",
     date: "", length: "", youtube: "", spotify: "",
     related: { people: ["caocao"], idioms: ["wangmei"], stories: [] }
+  },
+  {
+    code: "SP02", type: "sp", status: "published", person: "",
+    title: "選舉季特別企劃",
+    question: "古代沒有投票箱，怎麼選出好官員？",
+    lesson: "真正的選才，看的是品德與實力，而不是交情與標籤；把票投給你想要的生活，你就贏了。",
+    desc: "漢朝的察舉制怎麼變調？曹操為什麼喊出「唯才是舉」？九品中正制為什麼變成「上品無寒門，下品無勢族」？科舉和「名落孫山」又是什麼時候才出現的？",
+    date: "2026-11-19", length: "13:22",
+    youtube: "JQxtwqEa0Wo", spotify: "1NCZ0YJvZOFrGvfaeE2yF7",
+    related: { people: ["caocao"], idioms: ["weicai", "shangpin", "mingluo"], stories: ["keju", "xiaolian", "qiuxian", "jiupin"] }
+  },
+  {
+    code: "PV", type: "mv", label: "預告片", status: "published", person: "",
+    title: "《三國別演了》頻道預告片",
+    question: "曹操問動機，諸葛亮想辦法，小喬問真話！",
+    lesson: "",
+    desc: "歷史課本太無聊？《三國演義》演得太誇張？一分鐘認識三位主持人和最公正的史官提醒。",
+    date: "2026-11-18", length: "1:04",
+    youtube: "IdKcLJpr0XE", spotify: "3U9rsxhQf6eN2LRTXnyW7a",
+    related: { people: ["caocao", "zhugeliang", "xiaoqiao"], idioms: [], stories: [] }
   },
   {
     code: "EP09", type: "ep", status: "published", person: "luxun",
@@ -286,6 +306,7 @@ const PEOPLE = [
     tags: ["主持人", "唯才是舉", "詩人"],
     oneLine: "節目主持人之一。統一北方的政治家、軍事家，也是傑出的詩人。",
     history: [
+      "二十歲時被推舉為「孝廉」，開始當官（《三國志・武帝紀》）。",
       "多次下《求賢令》，主張「唯才是舉」，不看出身只看能力。",
       "官渡之戰以少勝多打敗袁紹，統一北方。",
       "赤壁之戰敗給孫劉聯軍。",
@@ -397,6 +418,27 @@ const IDIOMS = [
     story: "周瑜年輕時就精通音樂，就算喝了酒，聽到演奏有錯也一定會回頭看，當時人說：「曲有誤，周郎顧。」",
     example: "音樂老師一聽就知道哪裡彈錯，真有周郎顧曲的本事。",
     people: ["zhouyu"], episode: "EP03"
+  },
+  {
+    id: "weicai", word: "唯才是舉", sourceType: "history", source: "曹操〈求賢令〉（《三國志・武帝紀》）",
+    meaning: "只要有才能，就推舉任用，不看出身和名聲。",
+    story: "西元 210 年，曹操發布〈求賢令〉，說「唯才是舉，吾得而用之」。後來他又多次下令：就算名聲不完美，只要有真本事，都歡迎來魏國做事。在重視家世的漢末，這是很大膽的人才政策。",
+    example: "選班級幹部應該唯才是舉，而不是只投給好朋友。",
+    people: ["caocao"], episode: "SP02"
+  },
+  {
+    id: "shangpin", word: "上品無寒門，下品無勢族", sourceType: "history", source: "《晉書・劉毅傳》",
+    meaning: "好評價全給了名門世家，出身平凡的人再優秀也很難出頭。",
+    story: "曹丕當上皇帝時，採用陳群的建議設立「九品中正制」，由中正官把人才評成九個等級。本來是想公平選才，後來評等越來越看家世。西晉大臣劉毅批評：「上品無寒門，下品無勢族。」",
+    example: "如果比賽只看你爸媽是誰，那就變成「上品無寒門，下品無勢族」了。",
+    people: ["caocao"], episode: "SP02"
+  },
+  {
+    id: "mingluo", word: "名落孫山", sourceType: "other", source: "宋・范公偁《過庭錄》",
+    meaning: "考試或選拔沒有被錄取。",
+    story: "宋朝有個叫孫山的人去考試，排在錄取榜的最後一名。同鄉託他帶兒子一起去考，回來問結果，孫山說：「解名盡處是孫山，賢郎更在孫山外。」意思是：榜單最後一名是我，你兒子在我後面——沒考上。這是宋朝的故事，跟三國沒有關係喔！",
+    example: "他這次科展名落孫山，但決定明年再挑戰。",
+    people: [], episode: "SP02"
   }
 ];
 
@@ -443,7 +485,16 @@ const STORIES = [
   { id: "anjian", title: "陸遜按劍訓諸將", verdict: "true", people: ["luxun"], episode: "EP09",
     novel: "老將們不服年輕的陸遜。", history: "陸遜按劍說「僕雖書生，受命主上」，要大家服從軍令。是真的！" },
   { id: "meirenji", title: "孫權美人計、甘露寺相親", verdict: "adapted", people: ["sunquan", "liubei"], episode: "SP01",
-    novel: "孫權假裝嫁妹，想騙劉備來扣留，結果被諸葛亮的錦囊破解。", history: "孫權把妹妹嫁給劉備是真的政治聯姻；美人計、錦囊、甘露寺都是小說虛構。" }
+    novel: "孫權假裝嫁妹，想騙劉備來扣留，結果被諸葛亮的錦囊破解。", history: "孫權把妹妹嫁給劉備是真的政治聯姻；美人計、錦囊、甘露寺都是小說虛構。" },
+  /* claimLabel：這則說法不是出自小說時，用來取代「小說這樣演」的標題 */
+  { id: "xiaolian", title: "曹操是靠『舉孝廉』當上官的", verdict: "true", people: ["caocao"], episode: "SP02", claimLabel: "常見說法",
+    novel: "漢朝沒有考試，是由地方官推薦「孝順又清廉」的人去當官。", history: "《三國志・武帝紀》：「年二十，舉孝廉為郎。」是真的！不過到了東漢末年，推薦常變成看關係、看家世，當時還有順口溜諷刺「察孝廉，父別居」。" },
+  { id: "qiuxian", title: "曹操公開徵才：品德有缺點也沒關係", verdict: "true", people: ["caocao"], episode: "SP02", claimLabel: "常見說法",
+    novel: "曹操下令：只要有本事，就算名聲不好也可以來應徵。", history: "是真的！曹操從 210 年起多次下〈求賢令〉，甚至說就算「不仁不孝」，只要有治國用兵的本事都要推薦上來。" },
+  { id: "jiupin", title: "曹丕用『九品中正制』選人才", verdict: "true", people: ["caocao"], episode: "SP02", claimLabel: "常見說法",
+    novel: "曹操的兒子曹丕把人才評成九個等級來選官。", history: "是真的！220 年曹丕採用陳群的建議設立九品中正制。但後來越來越看家世，變成「上品無寒門，下品無勢族」。" },
+  { id: "keju", title: "三國時代用『科舉考試』選官員", verdict: "fiction", verdictText: "沒這回事", people: [], episode: "SP02", claimLabel: "常見誤會",
+    novel: "古裝劇裡三國的人也要進京趕考、考狀元。", history: "別演了！科舉是隋朝才開始、唐朝才發揚光大的，三國時代完全沒有科舉考試。「名落孫山」更是宋朝的故事。" }
 ];
 
 /* ---------------- 🗳️ 下一位來賓候選人 ---------------- */
@@ -473,7 +524,8 @@ const TOPICS = [
   { id: "t-weapon", type: "生活", title: "青龍偃月刀、方天畫戟，三國真的有這些兵器嗎？", status: "collecting" },
   { id: "t-kongcheng", type: "故事", title: "空城計到底有沒有發生？", status: "aired", episode: "EP08" },
   { id: "t-caochuan", type: "故事", title: "草船借箭是誰的點子？", status: "aired", episode: "EP03" },
-  { id: "t-sp01", type: "成語", title: "望梅止渴、樂不思蜀背後的故事", status: "aired", episode: "SP01" }
+  { id: "t-sp01", type: "成語", title: "望梅止渴、樂不思蜀背後的故事", status: "aired", episode: "SP01" },
+  { id: "t-sp02", type: "生活", title: "古代沒有投票箱，怎麼選出好官員？", status: "aired", episode: "SP02" }
 ];
 
 /* ---------------- 🎭 你是哪位三國人物 ---------------- */

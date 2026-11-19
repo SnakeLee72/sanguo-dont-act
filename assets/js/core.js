@@ -28,9 +28,9 @@
     return `<span class="avatar f-${p.faction}" style="--s:${size}px" aria-hidden="true">${esc(ch)}</span>`;
   }
   const factionChip = (f) => `<span class="chip chip-f f-${f}">${FACTION[f] || ""}</span>`;
-  const verdictBadge = (v) => { const m = VERDICT[v]; return `<span class="verdict ${m.cls}">${m.icon} ${m.label}</span>`; };
+  const verdictBadge = (v, text) => { const m = VERDICT[v]; return `<span class="verdict ${m.cls}">${m.icon} ${text || m.label}</span>`; };
   const thumb = (ep) => ep.youtube ? `https://i.ytimg.com/vi/${ep.youtube}/hqdefault.jpg` : "";
-  const epLabel = (ep) => ep.type === "mv" ? "主題曲" : ep.code;
+  const epLabel = (ep) => ep.label || (ep.type === "mv" ? "主題曲" : ep.code);
   const fmtDate = (d) => d ? d.replace(/^(\d{4})-(\d{2})-(\d{2})$/, (_, y, m, dd) => `${+m}/${+dd}`) : "";
   const published = () => EPISODES.filter(e => e.status !== "upcoming");
 
@@ -353,7 +353,7 @@
     const footer = document.createElement("footer");
     footer.className = "footer";
     footer.innerHTML = `<div class="wrap">
-      <div><h4>${esc(SITE.name)}</h4><p style="color:#D8BC98">${esc(SITE.slogan)}</p><p class="small" style="margin-top:8px;color:#B8987A">歷史喜劇＋史實查核，從小學生到大人都聽得懂，適合全家一起收聽。</p></div>
+      <div><h4>${esc(SITE.name)}</h4><p style="color:#D8BC98">${esc(SITE.slogan)}</p><p style="color:var(--lantern);margin-top:4px">${esc(SITE.tagline || "")}</p><p class="small" style="margin-top:8px;color:#B8987A">歷史喜劇＋史實查核，從小學生到大人都聽得懂，適合全家一起收聽。</p></div>
       <div><h4>收聽節目</h4><a href="${SITE.youtube}" target="_blank" rel="noopener">📺 YouTube 頻道</a><a href="${SITE.spotify}" target="_blank" rel="noopener">🎧 Spotify Podcast</a></div>
       <div><h4>網站導覽</h4>${PAGES.map(p => `<a href="${p.href}">${p.ico} ${p.label}</a>`).join("")}</div>
       <p class="copy">史實查核以陳壽《三國志》、裴松之注為主要依據；小說情節出自羅貫中《三國演義》。</p>

@@ -76,7 +76,7 @@
     const right = mine === story.verdict;
     $("#pollRes").innerHTML = `
       <div class="poll-result fade-in">
-        <p style="font-weight:700;color:${right ? "var(--ok)" : "var(--bad)"}">${right ? "✅ 你答對了！" : "❌ 被演到了！"}　答案：${verdictBadge(story.verdict)}</p>
+        <p style="font-weight:700;color:${right ? "var(--ok)" : "var(--bad)"}">${right ? "✅ 你答對了！" : "❌ 被演到了！"}　答案：${verdictBadge(story.verdict, story.verdictText)}</p>
         <div class="small">📜 是真的 ${Math.round(t / total * 100)}%<div class="bar"><i style="width:${t / total * 100}%"></i></div></div>
         <div class="small">🎭 別演了 ${Math.round(f / total * 100)}%<div class="bar"><i style="width:${f / total * 100}%"></i></div></div>
         <p class="small muted">${t + f <= 1 ? "🎉 你是今天第一位參與的聽眾！" : `共 ${t + f} 位聽眾參與`}</p>

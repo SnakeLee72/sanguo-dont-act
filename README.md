@@ -1,5 +1,7 @@
 # 三國別演了｜官方互動網站
 
+> 🤖 **AI agent／協作者請先讀 [AGENTS.md](AGENTS.md)**：完整維護規範、資料格式與上新集數流程。
+
 純 HTML / CSS / JavaScript，不需要安裝或編譯。雙擊 `index.html` 就能在瀏覽器打開。
 
 ## 網站架構

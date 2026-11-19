@@ -9,6 +9,7 @@
 const SITE = {
   name: "三國別演了",
   slogan: "《三國演義》沒說的，今天當面問清楚！",
+  tagline: "曹操問動機，諸葛亮想辦法，小喬問真話。",
   about: "曹操、諸葛亮與小喬跨越時空，在現代主持一個人物訪談 Podcast。每集邀請一位三國人物，請他親自回答當年到底發生了什麼、為什麼做出那個決定、後人對他的印象是否公平。歷史喜劇＋史實查核，從小學生到大人都聽得懂，適合全家一起收聽。",
   youtube: "https://www.youtube.com/@Snake-yl3il/videos",
   youtubeSubscribe: "https://www.youtube.com/@Snake-yl3il?sub_confirmation=1",
