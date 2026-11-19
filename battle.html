@@ -41,24 +41,56 @@
   .steps i.hit { background: var(--ok); }
 
   /* 戰場示意圖 */
-  .map { background: var(--paper-2); border-radius: 14px; overflow: hidden; border: 1px solid var(--line); position: relative; }
+  .map { border-radius: 14px; overflow: hidden; box-shadow: var(--shadow); }
   .map svg { display: block; width: 100%; height: auto; }
-  .map .note { position: absolute; right: 10px; bottom: 6px; font-size: 11px; color: var(--muted); }
-  .map .river { fill: none; stroke: var(--river); stroke-width: 9; stroke-linecap: round; opacity: .75; }
-  .map .river-name { fill: var(--river); font-size: 12px; font-weight: 700; letter-spacing: 4px; }
-  .map .pl circle.dot { stroke: #fff; stroke-width: 2; }
-  .map .pl.cao circle.dot { fill: var(--wei); }
-  .map .pl.yuan circle.dot { fill: var(--qun); }
-  .map .pl.none circle.dot { fill: var(--muted); }
-  .map .pl text { font-size: 13px; font-weight: 700; fill: var(--ink); paint-order: stroke; stroke: var(--paper-2); stroke-width: 4px; }
-  .map .pl .ring { fill: none; stroke: var(--lantern); stroke-width: 3; opacity: 0; }
-  .map .pl.focus .ring { opacity: 1; animation: ring 1.6s ease-out infinite; transform-box: fill-box; transform-origin: center; }
-  @keyframes ring { from { transform: scale(.6); opacity: 1; } to { transform: scale(1.8); opacity: 0; } }
-  .map .arw { fill: none; stroke-width: 3.5; stroke-linecap: round; stroke-dasharray: 400; stroke-dashoffset: 400; animation: draw 1.2s ease-out forwards; }
-  .map .arw.cao { stroke: var(--wei); }
-  .map .arw.yuan { stroke: var(--qun); }
-  .map .arw.feint { stroke: var(--wei); stroke-dasharray: 6 6; stroke-dashoffset: 0; animation: none; opacity: .7; }
+  .map text { font-family: var(--head); }
+  .map .paper { fill: var(--paper-2); }
+  .map .frame { fill: none; stroke: var(--gold); stroke-width: 1.6; }
+  .map .frame.thin { stroke-width: .6; }
+  .map .note { font-size: 9px; fill: var(--muted); font-family: var(--body); }
+  .map .river-bank { fill: none; stroke: var(--river); stroke-width: 18; stroke-linecap: round; opacity: .22; }
+  .map .river { fill: none; stroke: var(--river); stroke-width: 8; stroke-linecap: round; opacity: .85; }
+  .map .river-flow { fill: none; stroke: #fff; stroke-width: 1.4; stroke-linecap: round; stroke-dasharray: 3 14; opacity: .8; animation: flow 3s linear infinite; }
+  @keyframes flow { to { stroke-dashoffset: -34; } }
+  .map .river-name { fill: var(--river); font-size: 13px; font-weight: 700; }
+  .map .mtn-body { fill: var(--paper); stroke: var(--ink); stroke-width: 1.3; stroke-linejoin: round; opacity: .8; }
+  .map .mtn-shade { fill: none; stroke: var(--ink); stroke-width: 1; opacity: .45; }
+  .map .grass { fill: none; stroke: var(--shu); stroke-width: 1.1; stroke-linecap: round; opacity: .45; }
+  .map .ink { stroke: var(--ink); stroke-width: 1; stroke-linejoin: round; }
+  .map .hole { fill: var(--paper); }
+  .map .stake { stroke: var(--ink); stroke-width: 1.2; opacity: .7; }
+  .map .sack { fill: var(--lantern); stroke: var(--ink); stroke-width: .8; }
+  .map .wave { fill: none; stroke: var(--river); stroke-width: 1.2; }
+  .map .pl text { font-size: 14px; font-weight: 700; fill: var(--ink); paint-order: stroke; stroke: var(--paper-2); stroke-width: 4px; stroke-linejoin: round; }
+  .map .pl .ring { fill: rgba(240,178,62,.18); stroke: var(--lantern); stroke-width: 2.5; opacity: 0; }
+  .map .pl.focus .ring { opacity: 1; animation: ring 1.8s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+  @keyframes ring { from { transform: scale(.7); opacity: 1; } to { transform: scale(1.7); opacity: 0; } }
+  .map .arw-halo { fill: none; stroke: var(--paper-2); stroke-width: 8; stroke-linecap: round; opacity: .85; }
+  .map .arw { fill: none; stroke-width: 4; stroke-linecap: round; stroke-dasharray: 400; stroke-dashoffset: 400; animation: draw 1.2s ease-out forwards; }
+  .map .arw.feint { stroke-dasharray: 5 6; stroke-dashoffset: 0; animation: march 1s linear infinite; opacity: .8; }
   @keyframes draw { to { stroke-dashoffset: 0; } }
+  @keyframes march { to { stroke-dashoffset: -22; } }
+  .map .compass circle { fill: var(--paper); stroke: var(--gold); stroke-width: 1.2; }
+  .map .compass .needle { fill: var(--muted); opacity: .5; }
+  .map .compass .needle-n { fill: var(--curtain); }
+  .map .compass text { font-size: 11px; font-weight: 700; fill: var(--curtain); text-anchor: middle; }
+  .map .seal rect { fill: var(--curtain); opacity: .92; }
+  .map .seal text { fill: var(--paper); font-size: 12px; font-weight: 700; text-anchor: middle; }
+  .map .sword { stroke: var(--ink); stroke-width: 2; stroke-linecap: round; }
+  .map .hilt { stroke: var(--gold); stroke-width: 2.4; stroke-linecap: round; }
+  .map .spark { fill: var(--lantern); stroke: var(--curtain); stroke-width: .6; animation: spark .9s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: center; }
+  @keyframes spark { from { transform: scale(.6) rotate(0); } to { transform: scale(1.3) rotate(45deg); } }
+  .map .flame { transform-box: fill-box; transform-origin: 50% 100%; animation: flick .5s ease-in-out infinite alternate; }
+  .map .flame.f1 { fill: var(--curtain); } .map .flame.f2 { fill: var(--lantern); animation-delay: -.2s; } .map .flame.f3 { fill: #FFE7A3; animation-delay: -.35s; }
+  @keyframes flick { from { transform: scaleY(.85) skewX(-4deg); } to { transform: scaleY(1.12) skewX(4deg); } }
+  .map .smoke { fill: var(--muted); opacity: 0; animation: smoke 2.4s ease-out infinite; }
+  .map .smoke.s2 { animation-delay: -1.2s; }
+  @keyframes smoke { 0% { opacity: .35; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-14px); } }
+  .map .pole { stroke: var(--ink); stroke-width: 1.6; }
+  .map .cloth { transform-box: fill-box; transform-origin: 0 50%; animation: wave 1.4s ease-in-out infinite alternate; }
+  @keyframes wave { from { transform: skewY(-4deg) scaleX(.94); } to { transform: skewY(4deg) scaleX(1); } }
+  .map .flag-ch { fill: #fff; font-size: 10px; font-weight: 700; text-anchor: middle; }
+  @media (prefers-reduced-motion: reduce) { .map * { animation: none !important; stroke-dashoffset: 0 !important; } }
   .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
   .legend b { display: inline-block; width: 18px; height: 4px; border-radius: 2px; vertical-align: middle; margin-right: 4px; }
 

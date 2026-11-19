@@ -573,31 +573,35 @@ const PERSONA_QUIZ = [
 /* ---------------- ⚔️ 你來當軍師（戰役抉擇） ----------------
    每場戰役 5 個左右的關鍵時刻；real: true 是當年真正的選擇。
    投票鍵：poll:<戰役id>-<步驟id>:<選項k>（例如 poll:guandu-1:b），不可改 id。
-   places 座標用 400×300 的示意圖，不按比例。 */
+   places 座標用 400×300 的示意圖，不按比例；icon: city|capital|camp|grain|ford。
+   map.arrows 第三格填 sides 的 key 或 "feint"（佯攻）；map.fx: [地點, clash|fire|flag, 陣營]。 */
 const BATTLES = [
   {
     id: "guandu", title: "官渡之戰", year: "西元 200 年（建安五年）",
-    role: "caocao", foe: "袁紹",
+    role: "caocao", foe: "袁紹", seal: "官渡之戰",
+    sides: { cao: { name: "曹操軍", flag: "曹", color: "var(--wei)" }, yuan: { name: "袁紹軍", flag: "袁", color: "var(--qun)" } },
     status: "published",
     teaser: "兵比對手少很多、糧食快吃完了——換你當曹操，五個關鍵決定，你能以少勝多嗎？",
     introSay: { who: "caocao", say: "這一場我最有經驗了……不過這次換你來決定，我不劇透！" },
     intro: "東漢末年，北方最強的是袁紹，他擁有四個州、兵多糧足。曹操控制皇帝所在的許都，地盤小、兵也少。西元 200 年，袁紹大軍南下，雙方在黃河南岸的官渡決戰。現在，你就是曹操。",
     people: ["caocao", "guanyu"], episodes: ["EP04"],
     terrain: [
-      { type: "river", name: "黃河", d: "M10 62 C 80 50, 140 78, 210 72 S 330 92, 392 118" }
+      { type: "mountains", at: [[44, 40, 12], [64, 36, 15], [86, 42, 11], [36, 214, 11], [54, 224, 15], [72, 232, 10]] },
+      { type: "grass", at: [[112, 128], [262, 196], [300, 168], [96, 262], [282, 244], [244, 84], [372, 158]] },
+      { type: "river", name: "黃河", label: 27, d: "M10 62 C 80 50, 140 78, 210 72 S 330 92, 392 118" }
     ],
     places: {
-      liyang: { x: 318, y: 46, name: "黎陽", side: "yuan" },
-      baima: { x: 312, y: 126, name: "白馬", side: "cao" },
-      yanjin: { x: 170, y: 92, name: "延津", side: "" },
-      wuchao: { x: 236, y: 128, name: "烏巢", side: "yuan" },
-      yuanying: { x: 176, y: 150, name: "袁紹大營", side: "yuan" },
-      guandu: { x: 150, y: 190, name: "官渡", side: "cao" },
-      xu: { x: 196, y: 268, name: "許都", side: "cao" }
+      liyang: { x: 318, y: 46, name: "黎陽", side: "yuan", icon: "city" },
+      baima: { x: 312, y: 126, name: "白馬", side: "cao", icon: "city" },
+      yanjin: { x: 170, y: 92, name: "延津", side: "", icon: "ford" },
+      wuchao: { x: 236, y: 128, name: "烏巢", side: "yuan", icon: "grain" },
+      yuanying: { x: 176, y: 150, name: "袁紹大營", side: "yuan", icon: "camp" },
+      guandu: { x: 150, y: 190, name: "官渡", side: "cao", icon: "camp" },
+      xu: { x: 196, y: 268, name: "許都", side: "cao", icon: "capital" }
     },
     steps: [
       {
-        id: "1", place: "白馬", map: { focus: ["baima", "yanjin"], arrows: [["guandu", "yanjin", "feint"], ["yanjin", "baima", "cao"], ["liyang", "baima", "yuan"]] },
+        id: "1", place: "白馬", map: { focus: ["baima", "yanjin"], arrows: [["guandu", "yanjin", "feint"], ["yanjin", "baima", "cao"], ["liyang", "baima", "yuan"]], fx: [["baima", "clash"]] },
         scene: "袁紹派大將顏良包圍白馬城，守城的東郡太守劉延快撐不住了。你的兵比袁紹少很多，如果正面硬拚，很可能被袁紹的主力包圍。",
         q: "白馬快被攻破了，你要怎麼救？",
         options: [
@@ -610,7 +614,7 @@ const BATTLES = [
         lesson: "打不過全部，就想辦法讓對手分散。"
       },
       {
-        id: "2", place: "延津", map: { focus: ["yanjin"], arrows: [["baima", "yanjin", "cao"], ["liyang", "yanjin", "yuan"]] },
+        id: "2", place: "延津", map: { focus: ["yanjin"], arrows: [["baima", "yanjin", "cao"], ["liyang", "yanjin", "yuan"]], fx: [["yanjin", "clash"]] },
         scene: "救下白馬後，你帶著白馬的百姓和物資車隊沿著黃河往西撤。袁紹派大將文醜，和當時投靠袁紹的劉備，帶著五六千名騎兵追上來。你身邊的騎兵還不到六百。",
         q: "追兵越來越近，你要怎麼辦？",
         options: [
@@ -623,7 +627,7 @@ const BATTLES = [
         lesson: "看穿對手想要什麼，就能讓他自己亂掉。"
       },
       {
-        id: "3", place: "官渡", map: { focus: ["guandu", "yuanying"], arrows: [["yuanying", "guandu", "yuan"]] },
+        id: "3", place: "官渡", map: { focus: ["guandu", "yuanying"], arrows: [["yuanying", "guandu", "yuan"]], fx: [["guandu", "clash"]] },
         scene: "雙方在官渡對峙好幾個月。袁紹堆起土山、搭高樓往你的營裡射箭，大家走路都要頂著盾牌；你造出能拋石頭的「霹靂車」把高樓打垮。袁紹改挖地道，你就挖長溝擋住。可是——你的糧食快吃完了，士兵也累壞了。",
         q: "快撐不下去了，你要怎麼辦？",
         options: [
@@ -636,7 +640,7 @@ const BATTLES = [
         lesson: "最難熬的時候，往往也是轉機快來的時候。"
       },
       {
-        id: "4", place: "烏巢", map: { focus: ["wuchao"], arrows: [["guandu", "wuchao", "cao"], ["yuanying", "guandu", "yuan"]] },
+        id: "4", place: "烏巢", map: { focus: ["wuchao"], arrows: [["guandu", "wuchao", "cao"], ["yuanying", "guandu", "yuan"]], fx: [["wuchao", "fire"]] },
         scene: "就在這時，袁紹的謀士許攸跑來投靠你。他說：袁紹的糧車都屯在烏巢，由淳于瓊帶兵看守，只要派兵偷襲、燒掉糧草，袁軍很快就會自己垮掉。可是身邊的人都懷疑：這會不會是陷阱？",
         q: "要不要相信許攸？",
         options: [
@@ -649,7 +653,7 @@ const BATTLES = [
         lesson: "看準機會，就要全力出手。"
       },
       {
-        id: "5", place: "官渡", map: { focus: ["guandu"], arrows: [["guandu", "liyang", "cao"]] },
+        id: "5", place: "官渡", map: { focus: ["guandu"], arrows: [["guandu", "liyang", "cao"]], fx: [["guandu", "flag", "cao"]] },
         scene: "打贏了！清點袁紹留下的東西時，士兵搬來一大疊信。打開一看，竟然有不少是你的部下和許都的官員，偷偷寫給袁紹的信——當時大家都以為你會輸。",
         q: "這些信，你要怎麼處理？",
         options: [
