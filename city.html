@@ -40,7 +40,13 @@
   .city-layout { display: grid; gap: 18px; }
   .city-layout > * { min-width: 0; }
   @media (min-width: 900px) { .city-layout { grid-template-columns: 1fr 320px; align-items: start; } .city-side { position: sticky; top: 84px; } }
-  .city-map { border-radius: 18px; overflow: hidden; box-shadow: var(--shadow); border: 3px solid var(--gold); background: #BFD8E6; }
+  .city-map { position: relative; border-radius: 18px; overflow: hidden; box-shadow: var(--shadow); border: 3px solid var(--gold); background: #BFD8E6; }
+  .city-out { position: absolute; z-index: 3; top: 10px; left: 10px; box-shadow: 0 4px 12px -4px rgba(0,0,0,.4); }
+  .city-out[hidden] { display: none; }
+  .zoomed .city-scroll { overflow: hidden; }
+  .zoomed .city-scroll svg { min-width: 0; cursor: grab; touch-action: none; }
+  .dragging .city-scroll svg { cursor: grabbing; }
+  .spot-in { transform: scale(var(--ms, 1)); }
   .city-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
   .city-scroll svg { display: block; width: 100%; min-width: 680px; height: auto; }
   @media (min-width: 700px) { .city-scroll svg { min-width: 0; } }
@@ -173,12 +179,13 @@
       <div class="city-layout">
         <div>
           <div class="city-map" id="cityWrap">
+            <button class="btn btn-ink btn-sm city-out" id="cityOut" hidden>🔍 看全城</button>
             <div class="city-scroll" id="cityScroll">
               <svg id="citySvg" role="img" aria-label="東漢末年郡城示意圖">
                 <defs><radialGradient id="cityGlow"><stop offset="0" stop-color="#FFD36B" stop-opacity=".9"/><stop offset="1" stop-color="#FFB13B" stop-opacity="0"/></radialGradient></defs>
               </svg>
             </div>
-            <p class="city-hint">示意圖：依史書與考古出土的陶樓、畫像磚畫成，不是真實的某一座城。<span class="m">左右滑動可以看整座城。</span></p>
+            <p class="city-hint">示意圖：依史書與考古出土的陶樓、畫像磚畫成，不是真實的某一座城。點數字可以放大看細節，放大後可以拖曳移動。<span class="m">左右滑動可以看整座城。</span></p>
           </div>
         </div>
         <div class="city-side">

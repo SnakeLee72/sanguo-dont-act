@@ -309,8 +309,8 @@
   const marks = spots.map((s, i) => {
     const [X, Y] = P(...SPOT_AT[s.id]);
     return `<g class="spot" data-spot="${s.id}" tabindex="0" role="button" aria-label="${i + 1}. ${esc(s.name)}" transform="translate(${X.toFixed(1)} ${Y.toFixed(1)})">
-      <path d="M0 0v-12" class="spot-stem"/><circle cy="-24" r="17" class="spot-ring"/><circle cy="-24" r="12.5" class="spot-dot"/><text y="-19.5">${i + 1}</text>
-      <g class="spot-tag"><rect x="16" y="-35" width="${s.name.length * 14 + 14}" height="22" rx="6"/><text x="${23 + s.name.length * 7}" y="-19" text-anchor="middle">${esc(s.name)}</text></g></g>`;
+      <g class="spot-in"><path d="M0 0v-12" class="spot-stem"/><circle cy="-24" r="17" class="spot-ring"/><circle cy="-24" r="12.5" class="spot-dot"/><text y="-19.5">${i + 1}</text>
+      <g class="spot-tag"><rect x="16" y="-35" width="${s.name.length * 14 + 14}" height="22" rx="6"/><text x="${23 + s.name.length * 7}" y="-19" text-anchor="middle">${esc(s.name)}</text></g></g></g>`;
   }).join("");
 
   /* ---------- 畫出來 ---------- */
@@ -344,6 +344,62 @@
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(seen)); } catch (_) {} };
   const info = $("#cityInfo"), chips = $("#cityChips"), prog = $("#cityProg");
   let cur = -1;
+  const wrap = $("#cityWrap"), sc = $("#cityScroll"), outBtn = $("#cityOut");
+
+  /* ---------- 放大鏡：點數字飛過去看細節，可以拖曳移動 ---------- */
+  const FULL = [-490, -110, 940, 580], ZW = 360;
+  let vb = FULL.slice(), raf = 0, zoomed = false;
+  function setVB(v) {
+    vb = v;
+    scene.setAttribute("viewBox", v.map(n => n.toFixed(1)).join(" "));
+    const pw = scene.getBoundingClientRect().width || 680; // 標記在螢幕上維持差不多的大小
+    scene.style.setProperty("--ms", Math.min(1, 1.15 * v[2] / pw).toFixed(3));
+  }
+  const clampVB = v => {
+    const [w, h] = [v[2], v[3]];
+    return [Math.max(FULL[0], Math.min(FULL[0] + FULL[2] - w, v[0])), Math.max(FULL[1], Math.min(FULL[1] + FULL[3] - h, v[1])), w, h];
+  };
+  function fly(to, ms = 750) {
+    cancelAnimationFrame(raf);
+    const from = vb.slice(), t0 = performance.now(), ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    if (!motion) return setVB(to);
+    const step = now => {
+      const t = Math.min(1, (now - t0) / ms), k = ease(t);
+      setVB(from.map((f, i) => f + (to[i] - f) * k));
+      if (t < 1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+  }
+  function zoomTo(id) {
+    const at = SPOT_AT[id]; if (!at) return;
+    const [cx, cy] = P(at[0], at[1], at[2] * .45), h = ZW * FULL[3] / FULL[2];
+    if (!zoomed) { zoomed = true; wrap.classList.add("zoomed"); outBtn.hidden = false; sc.scrollLeft = 0; }
+    fly(clampVB([cx - ZW / 2, cy - h / 2 + 18, ZW, h]));
+  }
+  function zoomOut() {
+    if (!zoomed) return;
+    zoomed = false; wrap.classList.remove("zoomed"); outBtn.hidden = true;
+    fly(FULL.slice());
+    requestAnimationFrame(() => { if (sc.scrollWidth > sc.clientWidth) sc.scrollLeft = (sc.scrollWidth - sc.clientWidth) / 2; });
+  }
+  outBtn.addEventListener("click", zoomOut);
+  document.addEventListener("keydown", e => { if (e.key === "Escape") zoomOut(); });
+  // 放大時用滑鼠或手指拖曳移動
+  let drag = null, dragged = false;
+  scene.addEventListener("pointerdown", e => {
+    dragged = false;
+    if (!zoomed || e.button > 0) return;
+    drag = { x: e.clientX, y: e.clientY, vb: vb.slice(), k: vb[2] / scene.getBoundingClientRect().width };
+  });
+  window.addEventListener("pointermove", e => {
+    if (!drag) return;
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    if (!dragged && Math.hypot(dx, dy) < 6) return;
+    if (!dragged) { dragged = true; cancelAnimationFrame(raf); wrap.classList.add("dragging"); }
+    setVB(clampVB([drag.vb[0] - dx * drag.k, drag.vb[1] - dy * drag.k, drag.vb[2], drag.vb[3]]));
+  });
+  window.addEventListener("pointerup", () => { if (drag) { drag = null; wrap.classList.remove("dragging"); setTimeout(() => { dragged = false; }, 0); } });
+
   function progress() {
     const n = spots.filter(s => seen[s.id]).length;
     prog.innerHTML = `已探索 <b>${n}</b> / ${spots.length}${n === spots.length ? "　🏆 整座城都逛完了！" : ""}`;
@@ -364,15 +420,16 @@
     </div>`;
     progress();
     if (first && spots.every(x => seen[x.id])) toast("🏆 恭喜！整座三國城池都逛完了！");
-    if (scroll && matchMedia("(max-width: 899px)").matches) info.scrollIntoView({ behavior: "smooth", block: "start" });
+    zoomTo(s.id);
+    if (scroll && matchMedia("(max-width: 899px)").matches) wrap.scrollIntoView({ behavior: "smooth", block: "start" });
   }
-  const pick = e => { const t = e.target.closest("[data-spot]"); if (t) show(spots.findIndex(s => s.id === t.dataset.spot), true); };
+  const pick = e => { if (dragged) return; const t = e.target.closest("[data-spot]"); if (t) show(spots.findIndex(s => s.id === t.dataset.spot), true); };
   scene.addEventListener("click", pick);
   scene.addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.closest(".spot")) { e.preventDefault(); pick(e); } });
   chips.addEventListener("click", pick);
   info.addEventListener("click", e => { const b = e.target.closest("[data-go]"); if (b) show(cur + +b.dataset.go, false); });
 
-  const wrap = $("#cityWrap"), tgl = $("#cityTime");
+  const tgl = $("#cityTime");
   tgl.addEventListener("click", () => {
     const night = wrap.classList.toggle("night");
     tgl.textContent = night ? "☀️ 切換到白天" : "🌙 切換到夜晚";
@@ -380,7 +437,7 @@
     if (night) toast("🌙 天黑了：城門關上，路上也沒人了");
   });
   // 手機：一開始捲到城的中間
-  const sc = $("#cityScroll"); if (sc.scrollWidth > sc.clientWidth) sc.scrollLeft = (sc.scrollWidth - sc.clientWidth) / 2;
+  if (sc.scrollWidth > sc.clientWidth) sc.scrollLeft = (sc.scrollWidth - sc.clientWidth) / 2;
   progress();
   info.innerHTML = `<div class="ci-intro"><h2>🏯 歡迎進城！</h2><p>這是一座「示意」的東漢末年郡城，依據史書記載和考古出土的陶樓、畫像磚畫成。</p><p>點地圖上的 <b class="ci-dot">1</b> ～ <b class="ci-dot">${spots.length}</b> 號，看看三國時代的人怎麼生活。也可以切換到夜晚看看！</p><div class="row" style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-red btn-sm" data-go="1">從 1 號開始逛 →</button><a class="btn btn-line btn-sm" href="map.html">🗺️ 三國地圖時間軸</a></div></div>`;
 })();
