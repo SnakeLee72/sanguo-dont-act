@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>走進三國城池｜三國別演了</title>
+<meta name="description" content="一座 2.5D 的東漢末年城池：城牆、護城河、太守府、市集、糧倉、屯田……點一點，看看三國時代的人怎麼生活。" />
+<!-- meta:start -->
+<link rel="canonical" href="https://sanguo-dont-act.pages.dev/city" />
+<link rel="icon" href="assets/img/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png" />
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png" />
+<link rel="manifest" href="site.webmanifest" />
+<meta name="theme-color" content="#4D1414" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="三國別演了" />
+<meta property="og:locale" content="zh_TW" />
+<meta property="og:title" content="走進三國城池｜三國別演了" />
+<meta property="og:description" content="一座 2.5D 的東漢末年城池：城牆、護城河、太守府、市集、糧倉、屯田……點一點，看看三國時代的人怎麼生活。" />
+<meta property="og:url" content="https://sanguo-dont-act.pages.dev/city" />
+<meta property="og:image" content="https://sanguo-dont-act.pages.dev/assets/img/og-image.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="走進三國城池｜三國別演了" />
+<meta name="twitter:description" content="一座 2.5D 的東漢末年城池：城牆、護城河、太守府、市集、糧倉、屯田……點一點，看看三國時代的人怎麼生活。" />
+<meta name="twitter:image" content="https://sanguo-dont-act.pages.dev/assets/img/og-image.png" />
+<link rel="preconnect" href="https://script.google.com" crossorigin />
+<link rel="preconnect" href="https://script.googleusercontent.com" crossorigin />
+<link rel="preconnect" href="https://i.ytimg.com" />
+<!-- meta:end -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/site.css" />
+<style>
+  .city-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .city-prog { font-size: 15px; color: var(--muted); }
+  .city-prog b { color: var(--curtain); font-size: 20px; }
+  .city-layout { display: grid; gap: 18px; }
+  .city-layout > * { min-width: 0; }
+  @media (min-width: 900px) { .city-layout { grid-template-columns: 1fr 320px; align-items: start; } .city-side { position: sticky; top: 84px; } }
+  .city-map { border-radius: 18px; overflow: hidden; box-shadow: var(--shadow); border: 3px solid var(--gold); background: #BFD8E6; }
+  .city-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .city-scroll svg { display: block; width: 100%; min-width: 680px; height: auto; }
+  @media (min-width: 700px) { .city-scroll svg { min-width: 0; } }
+  .city-hint { font-size: 13px; color: var(--muted); padding: 6px 12px; background: var(--paper); border-top: 1px solid var(--line); }
+  @media (min-width: 700px) { .city-hint .m { display: none; } }
+
+  /* 場景 */
+  #citySvg polygon { stroke: rgba(42,31,26,.55); stroke-width: .7; stroke-linejoin: round; }
+  .city-sky { fill: #CFE4EF; transition: fill .8s; }
+  .cloud ellipse, .cloud circle { fill: #fff; opacity: .9; }
+  .cloud.c1 { animation: drift 40s linear infinite alternate; } .cloud.c2 { animation: drift 55s linear infinite alternate-reverse; }
+  @keyframes drift { to { transform: translateX(60px); } }
+  .moat { fill: url(#cityWater); stroke: #4F86AC; stroke-width: 1; }
+  .moat-bank { stroke: #8C6A3E; stroke-width: 2.5; opacity: .5; }
+  .shadows { opacity: .2; }
+  .bg-sky { fill: url(#citySkyG); transition: fill .8s; }
+  .mtn-far { fill: url(#cityFar); stroke: rgba(50,60,75,.25); stroke-width: 1; }
+  .mtn-near { fill: url(#cityNear); stroke: rgba(50,70,50,.25); stroke-width: 1; }
+  .mtn-cun { fill: none; stroke: rgba(40,50,65,.3); stroke-width: 1.2; stroke-linecap: round; }
+  .haze { fill: #fff; opacity: .55; filter: url(#cityBlur); }
+  .mist ellipse { fill: #fff; opacity: .22; filter: url(#cityBlur); }
+  .mist { animation: mist 30s ease-in-out infinite alternate; }
+  @keyframes mist { to { transform: translateX(70px); } }
+  .paving { fill: none; stroke: rgba(120,90,50,.28); stroke-width: .7; }
+  .rut { fill: none; stroke: rgba(120,90,50,.35); stroke-width: 1; stroke-dasharray: 6 3; }
+  .night .bg-sky { fill: #22305A; }
+  .night .mist ellipse { fill: #9FB3D9; }
+  .night .lamp { animation: flicker 1.6s ease-in-out infinite alternate; }
+  .night .lamp:nth-of-type(3n) { animation-delay: -.7s; }
+  @keyframes flicker { 0% { opacity: .75; } 50% { opacity: 1; } 100% { opacity: .85; } }
+  .shadows polygon { stroke: none !important; }
+  .layers { fill: none; stroke: rgba(90,55,25,.28); stroke-width: .8; }
+  .tiles { fill: none; stroke: rgba(15,12,10,.3); stroke-width: .7; }
+  .ridge { fill: none; stroke: #2A2630; stroke-width: 2.4; stroke-linecap: round; }
+  .eave, .ridge-end { fill: none; stroke: #2A2630; stroke-width: 1.7; stroke-linecap: round; }
+  .tuft { fill: none; stroke: #8FA35E; stroke-width: 1.1; stroke-linecap: round; }
+  .willow { fill: none; stroke: #7FA85A; stroke-width: 1.4; stroke-linecap: round; }
+  .flag-cloth { transform-box: fill-box; transform-origin: 0 50%; animation: flap 1.3s ease-in-out infinite alternate; stroke: rgba(0,0,0,.25); stroke-width: .5; }
+  @keyframes flap { from { transform: skewY(-6deg) scaleX(.92); } to { transform: skewY(6deg) scaleX(1); } }
+  .bird path { fill: none; stroke: #3A3A44; stroke-width: 1.4; stroke-linecap: round; }
+  .sunlight { fill: url(#citySun); pointer-events: none; mix-blend-mode: soft-light; transition: opacity .8s; }
+  .night .sunlight, .night .birds { opacity: 0; }
+  .moat-ripple { stroke: #fff; stroke-width: 1.2; stroke-dasharray: 3 18; opacity: .7; animation: ripple 6s linear infinite; }
+  @keyframes ripple { to { stroke-dashoffset: -84; } }
+  .furrow { fill: none; stroke: rgba(80,60,20,.28); stroke-width: 1; }
+  .tree path { fill: none; }
+  .sign { font-size: 8px; fill: #fff; font-family: var(--head); font-weight: 700; text-anchor: middle; }
+  .win { transition: fill .6s; }
+  .gate-door { opacity: 0; transition: opacity .6s; }
+  .city-world .lamp, .city-world .lamp-core { display: none; }
+  .lamps { opacity: 0; transition: opacity .8s; pointer-events: none; }
+  .lamp { fill: url(#cityGlow); }
+  .lamp-core { fill: #FFE7A3; }
+  .night-veil { fill: #0E1838; opacity: 0; pointer-events: none; transition: opacity .8s; mix-blend-mode: multiply; }
+  .sky-night { opacity: 0; transition: opacity .8s; }
+  .moon { fill: #FFF3C4; } .moon-cut { fill: #22305A; } .star { fill: #FFF3C4; animation: twinkle 2.6s ease-in-out infinite; }
+  .star:nth-child(odd) { animation-delay: -1.3s; }
+  @keyframes twinkle { 0%, 100% { opacity: .3; } 50% { opacity: 1; } }
+  .mover { transition: opacity .6s; }
+  /* 夜晚 */
+  .night .city-sky { fill: #22305A; }
+  .night .sky-day { opacity: 0; } .night .sky-night { opacity: 1; }
+  .night .night-veil { opacity: .55; }
+  .night .lamps { opacity: 1; }
+  .night .gate-door { opacity: 1; }
+  .night .win { fill: #FFD36B; }
+  .night .mover { opacity: 0; }
+  /* 探索點 */
+  .spot { cursor: pointer; outline: none; }
+  .spot-stem { stroke: var(--curtain-deep); stroke-width: 2; }
+  .spot-dot { fill: var(--lantern); stroke: var(--curtain); stroke-width: 2.5; transition: transform .15s; transform-box: fill-box; transform-origin: center; }
+  .spot text { font-family: var(--head); font-weight: 700; font-size: 15px; fill: var(--curtain-deep); text-anchor: middle; pointer-events: none; }
+  .spot-ring { fill: none; stroke: var(--lantern); stroke-width: 3; animation: sring 2s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+  @keyframes sring { from { transform: scale(.7); opacity: .9; } to { transform: scale(1.5); opacity: 0; } }
+  .spot.seen .spot-ring { display: none; }
+  .spot.seen .spot-dot { fill: #FFF6E2; }
+  .spot.on .spot-dot { fill: var(--curtain); } .spot.on > text { fill: #fff; }
+  .spot-tag { opacity: 0; transition: opacity .15s; pointer-events: none; }
+  .spot-tag rect { fill: var(--curtain-deep); }
+  .spot-tag text { fill: #fff; font-size: 13px; }
+  .spot:hover .spot-tag, .spot:focus .spot-tag, .spot.on .spot-tag { opacity: 1; }
+  .spot:hover .spot-dot, .spot:focus .spot-dot { transform: scale(1.15); }
+  @media (prefers-reduced-motion: reduce) { #citySvg * { animation: none !important; } }
+
+  /* 側邊說明卡 */
+  .city-side { display: grid; gap: 12px; }
+  .city-info { padding: 20px; min-height: 200px; }
+  .ci-head { display: flex; gap: 12px; align-items: center; margin-bottom: 10px; }
+  .ci-head h2 { font-size: 26px; }
+  .ci-no, .ci-dot { display: inline-grid; place-items: center; width: 40px; height: 40px; flex: 0 0 40px; border-radius: 50%; background: var(--lantern); color: var(--curtain-deep); border: 3px solid var(--curtain); font-family: var(--head); font-weight: 700; font-size: 20px; }
+  .ci-dot { width: 26px; height: 26px; flex: none; font-size: 14px; border-width: 2px; vertical-align: middle; }
+  .ci-text { font-size: 16px; line-height: 1.8; }
+  .ci-fact { margin: 12px 0 8px; background: #FFF6E2; border-left: 4px solid var(--lantern); border-radius: 0 12px 12px 0; padding: 10px 12px; font-size: 15px; }
+  .ci-fact p { margin-top: 4px; line-height: 1.7; }
+  .src { font-size: 13px; color: var(--muted); margin-bottom: 10px; }
+  .ci-nav { display: flex; justify-content: space-between; gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--line); }
+  .ci-intro { display: grid; gap: 10px; }
+  .ci-intro h2 { font-size: 24px; }
+  .city-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .city-chip { display: inline-flex; align-items: center; gap: 6px; border: 2px solid var(--line); background: var(--card); border-radius: 999px; padding: 4px 12px 4px 4px; font-size: 14px; color: var(--ink); }
+  .city-chip b { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--lantern); color: var(--curtain-deep); font-size: 12px; }
+  .city-chip.seen b { background: var(--ok); color: #fff; }
+  .city-chip.on { border-color: var(--curtain); }
+  .city-chip:hover { border-color: var(--curtain); }
+</style>
+</head>
+<body data-page="city">
+<main>
+  <section class="page-hero">
+    <div class="lanterns" aria-hidden="true"><span class="lantern"></span><span class="lantern"></span><span class="lantern"></span></div>
+    <div class="wrap">
+      <h1>🏯 走進三國城池</h1>
+      <p>三國人物住在什麼樣的城裡？城牆怎麼蓋、去哪裡買東西、糧食放在哪？點一點這座東漢末年的城，跟著史官逛一圈！</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="wrap">
+      <div class="city-top">
+        <p class="city-prog" id="cityProg"></p>
+        <button class="btn btn-ink btn-sm" id="cityTime" aria-pressed="false">🌙 切換到夜晚</button>
+      </div>
+      <div class="city-layout">
+        <div>
+          <div class="city-map" id="cityWrap">
+            <div class="city-scroll" id="cityScroll">
+              <svg id="citySvg" role="img" aria-label="東漢末年郡城示意圖">
+                <defs><radialGradient id="cityGlow"><stop offset="0" stop-color="#FFD36B" stop-opacity=".9"/><stop offset="1" stop-color="#FFB13B" stop-opacity="0"/></radialGradient></defs>
+              </svg>
+            </div>
+            <p class="city-hint">示意圖：依史書與考古出土的陶樓、畫像磚畫成，不是真實的某一座城。<span class="m">左右滑動可以看整座城。</span></p>
+          </div>
+        </div>
+        <div class="city-side">
+          <article class="card city-info" id="cityInfo" aria-live="polite"></article>
+          <div class="city-chips" id="cityChips"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/city.js"></script>
+</body>
+</html>

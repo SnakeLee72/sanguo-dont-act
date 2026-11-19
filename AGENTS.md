@@ -27,13 +27,13 @@
 ## 2. 檔案結構（哪些可以改）
 
 ```
-index.html  episodes.html  wiki.html  request.html  map.html  battle.html  quiz.html  cards.html   ← 8 個頁面
+index.html  episodes.html  wiki.html  request.html  map.html  battle.html  quiz.html  cards.html  city.html   ← 9 個頁面
 assets/
   css/site.css            樣式（設計 token 在 :root）
   js/config.js            站名、標語、平台連結、後端網址 apiUrl        ⚠️ 謹慎
   js/data.js              ★ 全站內容資料（集數、人物、成語、查核、候選人、題目、測驗）
   js/core.js              共用：導覽列、頁尾、播放器、資料儲存 Store、背景音樂 BGM
-  js/home.js wiki.js request.js battle.js map.js cards.js             各頁邏輯（map.js 內含地圖的地區中心點、城市座標、海岸線）
+  js/home.js wiki.js request.js battle.js map.js cards.js city.js     各頁邏輯（map.js 內含地圖的地區中心點、城市座標、海岸線；city.js 是 2.5D 城池的畫法與地點位置）
   img/                    favicon、og-image.png（分享預覽圖）
   audio/bgm.mp3           背景音樂（96kbps）
 backend/google-apps-script.gs   後端程式（實際執行的是 Google 上的副本）  ⚠️ 謹慎
@@ -197,6 +197,16 @@ favicon.ico  site.webmanifest
 
 完成任一任務解鎖，全部完成變金卡。所以**新增來賓時照 §4 填好 `episode`、加進 `PERSONA_QUIZ`，卡片就會自動出現**；預告集上架後，「收聽」任務也會自動加上。進度只存在訪客瀏覽器（localStorage `sgby_cards_v1`），不送到後端。
 
+### CITY_SPOTS 走進三國城池（`city.html`）
+2.5D 等角視角的「示意」東漢郡城，11 個探索點。文字在 `data.js`，建築與地點位置在 `city.js`（`SPOT_AT`）。
+```js
+{ id: "cang", name: "糧倉", sub: "一句話副標", text: "這是什麼地方（白話）", fact: "💡 你知道嗎（最好連到節目人物或戰役）",
+  source: "《三國志・武帝紀》", link: { href: "battle.html#guandu", text: "⚔️ 換你當曹操" } }   // link 選填
+```
+- `id` 不可改（地圖位置用它找）；要新增地點得同時改 `city.js` 的建築與 `SPOT_AT`，以及 `tools/check_data.js` 的 `CITY_IDS`。
+- 城是想像的示意城，說明文字要講「漢代一般的城」，不要寫成某座真實城市；`fact` 一定要有出處（史書或考古出土文物）。
+- 探索進度存在訪客瀏覽器（localStorage `sgby_city_v1`）。這一頁不在導覽列，入口在首頁「三國小百科」區、地圖頁。
+
 ### PERSONA_QUIZ 心理測驗
 每題 `{ q, options: [{ t: "選項文字", p: ["人物id", ...] }] }`。選到的選項替列出的人物各加 1 分，最高分者為結果。新增來賓時把他加進至少 2 個選項，並注意不要讓某人出現次數遠多於其他人。
 
@@ -296,5 +306,6 @@ python -m http.server 8765
 | 2026-11-19 | 新增「三國地圖時間軸」頁面（`map.html`、`TIMELINE`），導覽列加入「地圖」 |
 | 2026-11-19 | 地圖美術加強、加入年號；新增「武將收集卡」頁面（`cards.html`），導覽列加入「卡冊」 |
 | 2026-11-19 | 收集卡加入 12 位人物造型（取自節目縮圖）、卡面美術改版 |
+| 2026-11-19 | 新增「走進三國城池」2.5D 等角城池頁（`city.html`、`CITY_SPOTS`），白天／夜晚切換 |
 
 > 每次完成一批更新，請在上表新增一行（日期用 YYYY-MM-DD）。

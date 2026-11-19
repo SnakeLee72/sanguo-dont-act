@@ -5,9 +5,9 @@ const file = path.join(__dirname, "..", "assets", "js", "data.js");
 const ctx = {};
 try {
   vm.runInNewContext(fs.readFileSync(file, "utf8") +
-    "\n;this.D={HOSTS,EPISODES,PEOPLE,IDIOMS,STORIES,CANDIDATES,TOPICS,PERSONA_QUIZ,BATTLES,TIMELINE};", ctx);
+    "\n;this.D={HOSTS,EPISODES,PEOPLE,IDIOMS,STORIES,CANDIDATES,TOPICS,PERSONA_QUIZ,BATTLES,TIMELINE,CITY_SPOTS};", ctx);
 } catch (e) { console.error("❌ data.js 語法錯誤：", e.message); process.exit(1); }
-const { HOSTS, EPISODES, PEOPLE, IDIOMS, STORIES, CANDIDATES, TOPICS, PERSONA_QUIZ, BATTLES, TIMELINE } = ctx.D;
+const { HOSTS, EPISODES, PEOPLE, IDIOMS, STORIES, CANDIDATES, TOPICS, PERSONA_QUIZ, BATTLES, TIMELINE, CITY_SPOTS } = ctx.D;
 const errs = [];
 const ID = /^[a-z0-9-]+$/;
 const FACTIONS = ["wei", "shu", "wu", "qun"];
@@ -114,5 +114,13 @@ TIMELINE.forEach((k, n) => {
   (k.guests || []).forEach(x => P.has(x) || errs.push(`${w} guests 找不到人物: ${x}`));
 });
 
+const CITY_IDS = ["chengchi", "chengmen", "jiaolou", "taishou", "shi", "li", "cang", "wuku", "ting", "tuntian", "wubao"];
+dup(CITY_SPOTS, "id", "CITY_SPOTS");
+CITY_SPOTS.forEach(c => {
+  if (!CITY_IDS.includes(c.id)) errs.push(`CITY_SPOTS ${c.id} 不是地圖上的地點（地點位置寫在 city.js 的 SPOT_AT）`);
+  ["name", "sub", "text", "fact", "source"].forEach(k => c[k] || errs.push(`CITY_SPOTS ${c.id} 缺少 ${k}`));
+  if (c.link && (!c.link.href || !c.link.text)) errs.push(`CITY_SPOTS ${c.id} link 要有 href 和 text`);
+});
+
 if (errs.length) { console.error("❌ 發現 " + errs.length + " 個問題：\n- " + errs.join("\n- ")); process.exit(1); }
-console.log(`✅ OK｜集數 ${EPISODES.length}・人物 ${PEOPLE.length}・成語 ${IDIOMS.length}・查核 ${STORIES.length}・候選人 ${CANDIDATES.length}・題目 ${TOPICS.length}・戰役 ${BATTLES.length}・地圖年份 ${TIMELINE.length}`);
+console.log(`✅ OK｜集數 ${EPISODES.length}・人物 ${PEOPLE.length}・成語 ${IDIOMS.length}・查核 ${STORIES.length}・候選人 ${CANDIDATES.length}・題目 ${TOPICS.length}・戰役 ${BATTLES.length}・地圖年份 ${TIMELINE.length}・城池地點 ${CITY_SPOTS.length}`);
