@@ -268,7 +268,7 @@
     seeAll() { const d = this.get(); PEOPLE.forEach(p => { const s = this.state(p, d); if (s.level) d.seen[p.id] = s.level; }); this.set(d); this.badge(); },
     badge() {
       const d = this.get(), n = PEOPLE.filter(p => this.state(p, d).isNew).length;
-      document.querySelectorAll('a[href="cards.html"]').forEach(a => {
+      document.querySelectorAll('.nav-desk a[href="play.html"], .nav-mobile a[href="play.html"], .subnav a[href="cards.html"]').forEach(a => {
         let b = a.querySelector(".nav-badge");
         if (!n) { if (b) b.remove(); return; }
         if (!b) { b = document.createElement("span"); b.className = "nav-badge"; a.appendChild(b); }
@@ -369,20 +369,45 @@
     }
   };
 
+  /* ---------- 邊聽邊玩（首頁與遊戲中心共用） ---------- */
+  function playBento() {
+    const battles = (typeof BATTLES === "undefined" ? [] : BATTLES).filter(b => b.status === "published");
+    const cc = Cards.count();
+    const guests = PEOPLE.filter(p => p.role === "guest");
+    const tile = (href, ico, title, text, extra = "") => `<a class="tile" href="${href}"><span class="t-ico" aria-hidden="true">${ico}</span><h3>${title}</h3><p>${text}</p>${extra}<span class="t-go">進入 →</span></a>`;
+    return `<div class="tile tile-feature">
+        <span class="kick">⚔️ 歷史抉擇遊戲</span>
+        <h3>你來當軍師</h3>
+        <p>回到歷史的關鍵時刻，換你做決定。主持人在旁邊吐槽，最後由史官揭曉當年怎麼選。</p>
+        <div class="battle-list">${battles.map(b => {
+          const r = personById[b.role];
+          return `<a class="battle-go" href="battle.html#${esc(b.id)}">${avatar(r, 42)}<div><p>${esc(b.year.split("（")[0])}・扮演${esc(r.name)}</p><h4>${esc(b.title)}</h4></div><span class="go" aria-hidden="true">→</span></a>`;
+        }).join("")}</div>
+      </div>
+      <div class="bento-side">
+        ${tile("map.html", "🗺️", "三國地圖時間軸", "拉動時間軸，看魏蜀吳的地盤怎麼變化。")}
+        ${tile("city.html", "🏯", "走進三國城池", "點一點東漢的城，看三國人怎麼生活。")}
+        ${tile("quiz.html", "🎭", "你是哪位來賓？", "7 題心理測驗，測完直接聽那一集。", `<span class="t-faces">${guests.slice(0, 4).map(p => avatar(p, 26)).join("")}</span>`)}
+        ${tile("cards.html", "🃏", "武將收集卡", `已收集 <b>${cc.got}</b> / ${cc.total} 張${cc.gold ? `，金卡 ${cc.gold} 張` : ""}`, `<span class="t-bar"><i style="width:${cc.got / cc.total * 100}%"></i></span>`)}
+      </div>`;
+  }
+
   /* ---------- 版型：導覽列 + 頁尾 ---------- */
+  /* 主選單只放 5 個；同一區的頁面用 SUBNAV 分頁籤串起來 */
   const PAGES = [
-    { key: "home", href: "index.html", label: "首頁", ico: "🏮" },
-    { key: "episodes", href: "episodes.html", label: "節目", ico: "🎧" },
-    { key: "wiki", href: "wiki.html", label: "小百科", ico: "📜" },
-    { key: "request", href: "request.html", label: "點播台", ico: "🙋" },
-    { key: "map", href: "map.html", label: "地圖", ico: "🗺️" },
-    { key: "battle", href: "battle.html", label: "當軍師", ico: "⚔️" },
-    { key: "quiz", href: "quiz.html", label: "你是誰", ico: "🎭" },
-    { key: "cards", href: "cards.html", label: "卡冊", ico: "🃏" }
+    { key: "home", href: "index.html", label: "首頁", ico: "🏮", group: ["home"] },
+    { key: "episodes", href: "episodes.html", label: "節目", ico: "🎧", group: ["episodes"] },
+    { key: "wiki", href: "wiki.html", label: "小百科", ico: "📜", group: ["wiki", "map", "city"] },
+    { key: "play", href: "play.html", label: "遊戲", ico: "🎮", group: ["play", "battle", "quiz", "cards"] },
+    { key: "request", href: "request.html", label: "點播台", ico: "🙋", group: ["request"] }
   ];
+  const SUBNAV = {
+    wiki: [["wiki", "wiki.html", "📜", "人物・成語・查核"], ["map", "map.html", "🗺️", "地圖時間軸"], ["city", "city.html", "🏯", "三國城池"]],
+    play: [["play", "play.html", "🎮", "遊戲中心"], ["battle", "battle.html", "⚔️", "你來當軍師"], ["quiz", "quiz.html", "🎭", "你是誰"], ["cards", "cards.html", "🃏", "武將卡冊"]]
+  };
   function layout() {
     const cur = document.body.dataset.page;
-    const cur_ = (p) => p.key === cur ? ' aria-current="page"' : "";
+    const cur_ = (p) => p.group.includes(cur) ? ' aria-current="page"' : "";
     const header = document.createElement("header");
     header.className = "topbar";
     header.innerHTML = `<div class="wrap">
@@ -401,12 +426,21 @@
     mob.className = "nav-mobile"; mob.setAttribute("aria-label", "主選單");
     mob.innerHTML = PAGES.map(p => `<a href="${p.href}"${cur_(p)}><span class="ico" aria-hidden="true">${p.ico}</span>${p.label}</a>`).join("");
     document.body.appendChild(mob);
+    // 同一區的分頁籤（放在頁面標題下方）
+    const grp = PAGES.find(p => p.group.includes(cur) && SUBNAV[p.key]);
+    const hero = document.querySelector(".page-hero .wrap");
+    if (grp && hero) {
+      const sn = document.createElement("nav");
+      sn.className = "subnav"; sn.setAttribute("aria-label", grp.label + "分類");
+      sn.innerHTML = SUBNAV[grp.key].map(([k, href, ico, label]) => `<a href="${href}"${k === cur ? ' aria-current="page"' : ""}><span aria-hidden="true">${ico}</span>${label}</a>`).join("");
+      hero.appendChild(sn);
+    }
     const footer = document.createElement("footer");
     footer.className = "footer";
     footer.innerHTML = `<div class="wrap">
       <div><h4>${esc(SITE.name)}</h4><p style="color:#D8BC98">${esc(SITE.slogan)}</p><p style="color:var(--lantern);margin-top:4px">${esc(SITE.tagline || "")}</p><p class="small" style="margin-top:8px;color:#B8987A">歷史喜劇＋史實查核，從小學生到大人都聽得懂，適合全家一起收聽。</p></div>
       <div><h4>收聽節目</h4><a href="${SITE.youtube}" target="_blank" rel="noopener">📺 YouTube 頻道</a><a href="${SITE.spotify}" target="_blank" rel="noopener">🎧 Spotify Podcast</a></div>
-      <div><h4>網站導覽</h4>${PAGES.map(p => `<a href="${p.href}">${p.ico} ${p.label}</a>`).join("")}</div>
+      <div><h4>網站導覽</h4><div class="foot-links">${PAGES.flatMap(p => SUBNAV[p.key] ? SUBNAV[p.key].map(([, h, i, l]) => `<a href="${h}">${i} ${l}</a>`) : [`<a href="${p.href}">${p.ico} ${p.label}</a>`]).join("")}</div></div>
       <p class="copy">史實查核以陳壽《三國志》、裴松之注為主要依據；小說情節出自羅貫中《三國演義》。</p>
     </div>`;
     document.body.appendChild(footer);
@@ -417,5 +451,5 @@
   if (!DEMO) Store.stats(); // 一進頁面就先去拿統計數字，越早開始越快好
 
   window.SG = { $, $$, esc, FACTION, VERDICT, SOURCE_TYPE, personById, idiomById, storyById, epByCode, avatar, factionChip, verdictBadge,
-    thumb, epLabel, fmtDate, published, links, episodeCard, openModal, closeModal, openPlayer, toast, Store, Mine, Cards, today };
+    thumb, epLabel, fmtDate, published, links, episodeCard, openModal, closeModal, openPlayer, toast, Store, Mine, Cards, playBento, today };
 })();

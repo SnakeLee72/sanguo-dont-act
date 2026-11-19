@@ -106,8 +106,7 @@
   $("#portals").innerHTML = [
     ["#people", "👤", "人物", `${PEOPLE.length} 位`, "來賓與主持人的正史檔案，還有小說把他們「演」成什麼樣子。"],
     ["#idioms", "📖", "成語", `${IDIOMS.length} 則`, "望梅止渴、三顧茅廬……每個成語背後的真實故事與造句。"],
-    ["#stories", "🔍", "史實查核", `${STORIES.length} 個`, "先猜再翻牌！草船借箭、空城計，到底是真是假？"],
-    ["city.html", "🏯", "三國城池", `${CITY_SPOTS.length} 個地方`, "城牆、市集、糧倉、屯田……走進一座東漢末年的城，看看三國人怎麼生活。"]
+    ["#stories", "🔍", "史實查核", `${STORIES.length} 個`, "先猜再翻牌！草船借箭、空城計，到底是真是假？"]
   ].map(([h, i, t, n, d]) => `
     <a class="card portal" href="${h[0] === "#" ? "wiki.html" + h : h}">
       <span class="big" aria-hidden="true">${i}</span>
@@ -123,15 +122,5 @@
       <p class="small">${esc(p.oneLine)}</p>
     </a>`).join("");
 
-  $("#battleList").innerHTML = BATTLES.filter(b => b.status === "published").map(b => {
-    const r = personById[b.role];
-    return `<a class="battle-go" href="battle.html#${esc(b.id)}">${avatar(r, 48)}
-      <div><p class="muted small">${esc(b.year.split("（")[0])}・扮演${esc(r.name)}</p><h3>${esc(b.title)}</h3></div>
-      <span class="go"><span class="go-t">換你當${esc(r.name)} </span>→</span></a>`;
-  }).join("");
-
-  const cc = SG.Cards.count();
-  $("#cardsCta").textContent = `🃏 我的武將卡冊：已收集 ${cc.got} / ${cc.total} 張 →`;
-
-  $("#quizFaces").innerHTML = PEOPLE.filter(p => p.role === "guest").slice(0, 6).map(p => avatar(p, 46)).join("");
+  $("#bento").innerHTML = SG.playBento();
 })();

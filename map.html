@@ -71,7 +71,7 @@
   @keyframes tlbob { from { transform: translateY(-1.5px) rotate(-3deg); } to { transform: translateY(1.5px) rotate(3deg); } }
   .tl-plaque { fill: var(--paper); fill-opacity: .9; stroke-width: 1.6; }
   .tl-owner { font-size: 21px; font-weight: 700; fill: var(--ink); text-anchor: middle; }
-  .tl-rname { font-size: 13px; fill: var(--ink); opacity: .78; text-anchor: middle; paint-order: stroke; stroke: var(--paper); stroke-width: 3px; }
+  .tl-rname { font-size: 13px; font-weight: 700; fill: #4A3A30; text-anchor: middle; paint-order: stroke; stroke: var(--paper); stroke-width: 3px; stroke-linejoin: round; }
   .tl-star { fill: var(--curtain); stroke: var(--paper); stroke-width: 1.2; }
   .tl-pole { stroke: var(--ink); stroke-width: 1.6; }
   .tl-cloth { stroke: var(--ink); stroke-width: .8; transform-box: fill-box; transform-origin: 0 50%; animation: tlwave 1.5s ease-in-out infinite alternate; }
@@ -101,7 +101,11 @@
   @media (max-width: 560px) {
     .tl-owner { font-size: 30px; } .tl-rname { font-size: 18px; } .tl-rname.sub { display: none; }
     .tl-cname, .tl-mark text { font-size: 20px; } .tl-cartouche { display: none; }
-    .tl-river-name { font-size: 19px; } .tl-sea-name { font-size: 20px; }
+    .tl-river-name { font-size: 20px; stroke-width: 2.5px; fill: #24557D; } .tl-sea-name { font-size: 21px; fill: #2F6690; }
+    /* 手機上字變小，白色描邊要變細、字要更深，才不會看起來一片白 */
+    .tl-rname { opacity: 1; font-family: var(--body); font-weight: 900; font-size: 16px; fill: #3A2A20; stroke-width: 2.4px; }
+    .tl-cname, .tl-mark text { font-family: var(--body); font-weight: 900; font-size: 18px; stroke-width: 2.8px; fill: #4A1010; }
+    .tl-owner { font-size: 30px; }
   }
   @media (prefers-reduced-motion: reduce) { .tl-map *, .fade { animation: none !important; transition: none !important; } }
 

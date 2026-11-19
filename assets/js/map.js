@@ -121,16 +121,17 @@
           <ellipse cx="300" cy="438" rx="20" ry="13" class="tl-island"/><ellipse cx="560" cy="352" rx="9" ry="24" class="tl-island"/>
         </g>
         <g filter="url(#tl-ink)">${RIVERS.map((r, i) => `<path d="${r.d}" class="tl-river-bank${r.small ? " small" : ""}"/><path id="tl-rv${i}" d="${r.d}" class="tl-river${r.small ? " small" : ""}"/><path d="${r.d}" class="tl-river-flow"/>`).join("")}</g>
-        ${RIVERS.map((r, i) => `<text class="tl-river-name${r.small ? " small" : ""}" dy="-7"><textPath href="#tl-rv${i}" startOffset="${r.at}%">${esc([...r.name].join(" "))}</textPath></text>`).join("")}
-        <text x="548" y="306" class="tl-sea-name">東 海</text><text x="420" y="446" class="tl-sea-name">南 海</text>
         ${boat}
         <rect width="${W}" height="${H}" fill="url(#tl-fade)" pointer-events="none"/>
         <ellipse cx="120" cy="380" rx="70" ry="50" fill="url(#tl-stain)" pointer-events="none"/><ellipse cx="470" cy="70" rx="50" ry="36" fill="url(#tl-stain)" pointer-events="none"/>
+        <rect width="${W}" height="${H}" filter="url(#tl-paper)" pointer-events="none"/>
+        <rect width="${W}" height="${H}" fill="url(#tl-vig)" pointer-events="none"/>
+        <!-- 文字放在紙紋、暗角之上，手機上才清楚 -->
+        ${RIVERS.map((r, i) => `<text class="tl-river-name${r.small ? " small" : ""}" dy="-7"><textPath href="#tl-rv${i}" startOffset="${r.at}%">${esc([...r.name].join(" "))}</textPath></text>`).join("")}
+        <text x="548" y="306" class="tl-sea-name">東 海</text><text x="420" y="446" class="tl-sea-name">南 海</text>
         <g id="tlLabels"></g>
         <g id="tlCities"></g>
         <g id="tlMarks"></g>
-        <rect width="${W}" height="${H}" filter="url(#tl-paper)" pointer-events="none"/>
-        <rect width="${W}" height="${H}" fill="url(#tl-vig)" pointer-events="none"/>
         ${cloud(30, 446, .9)}${cloud(574, 452, .8, true)}
         <g class="tl-cartouche" transform="translate(26 24)"><rect width="138" height="38" rx="5"/><circle cx="0" cy="19" r="7"/><circle cx="138" cy="19" r="7"/><text x="69" y="26">三國形勢圖</text></g>
         ${rose}

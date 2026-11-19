@@ -27,7 +27,7 @@
 ## 2. 檔案結構（哪些可以改）
 
 ```
-index.html  episodes.html  wiki.html  request.html  map.html  battle.html  quiz.html  cards.html  city.html   ← 9 個頁面
+index.html  episodes.html  wiki.html  request.html  map.html  city.html  play.html  battle.html  quiz.html  cards.html   ← 10 個頁面
 assets/
   css/site.css            樣式（設計 token 在 :root）
   js/config.js            站名、標語、平台連結、後端網址 apiUrl        ⚠️ 謹慎
@@ -198,14 +198,14 @@ favicon.ico  site.webmanifest
 完成任一任務解鎖，全部完成變金卡。所以**新增來賓時照 §4 填好 `episode`、加進 `PERSONA_QUIZ`，卡片就會自動出現**；預告集上架後，「收聽」任務也會自動加上。進度只存在訪客瀏覽器（localStorage `sgby_cards_v1`），不送到後端。
 
 ### CITY_SPOTS 走進三國城池（`city.html`）
-2.5D 等角視角的「示意」東漢郡城，11 個探索點。文字在 `data.js`，建築與地點位置在 `city.js`（`SPOT_AT`）。
+2.5D 等角視角的「示意」東漢郡城，11 個探索點；點數字會飛過去放大（改 SVG viewBox），放大後可拖曳移動、按「看全城」或 Esc 回到全景。文字在 `data.js`，建築與地點位置在 `city.js`（`SPOT_AT`）。
 ```js
 { id: "cang", name: "糧倉", sub: "一句話副標", text: "這是什麼地方（白話）", fact: "💡 你知道嗎（最好連到節目人物或戰役）",
   source: "《三國志・武帝紀》", link: { href: "battle.html#guandu", text: "⚔️ 換你當曹操" } }   // link 選填
 ```
 - `id` 不可改（地圖位置用它找）；要新增地點得同時改 `city.js` 的建築與 `SPOT_AT`，以及 `tools/check_data.js` 的 `CITY_IDS`。
 - 城是想像的示意城，說明文字要講「漢代一般的城」，不要寫成某座真實城市；`fact` 一定要有出處（史書或考古出土文物）。
-- 探索進度存在訪客瀏覽器（localStorage `sgby_city_v1`）。這一頁不在導覽列，入口在首頁「三國小百科」區、地圖頁。
+- 探索進度存在訪客瀏覽器（localStorage `sgby_city_v1`）。這一頁在「小百科」區的分頁籤裡，首頁「邊聽邊玩」也有入口。
 
 ### PERSONA_QUIZ 心理測驗
 每題 `{ q, options: [{ t: "選項文字", p: ["人物id", ...] }] }`。選到的選項替列出的人物各加 1 分，最高分者為結果。新增來賓時把他加進至少 2 個選項，並注意不要讓某人出現次數遠多於其他人。
@@ -227,6 +227,12 @@ favicon.ico  site.webmanifest
 - 顏色 token 定義在 `site.css` 的 `:root`：`--curtain` `--curtain-deep` `--lantern` `--gold` `--paper` `--ink`；陣營色 `--wei` `--shu` `--wu` `--qun`。新增元件請沿用 token，不要另外寫死顏色。
 - 字體：標題 LXGW WenKai TC，內文 Noto Sans TC。
 - 必須支援手機（375px 寬）且不能出現橫向捲動；手機有底部導覽列，固定元件要避開（`bottom` ≥ 92px）。
+- **導覽只有 5 個主選單**（首頁／節目／小百科／遊戲／點播台），寫在 `core.js` 的 `PAGES`；同一區的頁面用 `SUBNAV` 在頁面標題下方顯示分頁籤：
+  - 小百科：人物・成語・查核（wiki）、地圖時間軸（map）、三國城池（city）
+  - 遊戲：遊戲中心（play）、你來當軍師（battle）、你是誰（quiz）、武將卡冊（cards）
+  新增頁面時，加進其中一區的 `group` 與 `SUBNAV`，**不要再加主選單項目**（手機底部列只放得下 5 個）。首頁的「邊聽邊玩」與遊戲中心共用 `SG.playBento()`。
+- App 圖示（`icon-192/512.png`、`apple-touch-icon.png`、`icon-maskable-512.png`）必須是**不透明的正方形**，四角不能透明，否則手機加到主畫面會出現黑角；系統會自己裁成圓角。
+- 地圖上的文字要畫在紙紋、暗角等覆蓋層的上面；手機版字會變小，白色描邊要變細、字色要深，才看得清楚。
 - 圖示與分享預覽圖在 `assets/img/`；改圖請維持 og-image 1200×630。
 - 每個頁面的 `<head>` 有 `<!-- meta:start -->…<!-- meta:end -->` 區塊（分享預覽、favicon），新增頁面時照抄並修改 title / description / url。
 
@@ -307,5 +313,6 @@ python -m http.server 8765
 | 2026-11-19 | 地圖美術加強、加入年號；新增「武將收集卡」頁面（`cards.html`），導覽列加入「卡冊」 |
 | 2026-11-19 | 收集卡加入 12 位人物造型（取自節目縮圖）、卡面美術改版 |
 | 2026-11-19 | 新增「走進三國城池」2.5D 等角城池頁（`city.html`、`CITY_SPOTS`），白天／夜晚切換 |
+| 2026-11-19 | 版面整理：主選單減為 5 個＋分頁籤、新增遊戲中心（`play.html`）、首頁合併為「邊聽邊玩」；App 圖示改為不透明；手機地圖文字加深 |
 
 > 每次完成一批更新，請在上表新增一行（日期用 YYYY-MM-DD）。

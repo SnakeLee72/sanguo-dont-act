@@ -35,7 +35,7 @@ body {
   font-family: var(--body); font-size: 17px; line-height: 1.75;
   padding-bottom: 76px; /* 手機底部導覽 */
 }
-@media (min-width: 1060px) { body { padding-bottom: 0; } }
+@media (min-width: 900px) { body { padding-bottom: 0; } }
 img { max-width: 100%; display: block; }
 a { color: inherit; }
 button, input, select, textarea { font: inherit; color: inherit; }
@@ -70,12 +70,12 @@ p { margin: 0; }
 .nav-desk a:hover { background: rgba(255,255,255,.08); color: #fff; }
 .nav-desk a[aria-current="page"] { background: var(--lantern); color: var(--curtain-deep); font-weight: 700; }
 .top-cta { display: none; }
-@media (min-width: 1060px) { .nav-desk { display: flex; } .top-cta { display: inline-flex; } }
+@media (min-width: 900px) { .nav-desk { display: flex; } .top-cta { display: inline-flex; } }
 
 /* 手機底部導覽 */
 .nav-mobile {
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 60;
-  display: grid; grid-template-columns: repeat(8, 1fr);
+  display: grid; grid-template-columns: repeat(5, 1fr);
   background: var(--curtain-deep); border-top: 2px solid var(--gold);
   padding-bottom: env(safe-area-inset-bottom);
 }
@@ -88,7 +88,7 @@ p { margin: 0; }
 .nav-badge { position: absolute; top: 2px; right: 50%; margin-right: -22px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--lantern); color: var(--curtain-deep); font-size: 11px; font-weight: 900; line-height: 18px; text-align: center; }
 .nav-desk .nav-badge { top: -6px; right: -8px; margin: 0; }
 .nav-mobile a[aria-current="page"] { color: var(--lantern); font-weight: 700; }
-@media (min-width: 1060px) { .nav-mobile { display: none; } }
+@media (min-width: 900px) { .nav-mobile { display: none; } }
 
 /* ---------- 按鈕 ---------- */
 .btn {
@@ -242,7 +242,7 @@ p { margin: 0; }
   transition: all .25s ease; max-width: calc(100% - 32px); text-align: center;
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-@media (min-width: 1060px) { .toast { bottom: 32px; } }
+@media (min-width: 900px) { .toast { bottom: 32px; } }
 .demo-banner {
   background: #FFF2CC; border-bottom: 1px solid #F0D68A; color: #6B4E00; font-size: 14px; text-align: center; padding: 6px 16px;
 }
@@ -271,7 +271,7 @@ p { margin: 0; }
 .bgm-off { font-size: 20px; line-height: 1; }
 .bgm-btn.on .bgm-ico { display: flex; }
 .bgm-btn.on .bgm-off { display: none; }
-@media (min-width: 1060px) { .bgm-btn { bottom: 24px; right: 24px; } }
+@media (min-width: 900px) { .bgm-btn { bottom: 24px; right: 24px; } }
 
 /* ---------- 雜項 ---------- */
 .fade-in { animation: fadeUp .4s ease-out both; }
@@ -281,3 +281,42 @@ p { margin: 0; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
   html { scroll-behavior: auto; }
 }
+
+/* ---------- 同一區的分頁籤（頁面標題下方） ---------- */
+.subnav { display: flex; gap: 8px; margin-top: 20px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; padding-bottom: 2px; }
+.subnav::-webkit-scrollbar { display: none; }
+.subnav a { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 999px; text-decoration: none; font-weight: 700; font-size: 14px;
+  color: #F6DFC0; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18); transition: background .15s; position: relative; }
+.subnav a:hover { background: rgba(255,255,255,.16); color: #fff; }
+.subnav a[aria-current="page"] { background: var(--lantern); color: var(--curtain-deep); border-color: var(--lantern); }
+.subnav .nav-badge { top: -6px; right: -6px; margin: 0; }
+/* 頁尾網站地圖 */
+.foot-links { display: grid; grid-template-columns: 1fr 1fr; column-gap: 16px; }
+
+/* ---------- 邊聽邊玩：首頁、遊戲中心共用 ---------- */
+.bento { display: grid; gap: 16px; }
+@media (min-width: 860px) { .bento { grid-template-columns: 1.1fr 1fr; } }
+.bento-side { display: grid; gap: 14px; grid-template-columns: 1fr 1fr; }
+.tile { display: flex; flex-direction: column; gap: 6px; padding: 18px; border-radius: 20px; background: var(--card); border: 1px solid var(--line);
+  box-shadow: var(--shadow); text-decoration: none; color: var(--ink); transition: transform .2s, border-color .2s; min-width: 0; }
+a.tile:hover { transform: translateY(-3px); border-color: var(--gold); }
+.tile .t-ico { width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; font-size: 24px; background: var(--paper-2); box-shadow: inset 0 0 0 1px var(--line); }
+.tile h3 { font-size: 20px; line-height: 1.25; }
+.tile p { font-size: 14px; color: var(--muted); }
+.tile .t-go { margin-top: auto; color: var(--curtain); font-weight: 700; font-size: 14px; padding-top: 4px; }
+.tile .t-faces { display: flex; padding-left: 6px; }
+.tile .t-faces .avatar { margin-left: -6px; }
+.tile .t-bar { height: 8px; border-radius: 4px; background: var(--paper-2); overflow: hidden; }
+.tile .t-bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--curtain), var(--gold)); border-radius: 4px; }
+.tile-feature { background: radial-gradient(ellipse at 85% 0%, #B53A2A, var(--curtain-dark) 55%, var(--curtain-deep)); color: #FFF4DE; border: 0; padding: 24px; gap: 10px; }
+.tile-feature .kick { color: var(--lantern); font-weight: 700; font-size: 14px; }
+.tile-feature h3 { font-size: clamp(26px, 3.6vw, 34px); color: #fff; }
+.tile-feature > p { color: #F0D3B0; font-size: 15px; }
+.battle-list { display: grid; gap: 10px; margin-top: 6px; }
+.battle-go { display: flex; align-items: center; gap: 12px; text-decoration: none; color: #fff; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.16); border-radius: 14px; padding: 10px 14px; transition: background .15s, transform .15s; }
+.battle-go:hover { background: rgba(255,255,255,.14); transform: translateX(3px); }
+.battle-go > div { flex: 1; min-width: 0; }
+.battle-go p { font-size: 12px; color: #E9C9A0; }
+.battle-go h4 { font-family: var(--head); font-size: 20px; }
+.battle-go .go { color: var(--lantern); font-weight: 900; font-size: 20px; }
+@media (max-width: 420px) { .bento-side { gap: 10px; } .bento-side .tile { padding: 14px; } .bento-side .tile h3 { font-size: 17px; } .bento-side .tile p { font-size: 13px; } }

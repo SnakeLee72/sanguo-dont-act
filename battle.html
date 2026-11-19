@@ -65,6 +65,12 @@
   .map .sack { fill: var(--lantern); stroke: var(--ink); stroke-width: .8; }
   .map .wave { fill: none; stroke: var(--river); stroke-width: 1.2; }
   .map .pl text { font-size: 14px; font-weight: 700; fill: var(--ink); paint-order: stroke; stroke: var(--paper-2); stroke-width: 4px; stroke-linejoin: round; }
+  /* 手機上地圖縮小，地名放大、描邊變細，避免白邊吃掉字 */
+  @media (max-width: 560px) {
+    .map .pl text { font-family: var(--body); font-weight: 900; font-size: 17px; stroke-width: 3px; fill: #2A1810; }
+    .map .river-name { font-size: 17px; }
+    .map .compass text { font-size: 15px; }
+  }
   .map .pl .ring { fill: rgba(240,178,62,.18); stroke: var(--lantern); stroke-width: 2.5; opacity: 0; }
   .map .pl.focus .ring { opacity: 1; animation: ring 1.8s ease-out infinite; transform-box: fill-box; transform-origin: center; }
   @keyframes ring { from { transform: scale(.7); opacity: 1; } to { transform: scale(1.7); opacity: 0; } }
