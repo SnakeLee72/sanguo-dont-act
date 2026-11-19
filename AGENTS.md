@@ -17,7 +17,7 @@
 | 技術 | 純 HTML / CSS / 原生 JavaScript。**沒有框架、沒有 npm 套件、沒有打包工具** |
 | 語言 | 網站內容一律**繁體中文（台灣用語）** |
 | 讀者 | 小學生到大人，以親子共聽為主 |
-| 節目來源 | YouTube：https://www.youtube.com/@Snake-yl3il/videos<br>Spotify：https://open.spotify.com/show/3x36G48NufkZM1Er2Mvp2b |
+| 節目來源 | YouTube：https://www.youtube.com/@sanguo-dont-act/videos<br>Spotify：https://open.spotify.com/show/3x36G48NufkZM1Er2Mvp2b |
 
 節目設定：曹操、諸葛亮、小喬三位主持人跨越時空，每集訪問一位三國人物；「史官提醒」負責區分《三國演義》（小說）與《三國志》（正史）。
 官方標語：「《三國演義》沒說的，今天當面問清楚！」／「曹操問動機，諸葛亮想辦法，小喬問真話。」
@@ -67,7 +67,7 @@ favicon.ico  site.webmanifest
 **觸發**：站長說「YouTube / Spotify 有更新，請同步網站」。
 
 1. **抓資料**
-   - YouTube 影片頁 `https://www.youtube.com/@Snake-yl3il/videos`：取得標題與影片 ID（`watch?v=` 後面 11 碼）。
+   - YouTube 影片頁 `https://www.youtube.com/@sanguo-dont-act/videos`：取得標題與影片 ID（`watch?v=` 後面 11 碼）。
    - Spotify 節目頁 `https://open.spotify.com/show/3x36G48NufkZM1Er2Mvp2b`：取得單集說明、長度、日期與單集 ID（`/episode/` 後面 22 碼）。說明欄裡有「史實小提醒」與「核心句」，是寫小百科的主要依據。
    - 和 `EPISODES` 比對，找出網站還沒有的集數。
 2. **改 `EPISODES`**（新的放最上面；`status: "upcoming"` 的預告集放在最上方）
