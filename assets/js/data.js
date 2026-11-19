@@ -908,10 +908,10 @@ const BATTLES = [
    地區 id：liang 涼州 sili 司隸 bing 并州 you 幽州 ji 冀州 qing 青州 yan 兗州 xu 徐州 yu 豫州
             huainan 淮南 jiangdong 江東 jingbei 荊北 jingnan 荊南 hanzhong 漢中 yi 益州 jiao 交州
    城市 id：luoyang changan xu ye chengdu jianye xiangyang jiangling wuchang
-   疆界是示意，只標出每一區「主要」由誰控制。 */
+   era 是當年的年號；疆界是示意，只標出每一區「主要」由誰控制。 */
 const TIMELINE = [
   {
-    year: 184, title: "黃巾之亂",
+    year: 184, era: "中平元年（東漢）", title: "黃巾之亂",
     text: "張角帶領「黃巾軍」起事，天下大亂。朝廷讓各地自己招兵平亂，曹操、劉備、孫堅都在這時候登場，各地的州牧、太守也慢慢掌握了兵權。",
     source: "《後漢書・靈帝紀》《三國志・武帝紀》《三國志・先主傳》",
     regions: {
@@ -924,7 +924,7 @@ const TIMELINE = [
     guests: ["caocao", "liubei", "guanyu", "zhangfei"]
   },
   {
-    year: 196, title: "群雄割據・曹操迎獻帝",
+    year: 196, era: "建安元年（東漢）", title: "群雄割據・曹操迎獻帝",
     text: "東漢朝廷名存實亡，各地軍閥互相爭地盤。196 年，曹操把漢獻帝迎到許縣，從此可以用皇帝的名義號令天下。呂布搶下了徐州，孫策在江東打下自己的地盤。",
     source: "《三國志・武帝紀》《三國志・呂布傳》《三國志・孫破虜討逆傳》",
     regions: {
@@ -937,7 +937,7 @@ const TIMELINE = [
     guests: ["caocao", "lvbu", "liubei"]
   },
   {
-    year: 200, title: "官渡之戰",
+    year: 200, era: "建安五年（東漢）", title: "官渡之戰",
     text: "北方兩強對決：袁紹擁有冀、青、幽、并四州，曹操控制皇帝所在的許都。曹操以少勝多，從此成為北方霸主。同一年，孫策過世，弟弟孫權接手江東。",
     source: "《三國志・武帝紀》《三國志・袁紹傳》《三國志・吳主傳》",
     regions: {
@@ -951,7 +951,7 @@ const TIMELINE = [
     guests: ["caocao", "guanyu", "liubei", "sunquan"]
   },
   {
-    year: 208, title: "赤壁之戰",
+    year: 208, era: "建安十三年（東漢）", title: "赤壁之戰",
     text: "曹操統一北方後南下，劉表的兒子劉琮投降，荊州落入曹操手中。孫權和劉備聯手，在赤壁用火攻打敗曹軍，天下三分的局面開始成形。",
     source: "《三國志・武帝紀》《三國志・周瑜傳》《三國志・先主傳》",
     regions: {
@@ -965,7 +965,7 @@ const TIMELINE = [
     guests: ["zhouyu", "zhugeliang", "sunquan", "liubei", "zhaoyun", "caocao"]
   },
   {
-    year: 214, title: "劉備取益州",
+    year: 214, era: "建安十九年（東漢）", title: "劉備取益州",
     text: "赤壁之後，劉備先拿下荊州南部，再在 214 年取得益州，讓關羽留守荊州。曹操平定了西北的關中和涼州，孫權則收服交州，把根據地搬到建業。",
     source: "《三國志・先主傳》《三國志・武帝紀》《三國志・吳主傳》《三國志・步騭傳》",
     regions: {
@@ -978,7 +978,7 @@ const TIMELINE = [
     guests: ["liubei", "zhugeliang", "guanyu", "zhangfei", "zhaoyun"]
   },
   {
-    year: 219, title: "關羽失荊州",
+    year: 219, era: "建安二十四年（東漢）", title: "關羽失荊州",
     text: "劉備在漢中打敗曹軍，自稱漢中王。關羽北上圍攻樊城，大雨讓漢水氾濫，曹軍七支部隊被大水淹沒，關羽「威震華夏」。但孫權派呂蒙、陸遜偷襲荊州，關羽兵敗身亡。",
     source: "《三國志・先主傳》《三國志・關羽傳》《三國志・呂蒙傳》《三國志・陸遜傳》",
     regions: {
@@ -991,7 +991,7 @@ const TIMELINE = [
     guests: ["guanyu", "luxun", "liubei", "sunquan", "caocao"]
   },
   {
-    year: 222, title: "三國鼎立・夷陵之戰",
+    year: 222, era: "魏 黃初三年・蜀漢 章武二年・吳 黃武元年", title: "三國鼎立・夷陵之戰",
     text: "220 年曹操過世，兒子曹丕取代漢朝建立魏國；劉備在成都稱帝，國號仍是「漢」，後人稱為蜀漢；孫權被封為吳王，229 年也稱帝。劉備為關羽報仇東征，卻在夷陵被陸遜打敗。",
     source: "《三國志・文帝紀》《三國志・先主傳》《三國志・吳主傳》",
     regions: {
@@ -1005,7 +1005,7 @@ const TIMELINE = [
     guests: ["luxun", "liubei", "sunquan"]
   },
   {
-    year: 234, title: "諸葛亮北伐・五丈原",
+    year: 234, era: "魏 青龍二年・蜀漢 建興十二年・吳 嘉禾三年", title: "諸葛亮北伐・五丈原",
     text: "劉備過世後，諸葛亮輔佐劉禪，從 228 年起多次北伐魏國，對手正是司馬懿。234 年，諸葛亮在五丈原病逝，北伐就此告一段落。",
     source: "《三國志・諸葛亮傳》《晉書・宣帝紀》",
     regions: {
@@ -1018,7 +1018,7 @@ const TIMELINE = [
     guests: ["zhugeliang", "simayi"]
   },
   {
-    year: 263, title: "魏滅蜀",
+    year: 263, era: "魏 景元四年・蜀漢 炎興元年・吳 永安六年", title: "魏滅蜀",
     text: "魏國大將鄧艾、鍾會攻入蜀地，劉禪投降，蜀漢滅亡。這時魏國真正掌權的，已經是司馬懿的兒子司馬昭。",
     source: "《三國志・後主傳》《三國志・鄧艾傳》",
     regions: {
@@ -1031,7 +1031,7 @@ const TIMELINE = [
     guests: ["simayi"]
   },
   {
-    year: 280, title: "晉統一天下",
+    year: 280, era: "晉 太康元年", title: "晉統一天下",
     text: "265 年，司馬懿的孫子司馬炎取代魏國，建立晉朝。280 年，晉軍順著長江而下，吳國末代皇帝孫皓投降。三國時代正式結束，天下重新統一。",
     source: "《晉書・武帝紀》《三國志・三嗣主傳》",
     regions: {
