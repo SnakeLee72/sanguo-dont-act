@@ -382,3 +382,29 @@
 🗳️ 下一位來賓由你投票決定 → https://sanguo-dont-act.pages.dev/request?from=spotify
 ```
 
+---
+
+## 「唯才是舉」曹操主題曲 MV
+
+### 📺 YouTube
+
+```text
+📚 本集延伸｜三國別演了 官網
+🔍 「曹操燒掉部下寫給袁紹的信」是真的嗎？先猜再翻牌 → https://sanguo-dont-act.pages.dev/wiki?from=yt#s=fenxin
+📖 成語「唯才是舉」典故與造句 → https://sanguo-dont-act.pages.dev/wiki?from=yt#i=weicai
+🏮 官網首頁 → https://sanguo-dont-act.pages.dev/?from=yt
+🎭 測測你最像哪位三國來賓 → https://sanguo-dont-act.pages.dev/quiz?from=yt
+🗳️ 下一位來賓由你投票決定 → https://sanguo-dont-act.pages.dev/request?from=yt
+```
+
+### 🎧 Spotify
+
+```text
+📚 本集延伸｜三國別演了 官網
+🔍 「曹操燒掉部下寫給袁紹的信」是真的嗎？先猜再翻牌 → https://sanguo-dont-act.pages.dev/wiki?from=spotify#s=fenxin
+📖 成語「唯才是舉」典故與造句 → https://sanguo-dont-act.pages.dev/wiki?from=spotify#i=weicai
+🏮 官網首頁 → https://sanguo-dont-act.pages.dev/?from=spotify
+🎭 測測你最像哪位三國來賓 → https://sanguo-dont-act.pages.dev/quiz?from=spotify
+🗳️ 下一位來賓由你投票決定 → https://sanguo-dont-act.pages.dev/request?from=spotify
+```
+

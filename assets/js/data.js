@@ -30,6 +30,16 @@ const EPISODES = [
     related: { people: [], idioms: [], stories: [] }
   },
   {
+    code: "MV02", type: "mv", label: "曹操主題曲", status: "published", person: "caocao",
+    title: "「唯才是舉」曹操主題曲 MV",
+    question: "西裝筆挺、燙金合約，Disco 節拍唱出唯才是舉！",
+    lesson: "",
+    desc: "曹操主題曲《唯才是舉》Disco-Funk，西裝筆挺、燙金合約，Disco 節拍唱出唯才是舉。",
+    date: "2026-11-20", length: "3:52",
+    youtube: "SnFuB_FvTZw", spotify: "",
+    related: { people: ["caocao"], idioms: ["weicai"], stories: ["fenxin"] }
+  },
+  {
     code: "EP10", type: "ep", status: "published", person: "caocao",
     title: "曹操來作客",
     question: "被罵成大反派的人，到底在想什麼？",
