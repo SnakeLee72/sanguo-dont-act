@@ -449,8 +449,8 @@
 
   const pick = PEOPLE.filter(p => p.role === "guest").sort(() => Math.random() - .5).slice(0, 4);
   $("#randomPeople").innerHTML = pick.map(p => `
-    <a class="card card-pad f-${p.faction}" href="${links.person(p.id)}" style="text-decoration:none;display:flex;flex-direction:column;gap:10px">
-      <div style="display:flex;gap:12px;align-items:center">${avatar(p, 50)}<div><b style="font-family:var(--head);font-size:22px">${esc(p.name)}</b><br>${factionChip(p.faction)} <span class="small muted">字${esc(p.zi)}</span></div></div>
+    <a class="card card-pad who-card f-${p.faction}" href="${links.person(p.id)}">
+      <div class="who-top">${avatar(p, 50)}<div><b class="who-name">${esc(p.name)}</b><span class="who-meta">${factionChip(p.faction)}<span class="small muted" style="white-space:nowrap">字${esc(p.zi)}</span></span></div></div>
       <p class="small">${esc(p.oneLine)}</p>
     </a>`).join("");
 

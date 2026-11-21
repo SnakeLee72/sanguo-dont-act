@@ -128,6 +128,7 @@ p { margin: 0; }
     repeating-linear-gradient(90deg, rgba(25,5,5,.18) 0px, rgba(25,5,5,.04) 18px, rgba(255,210,145,.06) 36px, rgba(25,5,5,.03) 54px, rgba(25,5,5,.18) 76px);
 }
 .page-hero .wrap { position: relative; z-index: 1; }
+.page-hero h1, .sec-head h2, .card h2 { text-wrap: balance; }
 .page-hero h1 { font-size: clamp(32px, 6vw, 48px); }
 .page-hero p { color: #F3D9B8; margin-top: 8px; max-width: 680px; }
 .lanterns { position: absolute; top: 0; right: 16px; display: flex; gap: 18px; z-index: 1; }
@@ -183,6 +184,16 @@ p { margin: 0; }
 }
 .search:focus { border-color: var(--curtain); outline: none; }
 .toolbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+/* 手機：分類按鈕排成一列左右滑，搜尋放最前面，收聽進度和排序並排 */
+@media (max-width: 639px) {
+  .toolbar { gap: 10px; }
+  .toolbar > .seg:first-child { width: calc(100% + 32px); flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 0 16px 2px; }
+  .toolbar > .seg:first-child::-webkit-scrollbar { display: none; }
+  .toolbar > .seg:first-child button { flex: 0 0 auto; }
+  .toolbar .search { max-width: none; }
+  .toolbar .tb-row { width: 100%; }
+  .toolbar .tb-row .search { order: -1; }
+}
 
 /* ---------- 單集卡 ---------- */
 .ep-card { display: flex; flex-direction: column; }
@@ -301,6 +312,9 @@ p { margin: 0; }
 /* ---------- 同一區的分頁籤（頁面標題下方） ---------- */
 .subnav { display: flex; gap: 8px; margin-top: 20px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; padding-bottom: 2px; }
 .subnav::-webkit-scrollbar { display: none; }
+.subnav.more-r { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 44px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 44px), transparent); }
+.subnav.more-l { -webkit-mask-image: linear-gradient(90deg, transparent, #000 44px); mask-image: linear-gradient(90deg, transparent, #000 44px); }
+.subnav.more-l.more-r { -webkit-mask-image: linear-gradient(90deg, transparent, #000 44px, #000 calc(100% - 44px), transparent); mask-image: linear-gradient(90deg, transparent, #000 44px, #000 calc(100% - 44px), transparent); }
 .subnav a { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 999px; text-decoration: none; font-weight: 700; font-size: 14px;
   color: #F6DFC0; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18); transition: background .15s; position: relative; }
 .subnav a:hover { background: rgba(255,255,255,.16); color: #fff; }
@@ -342,4 +356,13 @@ a.tile:hover { transform: translateY(-3px); border-color: var(--gold); }
 .tile-row > div { flex: 1; min-width: 0; }
 .tile-row .t-go { margin: 0; padding: 0; white-space: nowrap; }
 .tile .t-tag { display: inline-block; font-size: 12px; font-weight: 700; color: var(--curtain); background: #FFF0DC; border-radius: 6px; padding: 1px 8px; margin-bottom: 2px; }
+/* 手機：三個小遊戲排成一列小卡，不再各佔一大塊 */
+@media (max-width: 639px) {
+  .bento-mini { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .bento-mini .tile-row { flex-direction: column; text-align: center; padding: 14px 6px 12px; gap: 6px; }
+  .bento-mini .tile-row p, .bento-mini .tile-row .t-go { display: none; }
+  .bento-mini .tile-row > div { display: flex; flex-direction: column-reverse; align-items: center; gap: 4px; }
+  .bento-mini .tile-row h3 { font-size: 19px; }
+  .bento-mini .t-tag { margin: 0; padding: 1px 6px; }
+}
 @media (max-width: 420px) { .bento-side { gap: 10px; } .bento-side .tile { padding: 14px; } .bento-side .tile h3 { font-size: 17px; } .bento-side .tile p { font-size: 13px; } }

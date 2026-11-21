@@ -477,6 +477,17 @@
       sn.className = "subnav"; sn.setAttribute("aria-label", grp.label + "分類");
       sn.innerHTML = SUBNAV[grp.key].map(([k, href, ico, label]) => `<a href="${href}"${k === cur ? ' aria-current="page"' : ""}><span aria-hidden="true">${ico}</span>${label}</a>`).join("");
       hero.appendChild(sn);
+      // 手機上分頁籤放不下時：兩側淡出提示還能滑，並把目前這頁捲到看得見的位置
+      const edge = () => {
+        const max = sn.scrollWidth - sn.clientWidth;
+        sn.classList.toggle("more-l", sn.scrollLeft > 4);
+        sn.classList.toggle("more-r", sn.scrollLeft < max - 4);
+      };
+      const on = sn.querySelector('[aria-current="page"]');
+      if (on && sn.scrollWidth > sn.clientWidth) sn.scrollLeft = Math.max(0, on.offsetLeft - sn.offsetLeft - (sn.clientWidth - on.offsetWidth) / 2);
+      edge();
+      sn.addEventListener("scroll", edge, { passive: true });
+      addEventListener("resize", edge);
     }
     const footer = document.createElement("footer");
     footer.className = "footer";

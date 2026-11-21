@@ -61,7 +61,7 @@
   .tc-corner.c3 { bottom: 4px; left: 4px; transform: scaleY(-1); } .tc-corner.c4 { bottom: 4px; right: 4px; transform: scale(-1); }
   .tc-top { display: flex; justify-content: space-between; align-items: center; padding: 0 6px; }
   .tc-seal { width: 26px; height: 26px; border-radius: 50%; background: var(--f); color: #fff; display: grid; place-items: center; font-family: var(--head); font-weight: 700; font-size: 13px; box-shadow: 0 0 0 2px var(--paper), 0 0 0 3px var(--f); }
-  .tcard[class*="f-qun"] .tc-seal { font-size: 10px; }
+  .tcard[class*="f-qun"] .tc-seal { font-size: 12px; width: 32px; border-radius: 13px; }
   .tc-no { font-family: var(--head); font-size: 13px; color: var(--gold); font-weight: 700; letter-spacing: .04em; }
   .tc-art { position: relative; flex: 1; min-height: 0; border-radius: 9px; overflow: hidden; background: linear-gradient(170deg, var(--f), var(--curtain-deep));
     box-shadow: 0 0 0 2px var(--paper), 0 0 0 3.5px var(--gold); display: grid; place-items: center; }
@@ -69,7 +69,7 @@
   .tc-btn:hover .tc-art img { transform: scale(1.05); }
   .tc-ch { font-family: var(--head); font-weight: 700; color: #fff; font-size: clamp(44px, 12vw, 64px); line-height: 1; text-shadow: 0 3px 10px rgba(0,0,0,.35); }
   .tc-art:not(.noimg) .tc-ch { visibility: hidden; }
-  .tc-role { font-size: 11px; font-weight: 700; background: var(--lantern); color: var(--curtain-deep); padding: 1px 7px; border-radius: 6px; margin: 0 auto 0 6px; }
+  .tc-role { font-size: 12px; font-weight: 700; background: var(--lantern); color: var(--curtain-deep); padding: 1px 7px; border-radius: 6px; margin: 0 auto 0 6px; }
   .tc-shine { position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .3s;
     background: radial-gradient(circle at var(--mx) var(--my), rgba(255,255,255,.45), transparent 45%); mix-blend-mode: soft-light; }
   .tc-btn:hover .tc-shine { opacity: 1; }
@@ -80,10 +80,10 @@
   .tc-ribbon::after { right: -8px; clip-path: polygon(0 0, 100% 0, 60% 50%, 100% 100%, 0 100%); }
   .tcard.gold .tc-ribbon { background: linear-gradient(135deg, #D9A23A, #B9781A); }
   .tc-name { font-family: var(--head); font-weight: 700; font-size: 19px; letter-spacing: .06em; white-space: nowrap; }
-  .tc-sub { font-size: 11px; color: var(--muted); text-align: center; }
+  .tc-sub { font-size: 12px; color: var(--muted); text-align: center; }
   @media (max-width: 639px) { .tc-btn .tc-sub { display: none; } .tc-btn .tc-ribbon { padding: 2px 14px 3px; } .tc-btn .tc-name { font-size: 17px; } .tc-in { gap: 3px; padding: 8px 7px 7px; } }
-  .tc-tags { font-size: 11px; color: var(--f); font-weight: 700; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .tc-foot { font-size: 11px; text-align: center; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 4px; font-weight: 700; }
+  .tc-tags { font-size: 12px; color: var(--f); font-weight: 700; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tc-foot { font-size: 12px; text-align: center; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 4px; font-weight: 700; }
   .tcard.gold .tc-foot { color: var(--gold); letter-spacing: .1em; }
   /* 未解鎖：只看得到剪影 */
   .tcard.locked { --edge: #CDBFA9; --f: #8C7B6B; }
