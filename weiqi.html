@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>吃子棋｜三國別演了</title>
+<meta name="description" content="圍棋入門玩法「吃子棋」：先吃到對手的棋子就贏！會提示被叫吃的棋、顯示每塊棋的「氣」，可以對電腦或兩人對戰。" />
+<!-- meta:start -->
+<link rel="canonical" href="https://sanguo-dont-act.pages.dev/weiqi" />
+<link rel="icon" href="assets/img/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png" />
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png" />
+<link rel="manifest" href="site.webmanifest" />
+<meta name="theme-color" content="#4D1414" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="三國別演了" />
+<meta property="og:locale" content="zh_TW" />
+<meta property="og:title" content="吃子棋｜三國別演了" />
+<meta property="og:description" content="圍棋入門玩法「吃子棋」：先吃到對手的棋子就贏！會提示被叫吃的棋、顯示每塊棋的「氣」，可以對電腦或兩人對戰。" />
+<meta property="og:url" content="https://sanguo-dont-act.pages.dev/weiqi" />
+<meta property="og:image" content="https://sanguo-dont-act.pages.dev/assets/img/og-image.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="吃子棋｜三國別演了" />
+<meta name="twitter:description" content="圍棋入門玩法「吃子棋」：先吃到對手的棋子就贏！會提示被叫吃的棋、顯示每塊棋的「氣」，可以對電腦或兩人對戰。" />
+<meta name="twitter:image" content="https://sanguo-dont-act.pages.dev/assets/img/og-image.png" />
+<link rel="preconnect" href="https://script.google.com" crossorigin />
+<link rel="preconnect" href="https://script.googleusercontent.com" crossorigin />
+<link rel="preconnect" href="https://i.ytimg.com" />
+<!-- meta:end -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/site.css" />
+<style>
+  .g-wrap { display: grid; gap: 18px; }
+  @media (min-width: 960px) { .g-wrap { grid-template-columns: 1fr 300px; align-items: start; } .g-side { position: sticky; top: 84px; } }
+  .g-wrap > * { min-width: 0; }
+  .g-stage { border-radius: 18px; overflow: hidden; border: 3px solid var(--gold); box-shadow: var(--shadow); background: var(--curtain-deep); }
+  .g-stage canvas { display: block; width: 100%; height: auto; touch-action: none; cursor: crosshair; }
+  .hud { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; padding: 10px 14px; background: var(--paper); border-top: 1px solid var(--line); font-size: 14px; }
+  .hud b { color: var(--curtain); font-size: 17px; }
+  .g-tip { font-size: 14px; color: var(--muted); padding: 8px 14px 12px; background: var(--paper); }
+  .g-side .card { padding: 18px; }
+  .g-side h3 { font-size: 19px; margin-bottom: 8px; }
+  .facts { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; font-size: 14.5px; line-height: 1.7; }
+  .facts li { border-left: 3px solid var(--lantern); padding-left: 10px; }
+  .facts .src { display: block; font-size: 12px; color: var(--muted); }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .wq-opts { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; margin-bottom: 12px; font-size: 14px; }
+  .wq-opts .grp { display: inline-flex; gap: 4px; align-items: center; }
+  .wq-opts .grp > span { color: var(--muted); margin-right: 2px; }
+  .seg-b { border: 1.5px solid var(--line); background: var(--card); color: var(--ink); border-radius: 999px; padding: 5px 12px; font-weight: 700; font-size: 13px; }
+  .seg-b.on { background: var(--curtain); border-color: var(--curtain); color: #fff; }
+  .wq-stage { max-width: 560px; background: #3E200F; padding: 12px; }
+  .wq-stage svg { display: block; width: 100%; height: auto; cursor: pointer; touch-action: manipulation; border-radius: 10px; box-shadow: 0 6px 18px -8px rgba(0,0,0,.6); }
+  .wq-lines path { stroke: rgba(60,35,10,.75); stroke-width: 1.3; }
+  .wq-edge { fill: none; stroke: rgba(60,35,10,.9); stroke-width: 2.2; }
+  .wq-star { fill: rgba(60,35,10,.85); }
+  .wq-atari { fill: none; stroke: #D7263D; stroke-width: 3; stroke-dasharray: 5 4; animation: wqPulse 1.1s ease-in-out infinite alternate; }
+  @keyframes wqPulse { from { opacity: .45; } to { opacity: 1; } }
+  .wq-last.on-b { fill: #F0B23E; } .wq-last.on-w { fill: #B8432F; }
+  .wq-lib { fill: rgba(46,125,79,.75); stroke: #fff; stroke-width: 1.5; }
+  .wq-stage { background: linear-gradient(160deg, #4A2A14, #2E180A); }
+  .bowl { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px 3px 8px; border-radius: 999px; background: radial-gradient(circle at 40% 30%, #C9985A, #7A4A22); color: #FFF4DE; font-weight: 700; font-size: 13px; box-shadow: inset 0 -2px 4px rgba(0,0,0,.35); }
+  .pip { display: inline-block; width: 13px; height: 13px; border-radius: 50%; border: 1.5px dashed rgba(255,244,222,.6); }
+  .pip.got.w { border: 0; background: radial-gradient(circle at 35% 30%, #fff, #D3C9B0); box-shadow: 0 1px 2px rgba(0,0,0,.4); }
+  .pip.got.b { border: 0; background: radial-gradient(circle at 35% 30%, #5E6270, #050508); box-shadow: 0 1px 2px rgba(0,0,0,.4); }
+  .wq-pop { font-family: var(--head); font-weight: 700; font-size: 18px; fill: #B8432F; text-anchor: middle; paint-order: stroke; stroke: #FFF6E2; stroke-width: 4px; }
+  .wq-ctrl { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 10px 14px; background: var(--paper); }
+  .wq-ctrl label { font-size: 13px; color: var(--muted); display: inline-flex; gap: 6px; align-items: center; margin-left: auto; }
+  .wq-stage .hud, .wq-stage .g-tip, .wq-stage .wq-ctrl { margin: 0 -12px; }
+  .wq-stage .g-tip { margin-bottom: -12px; border-radius: 0 0 14px 14px; }
+  @media (prefers-reduced-motion: reduce) { .wq-atari { animation: none; } }
+  .th-res h2 { font-size: clamp(26px, 5vw, 34px); color: var(--curtain); margin: 4px 0; }
+  .th-res { display: grid; gap: 8px; }
+</style>
+</head>
+<body data-page="weiqi">
+<main>
+  <section class="page-hero">
+    <div class="lanterns" aria-hidden="true"><span class="lantern"></span><span class="lantern"></span><span class="lantern"></span></div>
+    <div class="wrap">
+      <h1>⚫ 吃子棋</h1>
+      <p>曹操、王粲、費禕都愛下圍棋！先從入門的「吃子棋」開始：誰先吃到對手的棋子，誰就贏。</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="wrap">
+      <div class="g-wrap">
+        <div>
+          <div class="wq-opts">
+            <span class="grp" role="group" aria-label="對戰方式"><span>對手</span><button class="seg-b on" data-mode="ai" aria-pressed="true">🤖 電腦</button><button class="seg-b" data-mode="two" aria-pressed="false">👥 兩人</button></span>
+            <span class="grp" role="group" aria-label="棋盤大小"><span>棋盤</span><button class="seg-b" data-size="7" aria-pressed="false">7 路</button><button class="seg-b on" data-size="9" aria-pressed="true">9 路</button></span>
+            <span class="grp" role="group" aria-label="勝利條件"><span>先吃</span><button class="seg-b on" data-target="1" aria-pressed="true">1 顆</button><button class="seg-b" data-target="3" aria-pressed="false">3 顆</button><button class="seg-b" data-target="5" aria-pressed="false">5 顆</button></span>
+          </div>
+          <div class="g-stage wq-stage">
+            <svg id="board" role="img" aria-label="吃子棋棋盤：點交叉點下棋"></svg>
+            <div class="hud" id="hud" aria-live="polite" style="margin-top:12px"></div>
+            <div class="wq-ctrl">
+              <button class="btn btn-line btn-sm" id="undo">↶ 悔棋</button>
+              <button class="btn btn-line btn-sm" id="restart">↺ 重新開始</button>
+              <label><input type="checkbox" id="hints" checked> 提示被叫吃的棋</label>
+            </div>
+            <p class="g-tip">🎯 玩法：黑棋先下，輪流把棋子下在<b>線的交叉點</b>上。一顆棋（或連在一起的一塊棋）旁邊的空點叫「<b>氣</b>」，氣全被對方堵住就會被吃掉。只剩一口氣叫「<b>叫吃</b>」（紅色虛線圈），要趕快逃！滑鼠移到棋子上（手機長按）可以看它還有幾口氣。</p>
+          </div>
+          <div id="result" class="card card-pad" hidden style="margin-top:16px"></div>
+        </div>
+        <aside class="g-side">
+          <div class="card">
+            <h3>📜 史官小知識</h3>
+            <ul class="facts">
+              <li>曹操很會下圍棋，跟當時有名的高手山子道、王九真、郭凱都能下得不相上下。<span class="src">《三國志・武帝紀》裴松之注引《博物志》</span></li>
+              <li>王粲看人下棋，棋盤被弄亂了，他能把每一顆棋子放回原位；大家用布蓋住棋盤考他，再擺一次，一子不差。<span class="src">《三國志・王粲傳》</span></li>
+              <li>魏軍打來時，蜀漢的費禕要出發迎戰，來敏找他下圍棋，費禕還專心下完，一點也不慌。<span class="src">《三國志・費禕傳》</span></li>
+              <li>吳國的嚴武圍棋下得最好，沒有人比得上，被列入當時的「八絕」。<span class="src">《三國志・趙達傳》裴松之注引《吳錄》</span></li>
+              <li>考古出土的東漢石棋盤是縱橫 17 道，今天標準的圍棋盤是 19 道。<span class="src">河北望都東漢墓出土石棋盤</span></li>
+              <li>《三國演義》裡關羽一邊刮骨療毒、一邊下棋；正史只說他照常喝酒吃肉、談笑，沒有提到下棋。<span class="src">《三國志・關羽傳》</span></li>
+              <li>「吃子棋」是今天小朋友學圍棋的入門玩法，先學會「吃」，再學「圍地」。</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/weiqi.js"></script>
+</body>
+</html>

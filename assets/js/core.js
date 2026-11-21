@@ -425,6 +425,11 @@
         ${tile("city.html", "🏯", "走進三國城池", "點一點東漢的城，看三國人怎麼生活。")}
         ${tile("quiz.html", "🎭", "你是哪位來賓？", "7 題心理測驗，測完直接聽那一集。", `<span class="t-faces">${guests.slice(0, 4).map(p => avatar(p, 26)).join("")}</span>`)}
         ${tile("cards.html", "🃏", "武將收集卡", `已收集 <b>${cc.got}</b> / ${cc.total} 張${cc.gold ? `，金卡 ${cc.gold} 張` : ""}`, `<span class="t-bar"><i style="width:${cc.got / cc.total * 100}%"></i></span>`)}
+      </div>
+      <div class="bento-mini">
+        <a class="tile tile-row" href="touhu.html"><span class="t-ico" aria-hidden="true">🏺</span><div><span class="t-tag">三國宴會遊戲</span><h3>投壺</h3><p>拉弓瞄準，把箭投進壺裡，穿過壺耳還有加分！</p></div><span class="t-go">玩 →</span></a>
+        <a class="tile tile-row" href="danqi.html"><span class="t-ico" aria-hidden="true">🎯</span><div><span class="t-tag">曹丕最拿手</span><h3>彈棋</h3><p>把棋子彈出去，撞掉對手的棋子。可以對電腦！</p></div><span class="t-go">玩 →</span></a>
+        <a class="tile tile-row" href="weiqi.html"><span class="t-ico" aria-hidden="true">⚫</span><div><span class="t-tag">圍棋入門</span><h3>吃子棋</h3><p>曹操、王粲都愛下圍棋！先吃到對手的棋子就贏。</p></div><span class="t-go">玩 →</span></a>
       </div>`;
   }
 
@@ -434,12 +439,12 @@
     { key: "home", href: "index.html", label: "首頁", ico: "🏮", group: ["home"] },
     { key: "episodes", href: "episodes.html", label: "節目", ico: "🎧", group: ["episodes"] },
     { key: "wiki", href: "wiki.html", label: "小百科", ico: "📜", group: ["wiki", "map", "city"] },
-    { key: "play", href: "play.html", label: "遊戲", ico: "🎮", group: ["play", "battle", "quiz", "cards"] },
+    { key: "play", href: "play.html", label: "遊戲", ico: "🎮", group: ["play", "battle", "touhu", "danqi", "weiqi", "quiz", "cards"] },
     { key: "request", href: "request.html", label: "點播台", ico: "🙋", group: ["request"] }
   ];
   const SUBNAV = {
     wiki: [["wiki", "wiki.html", "📜", "人物・成語・查核"], ["map", "map.html", "🗺️", "地圖時間軸"], ["city", "city.html", "🏯", "三國城池"]],
-    play: [["play", "play.html", "🎮", "遊戲中心"], ["battle", "battle.html", "⚔️", "你來當軍師"], ["quiz", "quiz.html", "🎭", "你是誰"], ["cards", "cards.html", "🃏", "武將卡冊"]]
+    play: [["play", "play.html", "🎮", "遊戲中心"], ["battle", "battle.html", "⚔️", "你來當軍師"], ["touhu", "touhu.html", "🏺", "投壺"], ["danqi", "danqi.html", "🎯", "彈棋"], ["weiqi", "weiqi.html", "⚫", "吃子棋"], ["quiz", "quiz.html", "🎭", "你是誰"], ["cards", "cards.html", "🃏", "武將卡冊"]]
   };
   function layout() {
     const cur = document.body.dataset.page;

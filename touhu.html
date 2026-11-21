@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>投壺｜三國別演了</title>
+<meta name="description" content="三國宴會最流行的遊戲！拉弓瞄準、把箭投進壺裡，穿過壺耳還有加分。三回合十二支箭，看你能拿到什麼稱號。" />
+<!-- meta:start -->
+<link rel="canonical" href="https://sanguo-dont-act.pages.dev/touhu" />
+<link rel="icon" href="assets/img/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png" />
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png" />
+<link rel="manifest" href="site.webmanifest" />
+<meta name="theme-color" content="#4D1414" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="三國別演了" />
+<meta property="og:locale" content="zh_TW" />
+<meta property="og:title" content="投壺｜三國別演了" />
+<meta property="og:description" content="三國宴會最流行的遊戲！拉弓瞄準、把箭投進壺裡，穿過壺耳還有加分。三回合十二支箭，看你能拿到什麼稱號。" />
+<meta property="og:url" content="https://sanguo-dont-act.pages.dev/touhu" />
+<meta property="og:image" content="https://sanguo-dont-act.pages.dev/assets/img/og-image.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="投壺｜三國別演了" />
+<meta name="twitter:description" content="三國宴會最流行的遊戲！拉弓瞄準、把箭投進壺裡，穿過壺耳還有加分。三回合十二支箭，看你能拿到什麼稱號。" />
+<meta name="twitter:image" content="https://sanguo-dont-act.pages.dev/assets/img/og-image.png" />
+<link rel="preconnect" href="https://script.google.com" crossorigin />
+<link rel="preconnect" href="https://script.googleusercontent.com" crossorigin />
+<link rel="preconnect" href="https://i.ytimg.com" />
+<!-- meta:end -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/site.css" />
+<style>
+  .g-wrap { display: grid; gap: 18px; }
+  @media (min-width: 960px) { .g-wrap { grid-template-columns: 1fr 300px; align-items: start; } .g-side { position: sticky; top: 84px; } }
+  .g-wrap > * { min-width: 0; }
+  .g-stage { border-radius: 18px; overflow: hidden; border: 3px solid var(--gold); box-shadow: var(--shadow); background: var(--curtain-deep); }
+  .g-stage canvas { display: block; width: 100%; height: auto; touch-action: none; cursor: crosshair; }
+  .hud { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; padding: 10px 14px; background: var(--paper); border-top: 1px solid var(--line); font-size: 14px; }
+  .hud b { color: var(--curtain); font-size: 17px; }
+  .g-tip { font-size: 14px; color: var(--muted); padding: 8px 14px 12px; background: var(--paper); }
+  .g-side .card { padding: 18px; }
+  .g-side h3 { font-size: 19px; margin-bottom: 8px; }
+  .facts { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; font-size: 14.5px; line-height: 1.7; }
+  .facts li { border-left: 3px solid var(--lantern); padding-left: 10px; }
+  .facts .src { display: block; font-size: 12px; color: var(--muted); }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .th-res h2 { font-size: clamp(26px, 5vw, 34px); color: var(--curtain); margin: 4px 0; }
+  .th-res { display: grid; gap: 8px; }
+</style>
+</head>
+<body data-page="touhu">
+<main>
+  <section class="page-hero">
+    <div class="lanterns" aria-hidden="true"><span class="lantern"></span><span class="lantern"></span><span class="lantern"></span></div>
+    <div class="wrap">
+      <h1>🏺 投壺</h1>
+      <p>漢代到三國，宴會上最流行的遊戲：把箭投進壺裡！三回合、每回合四支箭，壺會越放越遠。</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="wrap">
+      <div class="g-wrap">
+        <div>
+          <div class="g-stage">
+            <canvas id="game" width="800" height="450" aria-label="投壺遊戲：按住畫面往後拉，放開把箭投出去"></canvas>
+            <div class="hud" id="hud" aria-live="polite"></div>
+            <p class="g-tip">🎯 玩法：<b>按住畫面往後拉</b>（像拉弓），拉越遠力道越大，放開就投出去。投進壺口 +10 分，穿過壺耳「貫耳」+20 分。</p>
+          </div>
+          <div id="result" class="card card-pad" hidden style="margin-top:16px"></div>
+        </div>
+        <aside class="g-side">
+          <div class="card">
+            <h3>📜 史官小知識</h3>
+            <ul class="facts">
+              <li>投壺是從「射箭禮」變來的宴會遊戲：主人和客人輪流把箭投進壺裡，《禮記》裡還有一整篇〈投壺〉，記載規矩和每人投四支箭。<span class="src">《禮記・投壺》</span></li>
+              <li>東漢將軍祭遵就算在軍中，喝酒作樂時也一定唱雅歌、玩投壺。<span class="src">《後漢書・祭遵傳》</span></li>
+              <li>魏國的邯鄲淳寫了一篇〈投壺賦〉獻給曹丕，曹丕很喜歡，賞他一千匹絹。<span class="src">《三國志・王粲傳》裴松之注引《魏略》</span></li>
+              <li>這個遊戲的計分（入壺 10 分、貫耳 20 分）是為了好玩設計的，古代有自己的算法。</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/touhu.js"></script>
+</body>
+</html>

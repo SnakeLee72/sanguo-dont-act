@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>彈棋｜三國別演了</title>
+<meta name="description" content="曹丕最拿手的遊戲！把自己的棋子彈出去，撞掉對手的棋子。棋盤中間凸起，球路會轉彎，可以對電腦或兩人對戰。" />
+<!-- meta:start -->
+<link rel="canonical" href="https://sanguo-dont-act.pages.dev/danqi" />
+<link rel="icon" href="assets/img/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png" />
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png" />
+<link rel="manifest" href="site.webmanifest" />
+<meta name="theme-color" content="#4D1414" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="三國別演了" />
+<meta property="og:locale" content="zh_TW" />
+<meta property="og:title" content="彈棋｜三國別演了" />
+<meta property="og:description" content="曹丕最拿手的遊戲！把自己的棋子彈出去，撞掉對手的棋子。棋盤中間凸起，球路會轉彎，可以對電腦或兩人對戰。" />
+<meta property="og:url" content="https://sanguo-dont-act.pages.dev/danqi" />
+<meta property="og:image" content="https://sanguo-dont-act.pages.dev/assets/img/og-image.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="彈棋｜三國別演了" />
+<meta name="twitter:description" content="曹丕最拿手的遊戲！把自己的棋子彈出去，撞掉對手的棋子。棋盤中間凸起，球路會轉彎，可以對電腦或兩人對戰。" />
+<meta name="twitter:image" content="https://sanguo-dont-act.pages.dev/assets/img/og-image.png" />
+<link rel="preconnect" href="https://script.google.com" crossorigin />
+<link rel="preconnect" href="https://script.googleusercontent.com" crossorigin />
+<link rel="preconnect" href="https://i.ytimg.com" />
+<!-- meta:end -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/site.css" />
+<style>
+  .g-wrap { display: grid; gap: 18px; }
+  @media (min-width: 960px) { .g-wrap { grid-template-columns: 1fr 300px; align-items: start; } .g-side { position: sticky; top: 84px; } }
+  .g-wrap > * { min-width: 0; }
+  .g-stage { border-radius: 18px; overflow: hidden; border: 3px solid var(--gold); box-shadow: var(--shadow); background: var(--curtain-deep); }
+  .g-stage canvas { display: block; width: 100%; height: auto; touch-action: none; cursor: crosshair; }
+  .hud { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; padding: 10px 14px; background: var(--paper); border-top: 1px solid var(--line); font-size: 14px; }
+  .hud b { color: var(--curtain); font-size: 17px; }
+  .g-tip { font-size: 14px; color: var(--muted); padding: 8px 14px 12px; background: var(--paper); }
+  .g-side .card { padding: 18px; }
+  .g-side h3 { font-size: 19px; margin-bottom: 8px; }
+  .facts { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; font-size: 14.5px; line-height: 1.7; }
+  .facts li { border-left: 3px solid var(--lantern); padding-left: 10px; }
+  .facts .src { display: block; font-size: 12px; color: var(--muted); }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .dq-modes { margin-bottom: 12px; }
+  .dq-stage { max-width: 620px; }
+  .dq-stage canvas { cursor: grab; }
+  .th-res h2 { font-size: clamp(26px, 5vw, 34px); color: var(--curtain); margin: 4px 0; }
+  .th-res { display: grid; gap: 8px; }
+</style>
+</head>
+<body data-page="danqi">
+<main>
+  <section class="page-hero">
+    <div class="lanterns" aria-hidden="true"><span class="lantern"></span><span class="lantern"></span><span class="lantern"></span></div>
+    <div class="wrap">
+      <h1>🎯 彈棋</h1>
+      <p>曹丕說，各種遊戲裡他只有彈棋玩得最精！把棋子彈出去，把對手的棋子撞出棋盤。</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="wrap">
+      <div class="g-wrap">
+        <div>
+          <div class="dq-modes row" role="group" aria-label="對戰方式">
+            <button class="btn btn-red btn-sm" data-mode="ai" aria-pressed="true">🤖 對電腦</button>
+            <button class="btn btn-line btn-sm" data-mode="two" aria-pressed="false">👥 兩人對戰（同一台裝置）</button>
+          </div>
+          <div class="g-stage dq-stage">
+            <canvas id="game" width="600" height="600" aria-label="彈棋遊戲：拖曳自己的棋子往後拉，放開彈出去"></canvas>
+            <div class="hud" id="hud" aria-live="polite"></div>
+            <p class="g-tip">🎯 玩法：<b>按住自己的棋子往後拉</b>，放開就彈出去。把對手的棋子撞出棋盤就算吃掉，先吃光對手 6 枚棋子的人贏！棋盤中間是凸起來的，棋子經過會偏向外面。</p>
+          </div>
+          <div id="result" class="card card-pad" hidden style="margin-top:16px"></div>
+        </div>
+        <aside class="g-side">
+          <div class="card">
+            <h3>📜 史官小知識</h3>
+            <ul class="facts">
+              <li>曹丕在自傳裡說，各種遊戲他都不太喜歡，只有彈棋玩得最精。<span class="src">曹丕《典論・自敘》</span></li>
+              <li>傳說曹丕玩彈棋，用手巾的一角一拂就能打中；有位客人用頭巾角來彈，竟然比曹丕還厲害。<span class="src">《世說新語・巧藝》</span></li>
+              <li>魏國邯鄲淳的《藝經》說，彈棋是兩人對局，黑棋、白棋各六枚。<span class="src">邯鄲淳《藝經》</span></li>
+              <li>唐代詩人李商隱寫過「玉作彈棋局，中心亦不平」，可見彈棋的棋盤中間是凸起來的。<span class="src">李商隱〈無題〉</span></li>
+              <li>彈棋完整的規則已經失傳，這裡是依照記載<b>改編</b>的玩法。</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/danqi.js"></script>
+</body>
+</html>

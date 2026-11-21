@@ -27,13 +27,13 @@
 ## 2. 檔案結構（哪些可以改）
 
 ```
-index.html  episodes.html  wiki.html  request.html  map.html  city.html  play.html  battle.html  quiz.html  cards.html   ← 10 個頁面
+index.html  episodes.html  wiki.html  request.html  map.html  city.html  play.html  battle.html  touhu.html  danqi.html  weiqi.html  quiz.html  cards.html   ← 13 個頁面
 assets/
   css/site.css            樣式（設計 token 在 :root）
   js/config.js            站名、標語、平台連結、後端網址 apiUrl        ⚠️ 謹慎
   js/data.js              ★ 全站內容資料（集數、人物、成語、查核、候選人、題目、測驗）
   js/core.js              共用：導覽列、頁尾、播放器、資料儲存 Store、背景音樂 BGM
-  js/home.js wiki.js request.js battle.js map.js cards.js city.js     各頁邏輯（map.js 內含地圖的地區中心點、城市座標、海岸線；city.js 是 2.5D 城池的畫法與地點位置）
+  js/home.js wiki.js request.js battle.js map.js cards.js city.js touhu.js danqi.js weiqi.js   各頁邏輯（map.js 內含地圖的地區中心點、城市座標、海岸線；city.js 是 2.5D 城池的畫法與地點位置）
   img/                    favicon、og-image.png（分享預覽圖）
   audio/bgm.mp3           背景音樂（96kbps）
 backend/google-apps-script.gs   後端程式（實際執行的是 Google 上的副本）  ⚠️ 謹慎
@@ -207,6 +207,13 @@ favicon.ico  site.webmanifest
 - 城是想像的示意城，說明文字要講「漢代一般的城」，不要寫成某座真實城市；`fact` 一定要有出處（史書或考古出土文物）。
 - 探索進度存在訪客瀏覽器（localStorage `sgby_city_v1`）。這一頁在「小百科」區的分頁籤裡，首頁「邊聽邊玩」也有入口。
 
+### 小遊戲：投壺（`touhu.html`）、彈棋（`danqi.html`）、吃子棋（`weiqi.html`）
+canvas 小遊戲，規則與畫法都在各自的 js 裡，不需要填資料。頁面右側的「史官小知識」必須有出處：
+- 投壺：《禮記・投壺》（每人四矢）、《後漢書・祭遵傳》、《三國志・王粲傳》裴注引《魏略》（邯鄲淳〈投壺賦〉）。遊戲計分是自訂的，頁面已註明。
+- 彈棋：曹丕《典論・自敘》、《世說新語・巧藝》、邯鄲淳《藝經》（黑白各六枚）、李商隱〈無題〉（棋盤中心不平）。完整規則已失傳，頁面已註明是「改編」玩法。
+- 吃子棋：《三國志・武帝紀》裴注引《博物志》（曹操善圍棋）、〈王粲傳〉（覆局）、〈費禕傳〉（與來敏對弈）、〈趙達傳〉裴注引《吳錄》（嚴武）、河北望都東漢墓石棋盤（17 道）；關羽下棋療毒標明是《三國演義》。規則是現代的入門玩法「先吃到 N 顆就贏」，有禁著點與簡單打劫。
+- 最佳紀錄存在訪客瀏覽器（`sgby_touhu_best`、`sgby_danqi_wins`、`sgby_weiqi_wins`）。
+
 ### PERSONA_QUIZ 心理測驗
 每題 `{ q, options: [{ t: "選項文字", p: ["人物id", ...] }] }`。選到的選項替列出的人物各加 1 分，最高分者為結果。新增來賓時把他加進至少 2 個選項，並注意不要讓某人出現次數遠多於其他人。
 
@@ -229,7 +236,7 @@ favicon.ico  site.webmanifest
 - 必須支援手機（375px 寬）且不能出現橫向捲動；手機有底部導覽列，固定元件要避開（`bottom` ≥ 92px）。
 - **導覽只有 5 個主選單**（首頁／節目／小百科／遊戲／點播台），寫在 `core.js` 的 `PAGES`；同一區的頁面用 `SUBNAV` 在頁面標題下方顯示分頁籤：
   - 小百科：人物・成語・查核（wiki）、地圖時間軸（map）、三國城池（city）
-  - 遊戲：遊戲中心（play）、你來當軍師（battle）、你是誰（quiz）、武將卡冊（cards）
+  - 遊戲：遊戲中心（play）、你來當軍師（battle）、投壺（touhu）、彈棋（danqi）、吃子棋（weiqi）、你是誰（quiz）、武將卡冊（cards）
   新增頁面時，加進其中一區的 `group` 與 `SUBNAV`，**不要再加主選單項目**（手機底部列只放得下 5 個）。首頁的「邊聽邊玩」與遊戲中心共用 `SG.playBento()`。
 - App 圖示（`icon-192/512.png`、`apple-touch-icon.png`、`icon-maskable-512.png`）必須是**不透明的正方形**，四角不能透明，否則手機加到主畫面會出現黑角；系統會自己裁成圓角。
 - 地圖上的文字要畫在紙紋、暗角等覆蓋層的上面；手機版字會變小，白色描邊要變細、字色要深，才看得清楚。
@@ -318,5 +325,6 @@ python -m http.server 8765
 
 | 2026-11-20 | EP10 曹操來作客上架；新增 4 則查核（許攸來投、燒信、呂伯奢、寧我負人）；QA01 聽眾問答預告 |
 | 2026-11-21 | 新增「唯才是舉」曹操主題曲 MV（MV02） |
+| 2026-11-21 | 新增小遊戲：投壺（`touhu.html`）、彈棋（`danqi.html`）、吃子棋（`weiqi.html`），放在「遊戲」分頁籤與「邊聽邊玩」 |
 
 > 每次完成一批更新，請在上表新增一行（日期用 YYYY-MM-DD）。
