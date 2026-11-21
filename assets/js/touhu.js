@@ -24,7 +24,7 @@
   /* ---------- 遊戲狀態 ---------- */
   let st;
   function reset() {
-    st = { round: 0, left: ARROWS, score: 0, roundScore: [0, 0, 0], arrow: null, stuck: [], aim: null, msg: null, over: false, bests: best(), fx: [], trail: [], wob: 0, cheer: 0, ring: 0 };
+    st = { round: 0, left: ARROWS, score: 0, roundScore: [0, 0, 0], arrow: null, stuck: [], aim: null, msg: null, over: false, bests: best(), fx: [], trail: [], wob: 0, cheer: 0, ring: 0, pops: [] };
     board(); ui();
   }
   const potX = () => HAND.x + ROUNDS[st.round].d;
@@ -49,7 +49,7 @@
     if (!st.aim) return;
     const v = launchVel(st.aim); st.aim = null;
     if (!v) return;
-    st.arrow = { x: HAND.x, y: HAND.y, vx: v.vx, vy: v.vy, done: false }; st.trail = [];
+    st.arrow = { x: HAND.x, y: HAND.y, vx: v.vx, vy: v.vy, done: false, hit: false, age: 0, rot: 0, spin: 0 }; st.trail = [];
     st.left--; ui();
   });
   cv.addEventListener("pointercancel", () => { st.aim = null; });
@@ -63,22 +63,32 @@
   function step(dt) {
     const a = st.arrow; if (!a || a.done) return;
     const P = pot();
+    a.age += dt;
+    if (a.age > 5) return land("miss", { x: Math.min(W - 20, Math.max(20, a.x)), y: FLOOR }); // 保險：飛太久就算沒進
+    if (a.hit) a.rot += a.spin * dt;
     for (let i = 0; i < 6; i++) {
       const h = dt / 6, px = a.x, py = a.y;
       if (i === 0) { st.trail.push({ x: a.x, y: a.y }); if (st.trail.length > 14) st.trail.shift(); }
       a.vy += G * h; a.x += a.vx * h; a.y += a.vy * h;
-      // 貫耳：箭頭穿過壺耳的圓圈
-      for (const ear of P.ears) if (Math.hypot(a.x - ear.x, a.y - ear.y) < P.earIn) return land("ear", { x: ear.x, y: ear.y });
-      // 從上方掉進壺口
-      if (py < P.mouthY && a.y >= P.mouthY && a.vy > 0) {
-        const off = Math.abs(a.x - P.x);
-        if (off < P.mouthHalf) return land("in", { x: a.x, y: P.mouthY });
-        if (off < P.rimHalf) { a.y = P.mouthY - 1; a.vy *= -.35; a.vx *= -.45; st.wob = .6; burst(a.x, P.mouthY, 8, ["#FFE7A3", "#C9A45A"], 120); continue; } // 撞到壺口邊緣彈開
+      if (!a.hit) {
+        // 貫耳：箭頭穿過壺耳的圓圈
+        for (const ear of P.ears) if (Math.hypot(a.x - ear.x, a.y - ear.y) < P.earIn) return land("ear", { x: ear.x, y: ear.y });
+        // 從上方掉進壺口
+        if (py < P.mouthY && a.y >= P.mouthY && a.vy > 0) {
+          const off = Math.abs(a.x - P.x);
+          if (off < P.mouthHalf) return land("in", { x: a.x, y: P.mouthY });
+          if (off < P.rimHalf) { a.y = P.mouthY - 1; a.vy *= -.35; a.vx *= -.45; st.wob = .6; burst(a.x, P.mouthY, 8, ["#FFE7A3", "#C9A45A"], 120); continue; } // 撞到壺口邊緣彈開
+        }
+        // 撞到壺頸或壺身：彈開、翻滾、掉到地上（之後不再跟壺碰撞，才不會卡住）
+        const inNeck = Math.abs(a.x - P.x) < P.neckHalf && a.y > P.neckTop && a.y < P.neckBot;
+        const inBelly = ((a.x - P.x) / P.bellyRx) ** 2 + ((a.y - P.bellyY) / P.bellyRy) ** 2 < 1;
+        if (inNeck || inBelly) {
+          const side = px < P.x ? -1 : 1;
+          a.hit = true; a.x = px; a.y = py; a.rot = Math.atan2(a.vy, a.vx);
+          a.vx = side * (80 + Math.abs(a.vx) * .2); a.vy = -60 - Math.random() * 60; a.spin = side * (6 + Math.random() * 4);
+          st.wob = .6; burst(px, py, 10, ["#FFE7A3", "#C9A45A"], 140);
+        }
       }
-      // 撞到壺頸或壺身
-      const inNeck = Math.abs(a.x - P.x) < P.neckHalf && a.y > P.neckTop && a.y < P.neckBot;
-      const inBelly = ((a.x - P.x) / P.bellyRx) ** 2 + ((a.y - P.bellyY) / P.bellyRy) ** 2 < 1;
-      if (inNeck || inBelly) { a.x = px; a.y = py; a.vx *= -.3; a.vy *= .2; st.wob = .5; }
       if (a.y >= FLOOR) return land("miss", { x: a.x, y: FLOOR });
       if (a.x > W + 60 || a.x < -60) return land("miss", null);
     }
@@ -92,6 +102,7 @@
     else if (at) burst(at.x, FLOOR, 12, ["#B98A5A", "#8A5A33"], 90, true);
     st.trail = [];
     const pts = kind === "ear" ? 20 : kind === "in" ? 10 : 0;
+    if (pts) st.pops.push({ x: at.x, y: at.y - 20, text: `+${pts}`, t: 1.2, gold: kind === "ear" });
     st.score += pts; st.roundScore[st.round] += pts;
     const [who, say] = pick(LINES[kind]);
     st.msg = { text: kind === "ear" ? "貫耳！+20" : kind === "in" ? "入壺！+10" : "沒進……", who, say, t: 1.6, kind };
@@ -169,9 +180,31 @@
     ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(-24, 2); ctx.quadraticCurveTo(-26, -34, -12, -48); ctx.lineTo(12, -48); ctx.quadraticCurveTo(26, -30, 24, 2); ctx.closePath(); ctx.fill();
     ctx.strokeStyle = "rgba(255,230,180,.55)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(-6, -47); ctx.lineTo(4, -20); ctx.stroke(); // 交領
     // 頭
-    ctx.fillStyle = "#F1D3B0"; ctx.beginPath(); ctx.arc(0, -60, 14, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = opts.skin || "#F1D3B0"; ctx.beginPath(); ctx.arc(0, -60, 14, 0, Math.PI * 2); ctx.fill();
     ctx.fillStyle = "#2A1F1A"; ctx.beginPath(); ctx.arc(0, -64, 14, Math.PI * 1.05, Math.PI * 1.95); ctx.fill();
     if (hat) { ctx.fillStyle = hat; ctx.fillRect(-8, -84, 16, 12); ctx.fillRect(-12, -74, 24, 4); }
+    if (opts.kind === "cao") { // 盔甲、頭盔、鬍子
+      ctx.fillStyle = "#2E2E36"; ctx.beginPath(); ctx.arc(0, -64, 15.5, Math.PI, 0); ctx.fill();
+      ctx.fillStyle = "#C88A22"; ctx.fillRect(-15.5, -66, 31, 4); ctx.beginPath(); ctx.moveTo(-3, -79); ctx.lineTo(0, -88); ctx.lineTo(3, -79); ctx.fill();
+      ctx.fillStyle = "#1E1612"; ctx.beginPath(); ctx.moveTo(-6, -53); ctx.quadraticCurveTo(4, -38, 13, -52); ctx.quadraticCurveTo(6, -48, -6, -53); ctx.fill();
+      ctx.fillStyle = "#8A2323"; ctx.beginPath(); ctx.moveTo(-14, -46); ctx.lineTo(-30, 2); ctx.lineTo(-18, 2); ctx.closePath(); ctx.fill(); // 披風
+      ctx.fillStyle = "#C88A22"; ctx.beginPath(); ctx.arc(-10, -44, 5, 0, Math.PI * 2); ctx.arc(10, -44, 5, 0, Math.PI * 2); ctx.fill();
+    }
+    if (opts.kind === "zhuge") { // 綸巾、眼鏡、羽扇
+      ctx.fillStyle = "#1E1E24"; ctx.fillRect(-11, -86, 22, 14); ctx.fillStyle = "#3F7E55"; ctx.beginPath(); ctx.arc(0, -79, 3, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = "#5A4630"; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(2, -60, 3.6, 0, Math.PI * 2); ctx.arc(10, -60, 3.6, 0, Math.PI * 2); ctx.stroke();
+      const fan = Math.sin(T() * 3) * .15;
+      ctx.save(); ctx.translate(16, -40); ctx.rotate(-.5 + fan);
+      ctx.fillStyle = "#F7F2E6"; ctx.strokeStyle = "rgba(120,110,90,.6)"; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(0, 0); ctx.quadraticCurveTo(-14, -16, -4, -32); ctx.quadraticCurveTo(10, -30, 12, -14); ctx.closePath(); ctx.fill(); ctx.stroke();
+      for (let k = 0; k < 4; k++) { ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(-6 + k * 5, -28 + Math.abs(k - 1.5) * 3); ctx.stroke(); }
+      ctx.fillStyle = "#8A5A33"; ctx.fillRect(-1.5, 0, 3, 10); ctx.restore();
+    }
+    if (opts.kind === "qiao") { // 雙髻與花
+      ctx.fillStyle = "#2A1F1A"; ctx.beginPath(); ctx.arc(-9, -77, 7, 0, Math.PI * 2); ctx.arc(9, -77, 7, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#F28BA8"; [[-13, -80], [13, -80], [-5, -84]].forEach(([fx, fy]) => { ctx.beginPath(); ctx.arc(fx, fy, 2.6, 0, Math.PI * 2); ctx.fill(); });
+      ctx.fillStyle = "rgba(242,139,168,.55)"; ctx.beginPath(); ctx.arc(9, -54, 3, 0, Math.PI * 2); ctx.fill(); // 腮紅
+    }
     ctx.fillStyle = "#2A1F1A"; ctx.beginPath(); ctx.arc(opts.face || 5, -60, 1.8, 0, Math.PI * 2); ctx.fill();
     if (opts.cheer > .1) { ctx.strokeStyle = "#2A1F1A"; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(opts.face || 5, -55, 3.5, .1 * Math.PI, .9 * Math.PI); ctx.stroke(); }
     // 手臂
@@ -211,7 +244,11 @@
     ctx.strokeStyle = "#C88A22"; ctx.lineWidth = 2; for (let i = 1; i < 4; i++) { ctx.beginPath(); ctx.moveTo(sx + i * sw / 4, sy); ctx.lineTo(sx + i * sw / 4, sy + sh); ctx.stroke(); }
     ctx.strokeRect(sx - 6, sy - 6, sw + 12, sh + 12);
     // 燈籠（會閃）
-    [[150, 66], [400, 54], [670, 66]].forEach(([x, y], k) => {
+    // 匾額
+    ctx.strokeStyle = "#C88A22"; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(372, 22); ctx.lineTo(380, 40); ctx.moveTo(428, 22); ctx.lineTo(420, 40); ctx.stroke();
+    ctx.fillStyle = "#2B0C0C"; ctx.fillRect(338, 38, 124, 44); ctx.strokeStyle = "#C88A22"; ctx.lineWidth = 3; ctx.strokeRect(341, 41, 118, 38); ctx.lineWidth = 1; ctx.strokeRect(346, 46, 108, 28);
+    ctx.fillStyle = "#F0B23E"; ctx.font = '700 24px "LXGW WenKai TC", serif'; ctx.textAlign = "center"; ctx.fillText("投　壺", 400, 69); ctx.textAlign = "start";
+    [[150, 66], [650, 66]].forEach(([x, y], k) => {
       const fl = .85 + Math.sin(T() * 6 + k * 2) * .08 + Math.sin(T() * 13 + k) * .05;
       ctx.strokeStyle = "#F3D9B8"; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(x, 22); ctx.lineTo(x, y - 16); ctx.stroke();
       const g = ctx.createRadialGradient(x, y, 2, x, y, 60 * fl); g.addColorStop(0, `rgba(255,190,90,${.45 * fl})`); g.addColorStop(1, "rgba(255,190,90,0)");
@@ -233,11 +270,13 @@
     mat(14, 150);
     // 觀眾：主持人坐在屏風前看
     const ch = st.cheer > 0 ? st.cheer : 0;
-    figure(290, FLOOR, ["#3B4E7A", "#1F2A48"], "#1E1E24", { cheer: ch, face: 6 });
-    figure(352, FLOOR, ["#E9A8B5", "#C46A7E"], null, { cheer: ch, face: 6 });
+    figure(278, FLOOR, ["#3A3A48", "#1E1E28"], null, { cheer: ch, face: 6, kind: "cao", skin: "#D9A77E" });
+    figure(338, FLOOR, ["#5A7A9A", "#2A3E58"], null, { cheer: ch, face: 6, kind: "zhuge" });
+    figure(398, FLOOR, ["#F2B8C6", "#C9708A"], null, { cheer: ch, face: 6, kind: "qiao" });
     // 案几與酒杯
-    ctx.fillStyle = "#5E3A1E"; ctx.fillRect(196, FLOOR - 22, 60, 6); ctx.fillRect(200, FLOOR - 16, 4, 16); ctx.fillRect(248, FLOOR - 16, 4, 16);
-    ctx.fillStyle = "#B8432F"; ctx.beginPath(); ctx.ellipse(214, FLOOR - 25, 7, 3, 0, 0, Math.PI * 2); ctx.fill(); ctx.beginPath(); ctx.ellipse(236, FLOOR - 25, 7, 3, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#5E3A1E"; ctx.fillRect(184, FLOOR - 22, 56, 6); ctx.fillRect(188, FLOOR - 16, 4, 16); ctx.fillRect(232, FLOOR - 16, 4, 16);
+    ctx.fillStyle = "#B8432F"; [200, 222].forEach(x => { ctx.beginPath(); ctx.ellipse(x, FLOOR - 25, 7, 3, 0, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = "#8A2323"; ctx.fillRect(x - 5, FLOOR - 25, 10, 3); ctx.fillStyle = "#B8432F"; });
+    ctx.fillStyle = "#E8DCC0"; ctx.beginPath(); ctx.ellipse(211, FLOOR - 29, 9, 4, 0, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = "#C46A3E"; ctx.beginPath(); ctx.arc(208, FLOOR - 31, 2.5, 0, Math.PI * 2); ctx.arc(214, FLOOR - 31, 2.5, 0, Math.PI * 2); ctx.fill();
     // 箭筒
     ctx.fillStyle = "#6B4A33"; ctx.fillRect(22, FLOOR - 58, 18, 56); ctx.fillStyle = "#C88A22"; ctx.fillRect(22, FLOOR - 58, 18, 4); ctx.fillRect(22, FLOOR - 26, 18, 3);
     for (let i = 0; i < st.left; i++) { ctx.strokeStyle = "#E8DCC0"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(26 + i * 3.5, FLOOR - 56); ctx.lineTo(26 + i * 3.5, FLOOR - 84); ctx.stroke(); ctx.fillStyle = "#B8432F"; ctx.fillRect(24.5 + i * 3.5, FLOOR - 86, 3, 6); }
@@ -282,11 +321,29 @@
   }
   function drawArrow(x, y, ang, alpha = 1) {
     ctx.save(); ctx.globalAlpha = alpha; ctx.translate(x, y); ctx.rotate(ang);
-    ctx.strokeStyle = "#E8DCC0"; ctx.lineWidth = 2.6; ctx.lineCap = "round";
-    ctx.beginPath(); ctx.moveTo(-70, 0); ctx.lineTo(0, 0); ctx.stroke();
-    ctx.fillStyle = "#9AA4AC"; ctx.beginPath(); ctx.moveTo(4, 0); ctx.lineTo(-6, -3.5); ctx.lineTo(-6, 3.5); ctx.closePath(); ctx.fill();
-    ctx.fillStyle = "#B8432F"; ctx.beginPath(); ctx.moveTo(-70, 0); ctx.lineTo(-58, -6); ctx.lineTo(-54, 0); ctx.lineTo(-58, 6); ctx.closePath(); ctx.fill();
+    const g = ctx.createLinearGradient(0, -2, 0, 2); g.addColorStop(0, "#F3E6C8"); g.addColorStop(1, "#B99A68");
+    ctx.strokeStyle = g; ctx.lineWidth = 3; ctx.lineCap = "round";
+    ctx.beginPath(); ctx.moveTo(-70, 0); ctx.lineTo(-2, 0); ctx.stroke();
+    ctx.strokeStyle = "rgba(90,60,30,.6)"; ctx.lineWidth = 1; [-24, -50].forEach(x0 => { ctx.beginPath(); ctx.moveTo(x0, -1.6); ctx.lineTo(x0, 1.6); ctx.stroke(); });
+    ctx.fillStyle = "#AEB8C0"; ctx.beginPath(); ctx.moveTo(6, 0); ctx.lineTo(-6, -4); ctx.lineTo(-3, 0); ctx.lineTo(-6, 4); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "#E8EEF2"; ctx.beginPath(); ctx.moveTo(6, 0); ctx.lineTo(-2, -1.5); ctx.lineTo(-2, 0); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "#B8432F"; ctx.beginPath(); ctx.moveTo(-70, 0); ctx.quadraticCurveTo(-62, -8, -52, -2); ctx.lineTo(-56, 0); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "#8A2323"; ctx.beginPath(); ctx.moveTo(-70, 0); ctx.quadraticCurveTo(-62, 8, -52, 2); ctx.lineTo(-56, 0); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "#F0B23E"; ctx.fillRect(-73, -1, 4, 2);
     ctx.restore();
+  }
+  function drawPops(dt) {
+    st.pops = st.pops.filter(p => (p.t -= dt) > 0);
+    st.pops.forEach(p => {
+      ctx.save(); ctx.globalAlpha = Math.min(1, p.t * 1.8); ctx.textAlign = "center";
+      ctx.font = `900 ${p.gold ? 30 : 26}px "Noto Sans TC", sans-serif`; ctx.lineWidth = 5; ctx.strokeStyle = "rgba(40,10,10,.75)"; ctx.fillStyle = p.gold ? "#F7D774" : "#FFE7A3";
+      const y = p.y - (1.2 - p.t) * 40; ctx.strokeText(p.text, p.x, y); ctx.fillText(p.text, p.x, y); ctx.restore();
+    });
+  }
+  function drawVignette() {
+    const v = ctx.createRadialGradient(W / 2, H * .45, H * .35, W / 2, H * .5, W * .62);
+    v.addColorStop(0, "rgba(0,0,0,0)"); v.addColorStop(1, "rgba(20,5,0,.4)");
+    ctx.fillStyle = v; ctx.fillRect(0, 0, W, H);
   }
   function drawStuck(front) {
     st.stuck.filter(s => (s.kind === "in") !== front).forEach(s => {
@@ -336,8 +393,8 @@
     ctx.clearRect(0, 0, W, H);
     st.cheer = Math.max(0, st.cheer - dt);
     drawScene(); drawStuck(false); drawPot(dt); drawStuck(true); drawTrail();
-    if (st.arrow && !st.arrow.done) drawArrow(st.arrow.x, st.arrow.y, Math.atan2(st.arrow.vy, st.arrow.vx));
-    drawAim(); drawFx(dt); drawMsg(dt);
+    if (st.arrow && !st.arrow.done) drawArrow(st.arrow.x, st.arrow.y, st.arrow.hit ? st.arrow.rot : Math.atan2(st.arrow.vy, st.arrow.vx));
+    drawAim(); drawFx(dt); drawVignette(); drawPops(dt); drawMsg(dt);
     requestAnimationFrame(loop);
   }
   function board() { /* 每回合清空舊箭（保留本回合的） */ }
