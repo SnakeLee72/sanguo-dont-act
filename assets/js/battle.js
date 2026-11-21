@@ -23,6 +23,51 @@
       <path class="flame f1" d="M-6 0c-6-5-2-11 0-18 2 6 7 10 2 18z"/><path class="flame f2" d="M2 0c-4-4-1-9 2-15 2 5 6 9 2 15z"/><path class="flame f3" d="M-3 0c-3-3 0-6 2-10 2 4 4 6 1 10z"/></g>`,
     flag: (side) => `<g class="fx-flag" transform="translate(10 -12)"><path d="M0 12V-24" class="pole"/><path class="cloth" d="M0-24h18q-3 6 0 12H0z" style="fill:${side.color}"/><text x="8.5" y="-14" class="flag-ch">${esc(side.flag)}</text></g>`
   };
+  /* 空地自動種上水墨小樹：用固定亂數，同一場戰役每次長得一樣 */
+  let meas;
+  const TREES = {};
+  function trees(b) {
+    if (TREES[b.id]) return TREES[b.id];
+    if (!meas) { meas = document.createElementNS("http://www.w3.org/2000/svg", "svg"); meas.setAttribute("style", "position:absolute;width:0;height:0;visibility:hidden"); document.body.appendChild(meas); }
+    const avoid = []; // [x, y, 半徑]
+    b.terrain.forEach(t => {
+      if (t.type === "river") {
+        const p = document.createElementNS("http://www.w3.org/2000/svg", "path"); p.setAttribute("d", t.d); meas.appendChild(p);
+        const L = p.getTotalLength();
+        for (let s = 0; s <= L; s += 8) { const q = p.getPointAtLength(s); avoid.push([q.x, q.y, 20]); }
+        p.remove();
+      } else if (t.type === "lake") avoid.push([t.x, t.y, Math.max(t.rx, t.ry) + 12]);
+      else if (t.type === "mountains") t.at.forEach(([x, y, s]) => avoid.push([x, y - 5, s * 1.6 + 6]));
+      else if (t.type === "camps" || t.type === "grass") t.at.forEach(([x, y]) => avoid.push([x, y, 12]));
+    });
+    Object.values(b.places).forEach(p => {
+      const right = p.x > 350, w = [...p.name].length * 15 + 18;
+      avoid.push([p.x, p.y, 24]);
+      for (let k = 0; k <= w; k += 10) avoid.push([p.x + (right ? -k : k), p.y, 15]);
+    });
+    let seed = [...b.id].reduce((s, c) => s * 31 + c.charCodeAt(0), 7) >>> 0;
+    const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
+    const free = (x, y) => x > 24 && x < 376 && y > 26 && y < 280 && !(x < 64 && y > 236) && !(x > 346 && y > 232)
+      && !avoid.some(([ax, ay, r]) => (x - ax) ** 2 + (y - ay) ** 2 < r * r);
+    // 先挑幾個彼此分開的林子中心，再在每個中心旁邊長 3～5 棵
+    const groves = [];
+    for (let k = 0; k < 400 && groves.length < 7; k++) {
+      const x = 30 + rnd() * 340, y = 34 + rnd() * 240;
+      if (free(x, y) && groves.every(([gx, gy]) => (x - gx) ** 2 + (y - gy) ** 2 > 70 * 70)) groves.push([x, y]);
+    }
+    const out = [];
+    groves.forEach(([gx, gy]) => {
+      const n = 3 + Math.floor(rnd() * 3);
+      for (let k = 0, got = 0; k < 20 && got < n; k++) {
+        const a = rnd() * Math.PI * 2, r = 4 + rnd() * 13, x = gx + Math.cos(a) * r, y = gy + Math.sin(a) * r * .7;
+        if (free(x, y) && out.every(([ox, oy]) => (x - ox) ** 2 + (y - oy) ** 2 > 64)) { out.push([x, y, .7 + rnd() * .4]); got++; }
+      }
+    });
+    out.sort((a, c) => a[1] - c[1]); // 後面的樹先畫，前面的樹蓋在上面
+    return (TREES[b.id] = out);
+  }
+  const tree = ([x, y, s]) => `<g transform="translate(${f1(x)} ${f1(y)}) scale(${f1(s)})"><ellipse cx="1" cy="4.5" rx="5" ry="1.4" class="t-shadow"/><path d="M0 0V4" class="t-trunk"/><path d="M0-11C5-10 7-5 5-1.5 3 1-3 1-5-1.5-7-5-5-10 0-11Z" class="t-crown"/></g>`;
+
   function map(b, view) {
     const P = b.places, S = b.sides, focus = new Set(view.focus || []);
     const sideOf = k => S[k] || { color: "var(--muted)" };
@@ -38,7 +83,7 @@
     const place = ([id, p]) => {
       const right = p.x > 350, c = sideOf(p.side).color;
       return `<g class="pl${focus.has(id) ? " focus" : ""}" transform="translate(${p.x} ${p.y})">
-        <circle class="ring" r="16"/>${(ICON[p.icon] || ICON.city)(c)}
+        <ellipse class="ground" cx="0" cy="8" rx="13" ry="3.2"/><circle class="ring" r="16"/>${(ICON[p.icon] || ICON.city)(c)}
         <text x="${right ? -14 : 14}" y="5" text-anchor="${right ? "end" : "start"}">${esc(p.name)}</text></g>`;
     };
     const fx = ([at, kind, side]) => {
@@ -46,10 +91,11 @@
       return pt && FX[kind] ? `<g transform="translate(${pt.x} ${pt.y})">${FX[kind](sideOf(side || pt.side))}</g>` : "";
     };
     const terrain = t => {
-      if (t.type === "river") return `<path id="rv-${b.id}" d="${t.d}" class="river-bank"/><path d="${t.d}" class="river"/><path d="${t.d}" class="river-flow"/>
+      if (t.type === "river") return `<path id="rv-${b.id}" d="${t.d}" class="river-bank"/><path d="${t.d}" class="river-edge"/><path d="${t.d}" class="river"/><path d="${t.d}" class="river-hl"/><path d="${t.d}" class="river-flow"/>
         <text class="river-name" dy="${t.below ? 18 : -9}"><textPath href="#rv-${b.id}" startOffset="${t.label || 10}%">${esc([...t.name].join("　"))}</textPath></text>`;
-      if (t.type === "lake") return `<ellipse cx="${t.x}" cy="${t.y}" rx="${t.rx + 6}" ry="${t.ry + 5}" class="lake-bank"/><ellipse cx="${t.x}" cy="${t.y}" rx="${t.rx}" ry="${t.ry}" class="lake"/><text x="${t.x}" y="${t.y + 4}" class="lake-name">${esc(t.name)}</text>`;
-      if (t.type === "mountains") return t.at.map(([x, y, s]) => `<g class="mtn" transform="translate(${x} ${y}) scale(${s / 10})"><path d="M-12 0 0-13 12 0z" class="mtn-body"/><path d="M0-13-3-5 0-7 2-3 4 0" class="mtn-shade"/></g>`).join("");
+      if (t.type === "lake") return `<ellipse cx="${t.x}" cy="${t.y}" rx="${t.rx + 6}" ry="${t.ry + 5}" class="lake-bank"/><ellipse cx="${t.x}" cy="${t.y}" rx="${t.rx}" ry="${t.ry}" class="lake"/>
+        <path d="M${t.x - t.rx * .55} ${t.y - t.ry * .35}q4-3 8 0t8 0M${t.x + t.rx * .1} ${t.y + t.ry * .45}q4-3 8 0t8 0" class="lake-ripple"/><text x="${t.x}" y="${t.y + 4}" class="lake-name">${esc(t.name)}</text>`;
+      if (t.type === "mountains") return t.at.map(([x, y, s]) => `<g class="mtn" transform="translate(${x} ${y}) scale(${s / 10})"><path d="M-12 0 0-13 12 0z" class="mtn-body"/><path d="M0-13 12 0H3L4-4 1-6z" class="mtn-face"/><path d="M0-13-3-5 0-7 2-3 4 0" class="mtn-shade"/><path d="M-15 0.5h30" class="mtn-foot"/></g>`).join("");
       if (t.type === "camps") return t.at.map(([x, y]) => `<g transform="translate(${x} ${y}) scale(.6)">${ICON.camp(sideOf(t.side).color)}</g>`).join("");
       if (t.type === "grass") return t.at.map(([x, y]) => `<path class="grass" d="M${x - 4} ${y}q2-5 4-6M${x} ${y}v-7M${x + 4} ${y}q-2-5-4-6"/>`).join("");
       return "";
@@ -60,12 +106,18 @@
         <defs>
           <filter id="mp-paper" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="2" seed="3"/><feColorMatrix values="0 0 0 0 .45  0 0 0 0 .3  0 0 0 0 .15  0 0 0 .12 0"/></filter>
           <filter id="mp-rough"><feTurbulence type="fractalNoise" baseFrequency=".06" numOctaves="2" seed="7"/><feDisplacementMap in="SourceGraphic" scale="3"/></filter>
+          <filter id="mp-mottle" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".018" numOctaves="3" seed="13"/><feColorMatrix values="0 0 0 0 .42  0 0 0 0 .27  0 0 0 0 .12  0 0 0 -.9 .6"/></filter>
+          <filter id="mp-zone" filterUnits="userSpaceOnUse" x="0" y="0" width="400" height="300"><feGaussianBlur stdDeviation="14"/></filter>
+          <pattern id="mp-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><line x1="0" y1="0" x2="0" y2="6" class="hatch"/></pattern>
           <radialGradient id="mp-vig" cx="50%" cy="50%" r="70%"><stop offset="60%" stop-color="#7a4a1c" stop-opacity="0"/><stop offset="100%" stop-color="#7a4a1c" stop-opacity=".28"/></radialGradient>
           ${Object.entries(S).map(([k, v]) => `<marker id="m-${k}" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse"><path d="M0 0 10 5 0 10 3 5z" style="fill:${v.color}"/></marker>`).join("")}
         </defs>
         <rect width="400" height="300" class="paper"/>
+        <rect width="400" height="300" filter="url(#mp-mottle)"/>
+        <g class="zones" filter="url(#mp-zone)">${Object.values(P).filter(p => S[p.side]).map(p => `<circle cx="${p.x}" cy="${p.y}" r="${p.icon === "capital" ? 54 : 42}" style="fill:${S[p.side].color}"/>`).join("")}</g>
+        <rect width="400" height="300" fill="url(#mp-hatch)"/>
         <rect width="400" height="300" filter="url(#mp-paper)"/>
-        <g filter="url(#mp-rough)">${b.terrain.map(terrain).join("")}</g>
+        <g filter="url(#mp-rough)">${b.terrain.map(terrain).join("")}${trees(b).map(tree).join("")}</g>
         ${(view.arrows || []).map(arrow).join("")}
         ${Object.entries(P).map(place).join("")}
         ${(view.fx || []).map(fx).join("")}
@@ -74,6 +126,7 @@
           ${seal.length === 4 ? seal.map((ch, i) => `<text x="${i % 2 ? 22 : 8.5}" y="${i < 2 ? 13 : 26.5}">${esc(ch)}</text>`).join("") : seal.slice(0, 2).map((ch, i) => `<text x="15" y="${i ? 26.5 : 13}">${esc(ch)}</text>`).join("")}</g>
         <rect width="400" height="300" fill="url(#mp-vig)" pointer-events="none"/>
         <rect x="6" y="6" width="388" height="288" rx="6" class="frame"/><rect x="10" y="10" width="380" height="280" rx="4" class="frame thin"/>
+        ${[[14, 14, 1, 1], [386, 14, -1, 1], [14, 286, 1, -1], [386, 286, -1, -1]].map(([x, y, sx, sy]) => `<path d="M${x} ${y + sy * 16}V${y}H${x + sx * 16}M${x + sx * 4} ${y + sy * 10}V${y + sy * 4}H${x + sx * 10}" class="corner"/>`).join("")}
         <text x="392" y="288" class="note" text-anchor="end">示意圖・不按比例</text>
       </svg>
     </div>

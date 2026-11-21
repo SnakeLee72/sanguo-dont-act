@@ -49,6 +49,18 @@
   .map .frame.thin { stroke-width: .6; }
   .map .note { font-size: 9px; fill: var(--muted); font-family: var(--body); }
   .map .river-bank { fill: none; stroke: var(--river); stroke-width: 18; stroke-linecap: round; opacity: .22; }
+  .map .river-edge { fill: none; stroke: #2F5570; stroke-width: 10.5; stroke-linecap: round; opacity: .35; }
+  .map .river-hl { fill: none; stroke: #fff; stroke-width: 1.8; stroke-linecap: round; opacity: .3; transform: translateY(-1.5px); }
+  .map .lake-ripple { fill: none; stroke: #fff; stroke-width: 1.2; stroke-linecap: round; opacity: .55; }
+  .map .zones circle { opacity: .3; }
+  .map .hatch { stroke: #5a3a1a; stroke-opacity: .06; stroke-width: 1.6; }
+  .map .t-crown { fill: #7C9A5E; fill-opacity: .6; stroke: var(--ink); stroke-width: 1; stroke-opacity: .65; }
+  .map .t-trunk { stroke: var(--ink); stroke-width: 1.2; stroke-opacity: .65; }
+  .map .t-shadow { fill: #5a3a1a; opacity: .12; }
+  .map .ground { fill: #3a2410; opacity: .16; }
+  .map .mtn-face { fill: var(--ink); opacity: .14; }
+  .map .mtn-foot { stroke: var(--ink); stroke-width: 1; stroke-linecap: round; opacity: .3; }
+  .map .corner { fill: none; stroke: var(--gold); stroke-width: 1.4; stroke-linecap: square; }
   .map .river { fill: none; stroke: var(--river); stroke-width: 8; stroke-linecap: round; opacity: .85; }
   .map .river-flow { fill: none; stroke: #fff; stroke-width: 1.4; stroke-linecap: round; stroke-dasharray: 3 14; opacity: .8; animation: flow 3s linear infinite; }
   @keyframes flow { to { stroke-dashoffset: -34; } }
