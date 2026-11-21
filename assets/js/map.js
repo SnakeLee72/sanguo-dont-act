@@ -12,6 +12,17 @@
     qun: { name: "其他群雄", color: "var(--qun)", flag: () => "" },
     jin: { name: "晉", color: "var(--jin)", flag: () => "晉" }
   };
+  /* 其他群雄：每位軍閥一個顏色（同一年同一個人佔好幾塊時，用顏色看出範圍，名字只寫一次） */
+  const RULER = {
+    "袁紹": "#7A4E9C", "袁術": "#D08636", "呂布": "#9C3B5F", "劉表": "#3A8A88", "劉璋": "#8E9A34", "張魯": "#C46A86",
+    "士燮": "#5F7F99", "馬騰・韓遂": "#A8743F", "馬超・韓遂": "#A8743F", "李傕・郭汜": "#6E6862", "公孫瓚": "#4F9AB8"
+  };
+  const SPARE = ["#8C5A9E", "#4E8F6E", "#B5654A", "#5B7BB0", "#A08A3C"];
+  const rulerColor = n => RULER[n] || SPARE[[...n].reduce((s, c) => s + c.charCodeAt(0), 0) % SPARE.length];
+  // 這一塊地屬於誰：群雄依人名分，其他依勢力分
+  const ownerOf = ([pw, label] = []) => pw === "qun"
+    ? { key: "qun:" + (label || ""), color: label ? rulerColor(label) : POWER.qun.color, name: label || "其他勢力" }
+    : { key: pw, color: POWER[pw].color, name: POWER[pw].name };
   /* 各區中心點（約略依經緯度換算），疆界用「最近中心點」自動劃分；lx/ly 是文字位置 */
   const REGIONS = {
     liang: { x: 120, y: 112, name: "涼州" }, sili: { x: 318, y: 150, name: "司隸" }, bing: { x: 360, y: 82, name: "并州" },
@@ -45,6 +56,12 @@
     [282, 206, 8], [218, 206, 7]                                                 // 巫山、大巴山
   ];
 
+  /* 南方的林子（水墨小樹）：[x, y, 大小] */
+  const TREES = [
+    [536, 284, 9], [548, 296, 7], [522, 300, 8], [460, 296, 8], [474, 306, 7],
+    [418, 298, 7], [296, 300, 8], [282, 314, 9], [268, 300, 7], [240, 318, 8],
+    [150, 318, 8], [166, 332, 9], [134, 336, 7], [300, 360, 8], [396, 360, 8], [410, 372, 7]
+  ];
   /* ---------- 疆界：簡單的 Voronoi（每個中心點切出自己的區塊） ---------- */
   function clip(poly, a, b, c) { // 保留 a*x + b*y <= c 的部分
     const out = [];
@@ -84,6 +101,7 @@
 
   /* ---------- 裝飾小圖 ---------- */
   const mountain = ([x, y, s]) => `<g transform="translate(${x} ${y}) scale(${s / 10})"><path d="M-17 0-8-9-4-5 3-14 14 0z" class="tl-mtn"/><path d="M3-14 0-7 3-8 5-3 8 0M-8-9-9-4-7-3" class="tl-mtn-s"/></g>`;
+  const tree = ([x, y, s]) => `<g transform="translate(${x} ${y}) scale(${s / 10})"><path d="M0 0V5" class="tl-trunk"/><path d="M0-13C6-12 8-6 6-2 4 1-4 1-6-2-8-6-6-12 0-13Z" class="tl-tree"/><path d="M-2-9C0-10 2-9 2-7" class="tl-tree-s"/></g>`;
   const cloud = (x, y, s, flip) => `<g transform="translate(${x} ${y}) scale(${flip ? -s : s} ${s})" class="tl-cloud"><path d="M0 0h40c7 0 9-8 3-11-5-2-9 2-7 6M6 0c-7 0-9-8-3-12 5-3 11 0 11 5 0-7 8-11 14-7 4 3 3 9-2 9"/><path d="M-6 6h30c5 0 6-5 2-7"/></g>`;
   const rose = `<g class="tl-rose" transform="translate(548 68)">
     <path d="M0-24 4-4 0 0z" class="r1"/><path d="M0-24-4-4 0 0z" class="r2"/><path d="M0 24 4 4 0 0z" class="r2"/><path d="M0 24-4 4 0 0z" class="r1"/>
@@ -106,16 +124,21 @@
           <pattern id="tl-wavep" width="24" height="14" patternUnits="userSpaceOnUse"><path d="M0 14a6 6 0 0 1 12 0a6 6 0 0 1 12 0M-6 7a6 6 0 0 1 12 0a6 6 0 0 1 12 0a6 6 0 0 1 12 0" class="tl-wave-line"/></pattern>
           <linearGradient id="tl-fade" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--paper-2)" stop-opacity=".95"/><stop offset=".22" stop-color="var(--paper-2)" stop-opacity="0"/></linearGradient>
           <radialGradient id="tl-vig" cx="50%" cy="50%" r="72%"><stop offset="60%" stop-color="#7a4a1c" stop-opacity="0"/><stop offset="100%" stop-color="#7a4a1c" stop-opacity=".34"/></radialGradient>
+          ${IDS.map(id => `<clipPath id="tl-c-${id}"><path d="${CELLS[id]}"/></clipPath>`).join("")}
+          <filter id="tl-mottle" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".011" numOctaves="3" seed="21"/><feColorMatrix values="0 0 0 0 .42  0 0 0 0 .27  0 0 0 0 .12  0 0 0 -.9 .62"/></filter>
+          <filter id="tl-soft" x="-5%" y="-5%" width="110%" height="110%"><feGaussianBlur stdDeviation="2.2"/></filter>
           <radialGradient id="tl-stain" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#8a5a24" stop-opacity=".12"/><stop offset=".7" stop-color="#8a5a24" stop-opacity=".05"/><stop offset="1" stop-color="#8a5a24" stop-opacity="0"/></radialGradient>
         </defs>
         <rect width="${W}" height="${H}" class="tl-paper"/>
         <g filter="url(#tl-rough)">
           ${IDS.map(id => `<path d="${CELLS[id]}" class="tl-cell" data-r="${id}"/>`).join("")}
+          <g id="tlWash" filter="url(#tl-soft)"></g>
           ${IDS.map(id => `<path d="${CELLS[id]}" class="tl-border"/>`).join("")}
           <g id="tlFB"></g>
         </g>
+        <rect width="${W}" height="${H}" filter="url(#tl-mottle)" pointer-events="none"/>
         <rect width="${W}" height="${H}" fill="url(#tl-hatch)" pointer-events="none"/>
-        <g filter="url(#tl-ink)">${MOUNTAINS.map(mountain).join("")}</g>
+        <g filter="url(#tl-ink)">${MOUNTAINS.map(mountain).join("")}${TREES.map(tree).join("")}</g>
         <g filter="url(#tl-rough)">
           <path d="${SEA}" class="tl-sea"/><path d="${SEA}" fill="url(#tl-wavep)" class="tl-sea-wave"/><path d="${SEA}" class="tl-coast"/>
           <ellipse cx="300" cy="438" rx="20" ry="13" class="tl-island"/><ellipse cx="560" cy="352" rx="9" ry="24" class="tl-island"/>
@@ -133,7 +156,7 @@
         <g id="tlCities"></g>
         <g id="tlMarks"></g>
         ${cloud(30, 446, .9)}${cloud(574, 452, .8, true)}
-        <g class="tl-cartouche" transform="translate(26 24)"><rect width="138" height="38" rx="5"/><circle cx="0" cy="19" r="7"/><circle cx="138" cy="19" r="7"/><text x="69" y="26">三國形勢圖</text></g>
+        <g class="tl-cartouche" transform="translate(26 24)"><rect width="138" height="52" rx="5"/><circle cx="0" cy="26" r="7"/><circle cx="138" cy="26" r="7"/><text x="69" y="25">三國形勢圖</text><text x="69" y="43" class="sub" id="tlCartYear"></text></g>
         ${rose}
         <rect x="8" y="8" width="${W - 16}" height="${H - 16}" rx="8" class="tl-frame"/><rect x="13" y="13" width="${W - 26}" height="${H - 26}" rx="6" class="tl-frame thin"/>
         <text x="${W - 24}" y="${H - 22}" class="tl-note" text-anchor="end">示意圖・疆界為大致範圍</text>
@@ -157,12 +180,33 @@
   let cur = -1, timer = null, prevOwner = {};
 
   function plaques() { // 勢力名字後面墊一塊小牌子
+    // 名字牌太擠時互相推開（手機上字比較大，最容易疊在一起）
+    const gs = [...svg.querySelectorAll(".tl-lbl")].filter(g => g.querySelector(".tl-owner"));
+    gs.forEach(g => { g.dataset.dy = 0; g.querySelector(".tl-owner").removeAttribute("transform"); g.querySelector(".tl-rname").removeAttribute("transform"); });
+    const box = g => {
+      const m = g.transform.baseVal.consolidate().matrix, o = g.querySelector(".tl-owner").getBBox(), s = g.querySelector(".tl-rname");
+      let x0 = o.x - 8, y0 = o.y - 3, x1 = o.x + o.width + 8, y1 = o.y + o.height + 3;
+      if (getComputedStyle(s).display !== "none") { const r = s.getBBox(); x0 = Math.min(x0, r.x); x1 = Math.max(x1, r.x + r.width); y1 = Math.max(y1, r.y + r.height); }
+      return { x: x0 + m.e, y: y0 + m.f + +g.dataset.dy, w: x1 - x0, h: y1 - y0 };
+    };
+    for (let it = 0; it < 12; it++) {
+      let moved = false;
+      for (let i = 0; i < gs.length; i++) for (let j = i + 1; j < gs.length; j++) {
+        const a = box(gs[i]), b = box(gs[j]);
+        const ox = Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x), oy = Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y);
+        if (ox <= 0 || oy <= 0) continue;
+        const [up, dn] = a.y <= b.y ? [gs[i], gs[j]] : [gs[j], gs[i]], d = oy / 2 + .5;
+        up.dataset.dy = +up.dataset.dy - d; dn.dataset.dy = +dn.dataset.dy + d; moved = true;
+      }
+      if (!moved) break;
+    }
+    gs.forEach(g => { const dy = +g.dataset.dy; if (dy) ["tl-owner", "tl-rname"].forEach(c => g.querySelector("." + c).setAttribute("transform", `translate(0 ${dy.toFixed(1)})`)); });
     svg.querySelectorAll(".tl-owner").forEach(t => {
       const g = t.parentNode, old = g.querySelector(".tl-plaque"); if (old) old.remove();
       const b = t.getBBox(); if (!b.width) return;
       const r = document.createElementNS("http://www.w3.org/2000/svg", "rect");
       r.setAttribute("class", "tl-plaque"); r.setAttribute("rx", 6);
-      r.setAttribute("x", b.x - 7); r.setAttribute("y", b.y - 2); r.setAttribute("width", b.width + 14); r.setAttribute("height", b.height + 4);
+      r.setAttribute("x", b.x - 7); r.setAttribute("y", b.y - 2); if (t.getAttribute("transform")) r.setAttribute("transform", t.getAttribute("transform")); r.setAttribute("width", b.width + 14); r.setAttribute("height", b.height + 4);
       r.style.stroke = t.dataset.c;
       g.insertBefore(r, t);
     });
@@ -177,19 +221,30 @@
     $("#tlTitle").textContent = k.title;
     $("#tlEra").textContent = k.era ? `年號：${k.era}` : "";
     // 上色；換了主人的地區閃一下
-    Object.entries(k.regions).forEach(([id, [pw]]) => {
+    $("#tlCartYear").textContent = `西元 ${k.year} 年`;
+    const own = {}; IDS.forEach(id => own[id] = ownerOf(k.regions[id]));
+    Object.keys(k.regions).forEach(id => {
       const c = cells[id]; if (!c) return;
-      c.style.fill = POWER[pw].color;
-      if (prevOwner[id] && prevOwner[id] !== pw) { c.classList.remove("chg"); void c.getBBox(); c.classList.add("chg"); }
-      prevOwner[id] = pw;
+      c.style.fill = own[id].color;
+      if (prevOwner[id] && prevOwner[id] !== own[id].key) { c.classList.remove("chg"); void c.getBBox(); c.classList.add("chg"); }
+      prevOwner[id] = own[id].key;
     });
-    // 勢力交界畫粗線
-    $("#tlFB").innerHTML = EDGES.filter(e => k.regions[e.a] && k.regions[e.b] && k.regions[e.a][0] !== k.regions[e.b][0])
-      .map(e => `<path d="${e.d}" class="tl-fb-halo"/><path d="${e.d}" class="tl-fb"/>`).join("");
-    // 區域名稱與勢力名字
+    // 勢力交界：粗線＋沿著邊界往內暈開的顏色（古地圖的描邊上色）
+    const diff = EDGES.filter(e => own[e.a].key !== own[e.b].key);
+    $("#tlFB").innerHTML = diff.map(e => `<path d="${e.d}" class="tl-fb-halo"/><path d="${e.d}" class="tl-fb"/>`).join("");
+    $("#tlWash").innerHTML = diff.map(e => [e.a, e.b].map(id => `<path d="${e.d}" class="tl-wash" clip-path="url(#tl-c-${id})" style="stroke:${own[id].color}"/>`).join("")).join("");
+    // 同一個名字只寫一次：寫在那幾塊地中間的那一塊（可用 labelAt 指定）
+    const anchor = {}, byName = {};
+    IDS.forEach(id => { const lb = (k.regions[id] || [])[1]; if (lb) (byName[own[id].key + "|" + lb] = byName[own[id].key + "|" + lb] || []).push(id); });
+    Object.entries(byName).forEach(([g, ids]) => {
+      const lb = g.split("|")[1], want = k.labelAt && k.labelAt[lb];
+      if (want && ids.includes(want)) return anchor[want] = true;
+      const cx = ids.reduce((s, id) => s + REGIONS[id].x, 0) / ids.length, cy = ids.reduce((s, id) => s + REGIONS[id].y, 0) / ids.length;
+      anchor[ids.reduce((b, id) => d2([cx, cy], REGIONS[id]) < d2([cx, cy], REGIONS[b]) ? id : b)] = true;
+    });
     $("#tlLabels").innerHTML = IDS.map(id => {
-      const r = REGIONS[id], [pw, label] = k.regions[id] || [];
-      return `<g class="tl-lbl fade" transform="translate(${r.lx || r.x} ${r.ly || r.y})">${label ? `<text class="tl-owner" y="-2" data-c="${POWER[pw].color}">${esc(label)}</text>` : ""}<text class="tl-rname${label ? " sub" : ""}" y="${label ? 17 : 5}">${esc(r.name)}</text></g>`;
+      const r = REGIONS[id], label = anchor[id] ? k.regions[id][1] : "";
+      return `<g class="tl-lbl fade" transform="translate(${r.lx || r.x} ${r.ly || r.y})">${label ? `<text class="tl-owner" y="-2" data-c="${own[id].color}">${esc(label)}</text>` : ""}<text class="tl-rname${label ? " sub" : ""}" y="${label ? 17 : 5}">${esc(r.name)}</text></g>`;
     }).join("");
     plaques();
     // 都城：插上勢力旗子
@@ -204,8 +259,9 @@
     $("#tlMarks").innerHTML = (bt ? [`<a href="battle.html#${bt.id}" class="tl-battle" aria-label="玩${esc(bt.title)}"><g transform="translate(${BATTLE_AT[bt.id].x} ${BATTLE_AT[bt.id].y})"><circle r="17" class="tl-ring"/><circle r="13" class="tl-bdot"/><path d="M-6-6 6 6M6-6-6 6" class="tl-sword"/><path d="M-7-3-3-7M3-7 7-3" class="tl-hilt"/><title>${esc(bt.title)}：換你當軍師</title></g></a>`] : [])
       .concat((k.marks || []).map(m => `<g class="tl-mark fade" transform="translate(${m.x} ${m.y})"><circle r="5"/><text x="9" y="5">${esc(m.label)}</text></g>`)).join("");
     // 圖例：這一年出現的勢力
-    const used = [...new Set(Object.values(k.regions).map(v => v[0]))];
-    $("#tlLegend").innerHTML = used.map(p => `<span><b style="background:${POWER[p].color}"></b>${esc(POWER[p].name)}</span>`).join("") + `<span><i class="tl-lg-line"></i>勢力交界</span>`;
+    const used = {}; IDS.forEach(id => used[own[id].key] = used[own[id].key] || own[id]);
+    const order = o => o.key.startsWith("qun:") ? (o.key === "qun:" ? 2 : 1) : 0;
+    $("#tlLegend").innerHTML = Object.values(used).sort((a, b) => order(a) - order(b)).map(o => `<span><b style="background:${o.color}"></b>${esc(o.name)}</span>`).join("") + `<span><i class="tl-lg-line"></i>勢力交界</span>`;
     // 說明卡
     const guests = (k.guests || []).map(id => personById[id]).filter(Boolean);
     $("#tlInfo").innerHTML = `<div class="fade-in" style="display:grid;gap:12px">
@@ -238,4 +294,5 @@
   show(fromHash(), false);
   // 字型載入後，重新量一次牌子大小
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(plaques);
+  let rz; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(plaques, 200); });
 })();

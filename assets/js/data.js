@@ -960,6 +960,7 @@ const TIMELINE = [
       yan: ["cao", "曹操"], xu: ["qun", "呂布"], yu: ["cao", "曹操"], huainan: ["qun", "袁術"], jiangdong: ["sun", "孫策"],
       jingbei: ["qun", "劉表"], jingnan: ["qun", "劉表"], hanzhong: ["qun", "張魯"], yi: ["qun", "劉璋"], jiao: ["qun", "士燮"]
     },
+    labelAt: { 曹操: "yan", 劉表: "jingnan" },
     capitals: ["xu"],
     marks: [],
     guests: ["caocao", "lvbu", "liubei"]
@@ -971,8 +972,9 @@ const TIMELINE = [
     regions: {
       liang: ["qun", "馬騰・韓遂"], sili: ["cao", ""], bing: ["qun", "袁紹"], you: ["qun", "袁紹"], ji: ["qun", "袁紹"], qing: ["qun", "袁紹"],
       yan: ["cao", "曹操"], xu: ["cao", ""], yu: ["cao", ""], huainan: ["cao", ""], jiangdong: ["sun", "孫權"],
-      jingbei: ["qun", "劉表"], jingnan: ["qun", ""], hanzhong: ["qun", "張魯"], yi: ["qun", "劉璋"], jiao: ["qun", "士燮"]
+      jingbei: ["qun", "劉表"], jingnan: ["qun", "劉表"], hanzhong: ["qun", "張魯"], yi: ["qun", "劉璋"], jiao: ["qun", "士燮"]
     },
+    labelAt: { 劉表: "jingnan" },
     capitals: ["xu", "ye"],
     battle: "guandu",
     marks: [],
