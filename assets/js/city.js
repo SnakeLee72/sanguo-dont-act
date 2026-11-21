@@ -139,6 +139,39 @@
   }
   function lamp(x, y, z, r = 14) { const [X, Y] = P(x, y, z); return `<circle cx="${X}" cy="${Y}" r="${r}" class="lamp"/><circle cx="${X}" cy="${Y}" r="2.2" class="lamp-core"/>`; }
 
+  /* ---------- 小物件：放大看才看得到的細節 ---------- */
+  const day = s => `<g class="day">${s}</g>`; // 夜晚收工回家的人
+  const at = (x, y, z, s) => { const [X, Y] = P(x, y, z || 0); return `<g transform="translate(${f1(X)} ${f1(Y)})">${s}</g>`; };
+  const jar = (x, y, c = "#B0703E") => at(x, y, 0, `<g transform="scale(1.3)"><ellipse rx="3.4" ry="1.3" fill="rgba(40,25,15,.25)"/><path d="M-3 0q-1.8-4 0-6.4h6q1.8 2.4 0 6.4z" fill="${c}"/><path d="M-1.8-6.4h3.6v-1.3h-3.6z" fill="${shade(c, .75)}"/><path d="M-1.6-5q-.5 2 0 4" stroke="#fff" stroke-opacity=".35" stroke-width=".8" fill="none"/></g>`);
+  const sack = (x, y, z = 0) => at(x, y, z, `<path d="M-3.6 0q-1.2-4 .8-6l1.4-1.5h2.8l1.4 1.5q2 2 .8 6z" fill="#D9C38E" stroke="#9A7C48" stroke-width=".6"/><path d="M-1.2-7.2l1.2 1 1.2-1" stroke="#9A7C48" stroke-width=".6" fill="none"/>`);
+  const basket = (x, y, c) => at(x, y, 0, `<g transform="scale(1.3)"><path d="M-3 0l-.6-3.2h7.2L3 0z" fill="#A9864E"/><path d="M-3.6-3.2h7.2" stroke="#7A5A33" stroke-width=".8"/><circle cx="-1.4" cy="-4" r="1.3" fill="${c}"/><circle cx="1" cy="-4.2" r="1.3" fill="${shade(c, .85)}"/><circle cx="0" cy="-5.2" r="1.2" fill="${shade(c, 1.1)}"/></g>`);
+  const chicken = (x, y, c = "#F3EAD8", f = 1) => at(x, y, 0, `<g transform="scale(${f} 1)"><ellipse cx="0" cy="-2.6" rx="2.6" ry="2" fill="${c}"/><circle cx="2.3" cy="-4.4" r="1.2" fill="${c}"/><path d="M2.2-5.6l.5-.8.6.8z" fill="#C8382A"/><path d="M3.4-4.4l1 .3-1 .3z" fill="#E0A030"/><path d="M-2.4-3.2l-1.6-1.6.4 2z" fill="${shade(c, .8)}"/><path d="M-.4-.8v1M.6-.8v1" stroke="#C88A30" stroke-width=".5"/></g>`);
+  const pig = (x, y, f = 1) => at(x, y, 0, `<g transform="scale(${f} 1)"><ellipse cx="0" cy="-2.6" rx="4.2" ry="2.5" fill="#E7B8A6"/><ellipse cx="4" cy="-3" rx="1.3" ry="1.1" fill="#D99C8A"/><path d="M2.2-4.6l.8-1.4.6 1.3z" fill="#D99C8A"/><path d="M-2.6-.4v1M-1-.4v1M1.4-.4v1M2.8-.4v1" stroke="#B9877A" stroke-width=".7"/></g>`);
+  const horse = (x, y, c = "#8A5A3A", f = 1) => at(x, y, 0, `<g transform="scale(${f} 1)"><ellipse cx="0" cy="-7" rx="6.5" ry="3" fill="${c}"/><path d="M4.6-8.4l3.2-4.6 2 .6-1.6 4.4z" fill="${c}"/><path d="M7.4-13.4l3.4.4-.2 2.2-2.8-.2z" fill="${shade(c, .85)}"/><path d="M5.2-9.4l2.6-3.8" stroke="#3A2618" stroke-width="1.2"/><path d="M-6.2-7.4q-2 2-1.4 5" stroke="#3A2618" stroke-width="1.2" fill="none"/><path d="M-4-4.6v4.6M-2-4.6v4.6M3-4.6v4.6M4.8-4.6v4.6" stroke="${shade(c, .7)}" stroke-width="1.3"/></g>`);
+  const lily = (x, y, flower) => at(x, y, 0, `<path d="M0 0a3.2 1.6 0 1 1 .1 0l-.1-1.4z" fill="#6E9A4E" opacity=".9"/>${flower ? `<circle cy="-1" r="1.2" fill="#F2B6C6"/>` : ""}`);
+  const duck = (x, y, f = 1) => at(x, y, 0, `<g transform="scale(${f} 1)"><ellipse cx="0" cy="1" rx="4.6" ry="1.2" fill="#fff" opacity=".3"/><ellipse cx="0" cy="-1.4" rx="3" ry="1.7" fill="#F5F0E4"/><circle cx="2.6" cy="-3.2" r="1.2" fill="#3F6E4A"/><path d="M3.6-3.2l1.4.3-1.4.4z" fill="#E0A030"/></g>`);
+  const reeds = (x, y) => at(x, y, 0, `<path d="M-2 0q-.5-5-2-8M0 0v-9M1.6 0q.6-5 2.2-7.6" stroke="#7E8F4E" stroke-width=".9" fill="none"/><path d="M0-9v-2.6M-4-8l-.4-2.2" stroke="#8A5A33" stroke-width="1.6" stroke-linecap="round"/>`);
+  const sprout = (x, y) => at(x, y, 0, `<path d="M0 0v-2.4M0-1.4l-1.4-.8M0-1.8l1.3-.9" stroke="#5E8A3E" stroke-width=".7" fill="none"/>`);
+  const carrier = (x, y, c = "#6B7A8F") => at(x, y, 0, `${person(c, `<path d="M-2.4 -10.6q2.4 -2.6 4.8 0z" fill="#3A2A1E"/>`)}<path d="M1-12q2.6-2.4 5 0l.6 3.4h-5z" fill="#D9C38E" stroke="#9A7C48" stroke-width=".5"/>`);
+  const clerk = (x, y) => at(x, y, 0, `${person("#4B5A6E", `<path d="M-2.2 -10.8h4.4v-2.6h-4.4z" fill="#1E1E24"/>`)}<path d="M-3.6-5h3v-3h-3z" fill="#E9D9B0" stroke="#8A6A3A" stroke-width=".4"/>`); // 抱著竹簡
+  function rack(x, y) { // 武器架：戟、盾
+    const [X, Y] = P(x, y, 0);
+    const ji = [-7, -3.5, 0, 3.5, 7].map(dx => `<path d="M${dx} 1V-17" stroke="#6A4A2A" stroke-width="1"/><path d="M${dx}-17l-1.2-3.6h2.4z" fill="#B9C2C9"/><path d="M${dx}-14.6h2.6l.6 1.4h-3.2z" fill="#B9C2C9"/>`).join("");
+    return `<g transform="translate(${f1(X)} ${f1(Y)})"><path d="M-9-10h18M-9 0V-12M9 0V-12" stroke="${C.wood}" stroke-width="1.6"/>${ji}<path d="M11 1q-1-6 2-9 3 3 2 9z" fill="#8E2F25" stroke="#3A2A1E" stroke-width=".6"/><circle cx="13.6" cy="-3.6" r="1" fill="${C.gold}"/></g>`;
+  }
+  function carriage(x, y) { // 軺車：一匹馬拉的小車，官員出巡用
+    const [X, Y] = P(x, y, 0);
+    return `<g transform="translate(${f1(X)} ${f1(Y)})"><ellipse cx="0" cy="1" rx="12" ry="3" fill="rgba(40,25,15,.2)"/><path d="M-6-6h9v-4h-9z" fill="#7A3B2A"/><path d="M-8-13q6-5 13 0z" fill="#3A3A44"/><path d="M-1.5-13v3" stroke="#3A2A1E" stroke-width=".8"/>
+      <ellipse cx="-2" cy="-4" rx="4" ry="4.6" fill="none" stroke="#4A3220" stroke-width="1.4"/><path d="M-2-8.6v9.2M-6-4h8" stroke="#4A3220" stroke-width=".6"/><path d="M3-7l7 1" stroke="#4A3220" stroke-width="1.1"/></g>` + horse(x + .9, y - .45, "#A8743F");
+  }
+  function clothesline(x0, y0, x1, y1) {
+    const [a, b] = P(x0, y0, 1.1), [c, d] = P(x1, y1, 1.1), [a0, b0] = P(x0, y0, 0), [c0, d0] = P(x1, y1, 0);
+    const cols = ["#3B6E9A", "#E9D9B0", "#B8432F", "#7C9A5E"];
+    const hang = cols.map((cl, i) => { const t = (i + .7) / 4.6, hx = a + (c - a) * t, hy = b + (d - b) * t + 2; return `<path d="M${f1(hx - 2.4)} ${f1(hy)}h4.8l.4 5h-5.6z" fill="${cl}"/>`; }).join("");
+    return `<g><path d="M${f1(a0)} ${f1(b0)}V${f1(b)}M${f1(c0)} ${f1(d0)}V${f1(d)}" stroke="${C.wood}" stroke-width="1.3"/><path d="M${f1(a)} ${f1(b)}Q${f1((a + c) / 2)} ${f1((b + d) / 2 + 4)} ${f1(c)} ${f1(d)}" stroke="#5a4a3a" stroke-width=".6" fill="none"/>${hang}</g>`;
+  }
+  const que = (x, y) => box(x, y, .55, .55, 1.9, 0, "#D9CBAA", "", { shadow: true }) + box(x - .06, y - .06, .67, .67, .12, 1.9, "#BFAF8C") + roof(x, y, .55, .55, 2.02, .45, C.roof, .14); // 闕
+
   /* ---------- 城的配置（城牆 0–20 格） ---------- */
   const L = []; // [深度, svg]
   const add = (depth, s) => L.push([depth, s]);
@@ -181,6 +214,22 @@
   pave += seg([1, 10, 0], [9.5, 10, 0]) + seg([10.5, 10, 0], [19, 10, 0]) + seg([10, 1, 0], [10, 9.5, 0]) + seg([10, 10.5, 0], [10, 19, 0]);
   [[23, 38], [-12, -3]].forEach(([a, b]) => { ruts += seg([a, 9.8, 0], [b, 9.8, 0]) + seg([a, 10.2, 0], [b, 10.2, 0]) + seg([9.8, a, 0], [9.8, b, 0]) + seg([10.2, a, 0], [10.2, b, 0]); });
   base += `<path class="paving" d="${pave}"/><path class="rut" d="${ruts}"/>`;
+  // 太守府、市的地面鋪磚；城裡的碎石
+  base += ground(2.3, 2.3, 5.9, 5.9, "#E4DAC2") + ground(12.3, 12.3, 5.9, 5.9, "#E2D3B0");
+  let brick = "";
+  for (let k = 2.3; k <= 8.2; k += .5) brick += seg([k, 5.5, 0], [k, 8.2, 0]) + seg([2.3, k < 5.5 ? 5.5 : k, 0], [8.2, k < 5.5 ? 5.5 : k, 0]);
+  for (let k = 12.3; k <= 18.2; k += .6) brick += seg([k, 12.3, 0], [k, 18.2, 0]) + seg([12.3, k, 0], [18.2, k, 0]);
+  base += `<path class="brick" d="${brick}"/>`;
+  let pebble = "";
+  for (let i = 0; i < 170; i++) {
+    const x = .4 + rnd() * 19.2, y = .4 + rnd() * 19.2;
+    if ((x > 2 && x < 8.5 && y > 2 && y < 8.5) || (x > 12 && x < 18.5 && y > 12 && y < 18.5)) continue;
+    const [X, Y] = P(x, y, 0);
+    pebble += `<ellipse cx="${f1(X)}" cy="${f1(Y)}" rx="${f1(.8 + rnd() * 1.1)}" ry="${f1(.5 + rnd() * .5)}"/>`;
+  }
+  base += `<g class="pebble">${pebble}</g>`;
+  // 屯田：灌溉水渠與一行行秧苗
+  base += ground(-.6, 31.1, 9.3, .35, "#7FB0CF", "canal") + `<path class="canal-hl" d="${seg([-.5, 31.25, 0], [8.6, 31.25, 0])}"/>`;
   add(-100, base);
   // 橋
   [[21, 9.3, 2, 1.4], [9.3, 21, 1.4, 2], [-3, 9.3, 2, 1.4], [9.3, -3, 1.4, 2]].forEach(([x, y, w, d]) => add(-90, box(x, y, w, d, .25, 0, C.wood)));
@@ -229,9 +278,9 @@
   add(8, (shadow(3.2, 3, 4, 2.2, 2.7), "") + box(2.9, 2.7, 4.6, 2.8, .3, 0, "#D3C6AC", "", { shadow: true }) + hall(3.2, 3, 4, 2.2, 1.5, { z: .3, roof: C.roofRed, rh: 1.3, pillars: true, win: true }));
   add(9.5, hall(2.6, 5.9, 1.4, 1.8, 1, { win: true }) + hall(6.5, 5.9, 1.4, 1.8, 1, { win: true }));
   add(10, tree(5.2, 7));
-  add(14.6, official(4.9, 9.05) + official(5.6, 9.15));
+  add(14.6, `<g class="day">${official(4.9, 9.05) + official(5.6, 9.15)}</g>`);
   add(25.4, guard(17, 8.05, 0));
-  add(31.2, folk(13.9, 15.6, C.gold) + folk(16.3, 13.7, C.blue));
+  add(31.2, `<g class="day">${folk(13.9, 15.6, C.gold) + folk(16.3, 13.7, C.blue)}</g>`);
   add(9, lamp(5.2, 5.3, 1.1));
   // 糧倉、武庫（東北）
   add(14, granary(12.6, 2.8, .8, 1.4)); add(15.6, granary(14.6, 2.8, .8, 1.4)); add(16.6, granary(12.6, 4.9, .8, 1.4));
@@ -271,8 +320,51 @@
   add(9.4, box(-10.2, 17.3, 4.6, .12, .45, 0, C.wood));
   add(8.5, haystack(-6.6, 16.4)); add(5.2, tree(-6.2, 11.6, .9)); add(7.6, tree(-10.8, 18.6, 1));
   add(34.2, haystack(8.9, 25.3)); add(36.6, haystack(8.9, 27.7)); add(38.8, haystack(8.9, 29.9));
-  add(31.5, farmer(2.6, 28.9)); add(34.6, farmer(6.4, 28.2, C.red));
+  add(31.5, `<g class="day">${farmer(2.6, 28.9)}</g>`); add(34.6, `<g class="day">${farmer(6.4, 28.2, C.red)}</g>`);
   add(33.5, motion ? `<g>${oxShape}<animateMotion dur="12s" repeatCount="indefinite" path="M${P(2.2, 31.5).join(" ")} L${P(6.6, 31.5).join(" ")} L${P(2.2, 31.5).join(" ")}"/></g>` : (() => { const [X, Y] = P(4, 31.5); return `<g transform="translate(${X} ${Y})">${oxShape}</g>`; })());
+
+  /* ---------- 各探索點的細節 ---------- */
+  // 太守府：門前一對闕、停著軺車、抱竹簡的小吏
+  add(13.3, que(3.7, 8.75)); add(15.6, que(6.3, 8.75));
+  add(17.2, day(carriage(7.4, 9.05)));
+  add(10.6, day(clerk(3.9, 6.6) + clerk(4.4, 7.4))); add(12.4, day(clerk(6.9, 5.2)));
+  // 市：攤子上的貨（陶罐、布、蔬果籃）與更多買東西的人
+  const stallGoods = [[12.8, 12.8, "jar"], [14.3, 12.8, "cloth"], [16.6, 12.8, "basket"], [12.8, 14.2, "basket"], [16.8, 14.2, "jar"], [12.8, 16.6, "cloth"], [14.4, 16.9, "jar"], [16.6, 16.6, "basket"]];
+  const bolt = (x, y, c) => at(x, y, 0, `<path d="M-4.5 0v-2.6h9V0z" fill="${c}"/><path d="M-4.5-2.6l1.3-1.1h9l-1.3 1.1z" fill="${shade(c, 1.2)}"/><path d="M-4 -2.8v-2.4h8v2.4z" fill="${shade(c, .9)}" transform="translate(1 -.4)"/>`);
+  stallGoods.forEach(([x, y, k], i) => {
+    const fx = x + .35, fy = y + 1.02, c = ["#B8432F", "#3B6E9A", "#E0B030", "#7C9A5E"][i % 4];
+    add(fx + fy + .1, k === "jar" ? jar(fx, fy, "#B0703E") + jar(fx + .45, fy + .05, "#8E5A3A") : k === "cloth" ? bolt(fx + .2, fy, c) : basket(fx, fy, c) + basket(fx + .5, fy + .04, shade(c, .8)));
+  });
+  add(28.2, day(folk(14.2, 14.0, C.red))); add(30.4, day(folk(13.4, 17.0, "#6B7A8F"))); add(33.2, day(folk(16.4, 16.8, C.green))); add(29.6, day(folk(17.6, 12.0, C.gold)));
+  // 里：豬圈（漢代陶豬圈的樣子）、雞、晾衣服
+  add(20.5, box(6.9, 14.3, 1.3, .12, .35, 0, C.plaster) + box(6.9, 14.3, .12, 1.1, .35, 0, C.plaster));
+  add(21.4, pig(7.6, 14.9) + pig(7.2, 15.2, -1));
+  add(22.2, box(6.9, 15.3, 1.3, .12, .35, 0, C.plaster) + box(8.1, 14.3, .12, 1.1, .35, 0, C.plaster));
+  add(18.9, chicken(3.6, 15.1) + chicken(4.0, 15.45, "#C88A4A", -1) + chicken(3.3, 15.6, "#F3EAD8", -1));
+  add(21.9, clothesline(2.7, 17.85, 4.3, 17.75));
+  // 糧倉：一袋袋糧食、扛米的人
+  add(19.3, sack(14.3, 4.7) + sack(14.75, 4.75) + sack(14.5, 4.95) + sack(14.55, 4.7, .5));
+  add(21.9, day(carrier(13.9, 8.9))); add(20.4, day(carrier(11.6, 8.6, "#8E6A3A")));
+  // 武庫：兵器架（戟）與盾
+  add(24.3, rack(16.05, 8.15)); add(24.1, guard(15.5, 8.35, 0));
+  // 護城河：睡蓮、鴨子、蘆葦
+  [[-2.1, 4, 1], [-2.3, 6.2, 0], [-1.8, 15, 1], [3.6, -2.2, 0], [15.5, -2, 1], [21.8, 3.5, 0], [22.1, 15.8, 1], [6.5, 21.9, 0], [16.6, 22.1, 1], [-2.2, 18.5, 0]]
+    .forEach(([x, y, fl]) => add(-89, lily(x, y, fl)));
+  if (motion) add(-88, `<g>${duck(0, 0)}<animateMotion dur="40s" repeatCount="indefinite" path="M${P(21.8, 12.5).join(" ")} L${P(22.1, 19).join(" ")} L${P(21.8, 12.5).join(" ")}"/></g>`);
+  add(-88, duck(-2, 12.6) + duck(-1.7, 13.1, .8) + duck(13.5, 21.9, -1));
+  [[-3.3, 3], [-3.3, 13.5], [-3.4, 17.5], [6, 23.3], [13, 23.4], [23.3, 6.5], [23.4, 15], [2, -3.4], [17.6, -3.3]].forEach(([x, y]) => add(x + y, reeds(x, y)));
+  // 亭：拴著的馬、歇腳的旅人
+  add(40.8, horse(27, 13.6, "#6B4A33")); add(41.6, day(folk(28.2, 13.7, "#6B7A8F")));
+  add(36.2, box(26.4, 13.1, .1, .1, .7, 0, C.wood)); // 拴馬樁
+  // 塢堡：望樓上的守衛、院子裡的雞和馬
+  add(47, guard(24.6, 22.6, 3.5)); add(59, guard(29.3, 27.3, 3.5));
+  add(53.5, chicken(25.6, 26.6) + chicken(26, 26.9, "#C88A4A", -1)); add(55.2, horse(28.2, 26.6, "#A8743F", -1));
+  // 屯田：秧苗
+  let sp = "";
+  [[-.6, 24.2], [4, 24.2], [1.7, 26.5], [6.3, 26.5], [-.6, 28.8], [4, 28.8]].forEach(([fx, fy]) => { for (let a = .35; a < 2; a += .5) for (let b = .3; b < 2; b += .42) sp += sprout(fx + a, fy + b); });
+  add(-95, sp);
+  // 城門外排隊進城的人
+  add(33.4, day(folk(22.6, 10.8, "#8E6A3A") + folk(23.4, 10.9, C.blue))); add(33.6, day(carrier(10.9, 22.7)));
 
   /* ---------- 會動的小東西：牛車、行人（夜晚不出門） ---------- */
   const cartShape = box(-.5, -.3, 1, .6, .45, .2, C.wood) + box(.6, -.25, .7, .5, .55, 0, "#6B4A33");
@@ -281,7 +373,7 @@
   if (motion) {
     const road = (a, b, dur, shape, delay = 0) => `<g class="mover">${shape.replace(/^/, "")}<animateMotion dur="${dur}s" begin="${delay}s" repeatCount="indefinite" path="M${P(...a).join(" ")} L${P(...b).join(" ")}"/></g>`;
     movers += road([22, 10], [37, 10], 16, cartShape) + road([37, 10.2], [22, 10.2], 20, walker, 3) + road([10, 22], [10, 37], 18, walker, 1) + road([10.3, 36], [10.3, 22], 22, walker.replace(C.blue, C.red), 6);
-    movers += road([15.3, 13.2], [13.2, 15.3], 7, walker.replace(C.blue, C.green)) + road([17.6, 15], [15.6, 17.6], 9, walker.replace(C.blue, C.gold), 2);
+    movers += road([12.6, 13.95], [17.9, 13.95], 11, walker.replace(C.blue, C.green)) + road([17.6, 15], [15.6, 17.6], 9, walker.replace(C.blue, C.gold), 2);
     const boat = `<ellipse cx="0" cy="2" rx="13" ry="3" fill="#fff" opacity=".35"/><path d="M-11 -2q11 6 22 0l-2.5 -3h-17z" fill="${C.wood}" stroke="#4a3220" stroke-width=".8"/><g transform="translate(-3 -3)">${walker.replace(C.blue, "#5C7A99")}</g><path d="M4 -4l9 -10" stroke="#5a4a3a" stroke-width="1"/>`;
     movers += `<g class="mover boat">${boat}<animateMotion dur="26s" repeatCount="indefinite" path="M${P(3, 22).join(" ")} L${P(7.5, 22).join(" ")} L${P(3, 22).join(" ")}"/></g>`;
   }

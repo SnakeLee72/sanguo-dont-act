@@ -79,6 +79,10 @@
   @keyframes puff { 0% { transform: translate(0, 0) scale(.6); opacity: .7; } 100% { transform: translate(6px, -26px) scale(1.8); opacity: 0; } }
   .night .smoke circle { fill: #8E9AB8; }
   .paving { fill: none; stroke: rgba(120,90,50,.28); stroke-width: .7; }
+  .brick { fill: none; stroke: rgba(120,90,50,.18); stroke-width: .6; }
+  .pebble ellipse { fill: #B9A27A; opacity: .45; }
+  .canal { opacity: .9; }
+  .canal-hl { fill: none; stroke: #fff; stroke-width: 1; stroke-dasharray: 3 9; opacity: .6; }
   .rut { fill: none; stroke: rgba(120,90,50,.35); stroke-width: 1; stroke-dasharray: 6 3; }
   .night .bg-sky { fill: #22305A; }
   .night .mist ellipse { fill: #9FB3D9; }
@@ -122,6 +126,7 @@
   .night .gate-door { opacity: 1; }
   .night .win { fill: #FFD36B; }
   .night .mover { opacity: 0; }
+  .day { transition: opacity .8s; } .night .day { opacity: 0; }
   /* 探索點 */
   .spot { cursor: pointer; outline: none; }
   .spot-stem { stroke: var(--curtain-deep); stroke-width: 2; }
