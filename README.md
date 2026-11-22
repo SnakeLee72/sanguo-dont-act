@@ -2,7 +2,10 @@
 
 > 🤖 **AI agent／協作者請先讀 [AGENTS.md](AGENTS.md)**：完整維護規範、資料格式與上新集數流程。
 
-純 HTML / CSS / JavaScript，不需要安裝或編譯。雙擊 `index.html` 就能在瀏覽器打開。
+純 HTML / CSS / JavaScript，不需要安裝或編譯。
+
+- 正式網址：https://sanguo-dont-act.pages.dev
+- 本機預覽：在這個資料夾執行 `python -m http.server 8765`，再開 http://localhost:8765 （直接雙擊 html 檔，部分功能不會正常）
 
 ## 網站架構
 
@@ -14,33 +17,42 @@
 | 🙋 點播台 | `request.html` | **下一位來賓投票**、**題目看板**（募集中 / 錄製中 / 已播出）、**許願牆**、**投稿表單** |
 | 🗺️ 地圖 | `map.html` | 三國地圖時間軸：184–280 年十個關鍵年份的勢力變化，可點戰役進入「你來當軍師」 |
 | ⚔️ 當軍師 | `battle.html` | 「你來當軍師」戰役抉擇遊戲：戰場示意圖、主持人吐槽、史官揭曉、全國聽眾選擇比例 |
-| 🎮 遊戲中心 | `play.html` | 「遊戲」選單的入口：你來當軍師、心理測驗、武將卡冊、地圖與城池 |
+| 🎮 遊戲中心 | `play.html` | 「遊戲」選單的入口：你來當軍師、投壺、彈棋、吃子棋、心理測驗、武將卡冊、地圖與城池 |
 | 🏺 投壺 | `touhu.html` | 宴會小遊戲：拉弓投箭，三回合十二支箭 |
 | 🎯 彈棋 | `danqi.html` | 曹丕最拿手的遊戲：彈棋子撞出對手，可對電腦或兩人對戰 |
 | ⚫ 吃子棋 | `weiqi.html` | 圍棋入門：先吃到對手的棋子就贏，提示叫吃與氣，可對電腦 |
 | 🃏 卡冊 | `cards.html` | 武將收集卡：聽節目、讀檔案、玩遊戲解鎖人物卡，全部完成升級金卡，可存成圖片 |
-| 🏯 城池 | `city.html` | 走進三國城池：2.5D 等角視角的東漢郡城，11 個探索點、白天／夜晚切換（入口在首頁小百科區、地圖頁） |
+| 🏯 城池 | `city.html` | 走進三國城池：2.5D 等角視角的東漢郡城，11 個探索點（點數字放大看細節）、白天／夜晚切換 |
 | 🎭 你是誰 | `quiz.html` | 「你是哪位三國來賓」心理測驗，測完直接收聽那一集 |
 
 小百科的連結格式：`wiki.html#p=zhaoyun`（人物）、`wiki.html#i=wangmei`（成語）、`wiki.html#s=kongcheng`（故事）。
 節目連結：`episodes.html#EP03` 會直接打開那一集的播放器。
 
+導覽只有 5 個主選單：首頁／節目／小百科／遊戲／點播台。同一區的頁面用頁面標題下方的分頁籤切換（小百科：人物・成語・查核、地圖、城池；遊戲：遊戲中心、當軍師、投壺、彈棋、吃子棋、你是誰、卡冊）。
+
 ```
 互動網頁/
-├─ index.html  episodes.html  wiki.html  request.html  map.html  battle.html  quiz.html  cards.html  city.html
+├─ index.html episodes.html wiki.html request.html map.html city.html play.html
+│  battle.html touhu.html danqi.html weiqi.html quiz.html cards.html     （13 個頁面）
 ├─ assets/
-│  ├─ css/site.css          樣式
-│  └─ js/
-│     ├─ config.js          ★ 平台連結、後端網址
-│     ├─ data.js            ★ 每週更新的內容（集數、人物、成語、故事、候選人、題目、測驗）
-│     ├─ core.js            共用程式（導覽列、播放器、資料儲存）
-│     └─ home.js / wiki.js / request.js
-└─ backend/google-apps-script.gs   收集聽眾互動用的後端
+│  ├─ css/site.css          樣式（顏色 token 在 :root）
+│  ├─ js/
+│  │  ├─ config.js          ★ 平台連結、後端網址
+│  │  ├─ data.js            ★ 所有內容（集數、人物、成語、查核、候選人、題目、測驗、戰役、地圖年份、城池地點）
+│  │  ├─ core.js            共用程式（導覽列、分頁籤、播放器、資料儲存、武將卡、背景音樂）
+│  │  └─ home / wiki / request / battle / map / city / cards / touhu / danqi / weiqi .js
+│  ├─ img/                  圖示、分享預覽圖、cards/ 人物造型
+│  └─ audio/bgm.mp3         背景音樂
+├─ tools/check_data.js      資料檢查（改 data.js 後必跑）
+├─ tools/make_links.js      產生 episode-links.md（貼到 YouTube／Spotify 說明欄的連結）
+└─ backend/google-apps-script.gs   收集聽眾互動用的後端（副本）
 ```
+
+AI agent 維護規範：[AGENTS.md](AGENTS.md)（Claude Code 讀 `CLAUDE.md`、Gemini／Antigravity 讀 `GEMINI.md`，兩者都指向 AGENTS.md）。
 
 ## 每週上新集數
 
-只要改 `assets/js/data.js`：
+完整流程見 [AGENTS.md §4](AGENTS.md)。簡單說，只要改 `assets/js/data.js`：
 
 1. **EPISODES**：在最上面加一筆。`youtube` 填影片網址 `watch?v=` 後面那串，`spotify` 填單集網址 `/episode/` 後面那串。
    預告集數設 `status: "upcoming"`，上架後改成 `"published"`。
@@ -71,10 +83,8 @@
 
 ## 放上網路
 
-任選一種：
-
-- **Netlify Drop**：到 https://app.netlify.com/drop ，把整個 `互動網頁` 資料夾拖進去，馬上得到網址。
-- **GitHub Pages**：把資料夾推上 GitHub repository，在 Settings → Pages 開啟。
+> ✅ **已設定完成**：GitHub repo `SnakeLee72/sanguo-dont-act` 連到 Cloudflare Pages。**push 到 `main` 約 30–60 秒後自動上線**，沒有 build 步驟。
+> 如果 push 後 2 分鐘還沒更新，到 Cloudflare 後台 Workers & Pages → sanguo-dont-act → Deployments 查看。
 
 ## 小提醒
 
