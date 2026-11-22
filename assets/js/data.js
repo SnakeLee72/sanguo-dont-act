@@ -21,13 +21,23 @@ const HOSTS = [
 /* ---------------- 📻 節目單集 ---------------- */
 const EPISODES = [
   {
-    code: "QA01", type: "sp", label: "聽眾問答", status: "upcoming", person: "",
-    title: "聽眾問答番外篇",
-    question: "十萬大軍上廁所怎麼辦？赤兔馬一天吃多少草？",
+    code: "EP11", type: "ep", status: "upcoming", person: "",
+    title: "黃月英來作客",
+    question: "別人用外表或刻板印象貼你標籤時，怎麼用實力說話？",
     lesson: "",
-    desc: "十萬大軍上廁所怎麼辦？赤兔馬一天吃多少草？古代沒有手機怎麼傳簡訊？你還想問什麼？快到點播台投稿！",
+    desc: "第 11 集預告！傳說中才華出眾、卻常被外表標籤評價的黃月英要來作客了！你想問她什麼？快到點播台投稿！",
     date: "", length: "", youtube: "", spotify: "",
-    related: { people: [], idioms: [], stories: [] }
+    related: { people: ["zhugeliang"], idioms: [], stories: [] }
+  },
+  {
+    code: "QA01", type: "sp", label: "聽眾問答", status: "published", person: "",
+    title: "聽眾問答番外篇",
+    question: "三國士兵上廁所、赤兔馬吃多少？",
+    lesson: "歷史不只是英雄的傳說，更是無數生活智慧的累積；把眼前的每一件小事做好，就是最強大的本事。",
+    desc: "QA01 聽眾問答特別企劃！五個歷史課本不寫的生活大難題：軍營廁所怎麼解決？赤兔馬一天吃多少草？沒有手機怎麼傳軍情？盔甲到底有多重？十萬大軍每天吃什麼？",
+    date: "2026-11-22", length: "15:08",
+    youtube: "SHmXhc9b0YI", spotify: "6XqcxUrFszBvYamOFG9qLu",
+    related: { people: ["lvbu", "guanyu", "caocao", "zhugeliang"], idioms: ["liangcao", "zhengedaidan"], stories: ["chitu", "yinfu", "menzhonghuo"] }
   },
   {
     code: "MV02", type: "mv", label: "曹操主題曲", status: "published", person: "caocao",
@@ -459,6 +469,20 @@ const IDIOMS = [
     story: "宋朝有個叫孫山的人去考試，排在錄取榜的最後一名。同鄉託他帶兒子一起去考，回來問結果，孫山說：「解名盡處是孫山，賢郎更在孫山外。」意思是：榜單最後一名是我，你兒子在我後面——沒考上。這是宋朝的故事，跟三國沒有關係喔！",
     example: "他這次科展名落孫山，但決定明年再挑戰。",
     people: [], episode: "SP02"
+  },
+  {
+    id: "liangcao", word: "兵馬未動，糧草先行", sourceType: "other", source: "俗語（古代兵法常理）",
+    meaning: "出兵打仗前必須先準備並運送糧食與物資；做事前先把後勤和準備工作做好。",
+    story: "軍隊行軍前要由輜重部隊押運糧草。漢末士兵隨身攜帶的乾糧叫「糗糧（炒麵）」，是把小麥或小米炒熟磨粉，加冷水攪成糊就能吞下；大軍駐紮、糧車趕到時，火頭軍才煮小米飯、燉豆子或醃肉。官渡之戰曹操燒掉袁紹在烏巢的糧草，袁軍還沒被正面打垮就潰散了。",
+    example: "舉辦校外教學前要先確認便當、飲水和路線，「兵馬未動，糧草先行」才不會手忙腳亂。",
+    people: ["caocao"], episode: "QA01"
+  },
+  {
+    id: "zhengedaidan", word: "枕戈待旦", sourceType: "other", source: "《晉書・劉琨傳》",
+    meaning: "枕著兵器等待天亮，形容時刻保持戒備、不敢鬆懈。",
+    story: "漢末三國士兵的鐵製札甲重達二十多公斤，在後方安全時可以脫下休息；但進入前線交戰區隨時可能被夜襲，就必須穿戴全套盔甲、抱著武器坐著打盹，連鞋子都不能脫。後來《晉書》記錄劉琨寫信說自己「枕戈待旦」，成為形容戰備警戒的成語。",
+    example: "明天就是決賽了，我們今晚把資料檢查好、枕戈待旦，全力以赴！",
+    people: ["zhaoyun", "zhugeliang"], episode: "QA01"
   }
 ];
 
@@ -523,6 +547,12 @@ const STORIES = [
     novel: "曹操逃難時借住呂伯奢家，聽見磨刀聲以為要害他，殺了全家，才發現人家是要殺豬請他吃飯；離開時在路上遇見買酒回來的呂伯奢，也把他殺了。", history: "《三國志》正文沒有記載這件事，只有裴松之注引了三種說法，而且說法不一：《魏書》說是呂家的人想搶曹操的東西，《世語》和孫盛《雜記》說是曹操起疑心才動手。路上殺掉呂伯奢本人，是《三國演義》第 4 回加上去的。" },
   { id: "ningwo", title: "曹操說『寧教我負天下人，休教天下人負我』", verdict: "adapted", people: ["caocao"], episode: "EP10",
     novel: "曹操殺錯人以後說：「寧教我負天下人，休教天下人負我！」", history: "這句話出自裴松之注引的孫盛《雜記》，原句是「寧我負人，毋人負我」，意思是寧可我對不起別人，也不要讓別人對不起我。《三國演義》把「人」放大成「天下人」，讓曹操看起來更壞。" },
+  { id: "chitu", title: "赤兔馬被曹操送給關羽，最後絕食而死", verdict: "adapted", people: ["lvbu", "guanyu", "caocao"], episode: "QA01",
+    novel: "《三國演義》寫呂布死後，曹操為了拉攏關羽把赤兔馬送給他；後來關羽過世、馬被東吳奪走，竟不吃草料絕食而死。", history: "赤兔馬是真的！《三國志・呂布傳》記載「布有良馬曰赤兔」，裴松之注引《曹瞞傳》也記下時人流傳「人中有呂布，馬中有赤兔」。不過正史沒有記載曹操把赤兔馬送給關羽，也沒有絕食而死的故事，那是《三國演義》為了襯托英雄忠義所做的經典改編。" },
+  { id: "yinfu", title: "三國時代用『一首詩當密碼本』傳軍情", verdict: "fiction", verdictText: "時代不對喔", people: ["zhugeliang"], episode: "QA01", claimLabel: "常見誤會",
+    novel: "古代打仗怕密信被偷看，諸葛亮會用一首四十個字的詩當密碼本，每個字代表不同的戰況。", history: "用一首四十個字的五言詩當成軍用密碼表的「字驗」，是北宋兵書《武經總要》才記載的方法，三國時期還沒有！《六韜》記載的古代軍用密信「陰符」，是用八種不同長短的竹條或符節代表大勝、請兵等軍情，連信使自己都看不懂。" },
+  { id: "menzhonghuo", title: "曹操在花園大門寫『活』字，嫌門蓋太大", verdict: "adapted", verdictText: "出自《世說新語》", people: ["caocao"], episode: "QA01", claimLabel: "民間故事",
+    novel: "工匠幫曹操蓋好花園大門請他驗收，曹操沒說話，只在門上寫了個「活」字就走。楊修一看就懂：門裡面加個活就是「闊」字，意思是嫌門蓋得太寬了！", history: "這個機智猜謎出自南朝《世說新語・捷悟》篇（《三國演義》也有採用），屬於後人流傳的筆記趣聞，並不是陳壽《三國志》正史的記載。" },
 ];
 
 /* ---------------- 🗳️ 下一位來賓候選人 ---------------- */
@@ -543,6 +573,8 @@ const CANDIDATES = [
 
 /* ---------------- 📋 題目看板 ---------------- */
 const TOPICS = [
+  { id: "t-qa01", type: "生活", title: "聽眾問答 QA01：軍營廁所、赤兔馬食量、盔甲多重", status: "aired", episode: "QA01" },
+  { id: "t-yueying", type: "人物", title: "黃月英來作客：打破刻板印象、用實力說話", status: "recording", episode: "EP11" },
   { id: "t-caocao", type: "人物", title: "曹操坐上來賓椅：主持人反轉大審問", status: "aired", episode: "EP10" },
   { id: "t-food", type: "生活", title: "三國人每天吃什麼？有沒有刷牙？", status: "collecting" },
   { id: "t-diaochan", type: "故事", title: "貂蟬到底存不存在？", status: "collecting" },

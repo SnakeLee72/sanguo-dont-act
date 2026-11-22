@@ -408,3 +408,31 @@
 🗳️ 下一位來賓由你投票決定 → https://sanguo-dont-act.pages.dev/request?from=spotify
 ```
 
+---
+
+## QA01 聽眾問答番外篇
+
+### 📺 YouTube
+
+```text
+📚 本集延伸｜三國別演了 官網
+🔍 「赤兔馬被曹操送給關羽，最後絕食而死」是真的嗎？先猜再翻牌 → https://sanguo-dont-act.pages.dev/wiki?from=yt#s=chitu
+🔍 「三國時代用『一首詩當密碼本』傳軍情」是真的嗎？先猜再翻牌 → https://sanguo-dont-act.pages.dev/wiki?from=yt#s=yinfu
+📖 名句「兵馬未動，糧草先行」典故與造句 → https://sanguo-dont-act.pages.dev/wiki?from=yt#i=liangcao
+📖 成語「枕戈待旦」典故與造句 → https://sanguo-dont-act.pages.dev/wiki?from=yt#i=zhengedaidan
+🎭 測測你最像哪位三國來賓 → https://sanguo-dont-act.pages.dev/quiz?from=yt
+🗳️ 下一位來賓由你投票決定 → https://sanguo-dont-act.pages.dev/request?from=yt
+```
+
+### 🎧 Spotify
+
+```text
+📚 本集延伸｜三國別演了 官網
+🔍 「赤兔馬被曹操送給關羽，最後絕食而死」是真的嗎？先猜再翻牌 → https://sanguo-dont-act.pages.dev/wiki?from=spotify#s=chitu
+🔍 「三國時代用『一首詩當密碼本』傳軍情」是真的嗎？先猜再翻牌 → https://sanguo-dont-act.pages.dev/wiki?from=spotify#s=yinfu
+📖 名句「兵馬未動，糧草先行」典故與造句 → https://sanguo-dont-act.pages.dev/wiki?from=spotify#i=liangcao
+📖 成語「枕戈待旦」典故與造句 → https://sanguo-dont-act.pages.dev/wiki?from=spotify#i=zhengedaidan
+🎭 測測你最像哪位三國來賓 → https://sanguo-dont-act.pages.dev/quiz?from=spotify
+🗳️ 下一位來賓由你投票決定 → https://sanguo-dont-act.pages.dev/request?from=spotify
+```
+
