@@ -21,6 +21,15 @@ const HOSTS = [
 /* ---------------- 📻 節目單集 ---------------- */
 const EPISODES = [
   {
+    code: "SB02", type: "sp", status: "upcoming", person: "",
+    title: "孫子兵法：謀攻篇＋軍形篇",
+    question: "最高明的贏法是不吵架，「不戰而屈人之兵」到底怎麼做得到？",
+    lesson: "",
+    desc: "《三國別演了 × 孫子兵法》第二集預告！最高明的勝利不是硬碰硬，而是「不戰而屈人之兵」與「先勝而後求戰」，敬請期待！",
+    date: "", length: "", youtube: "", spotify: "",
+    related: { people: ["caocao", "zhugeliang", "xiaoqiao"], idioms: [], stories: [] }
+  },
+  {
     code: "EP11", type: "ep", status: "upcoming", person: "",
     title: "黃月英來作客",
     question: "別人用外表或刻板印象貼你標籤時，怎麼用實力說話？",
@@ -28,6 +37,16 @@ const EPISODES = [
     desc: "第 11 集預告！傳說中才華出眾、卻常被外表標籤評價的黃月英要來作客了！你想問她什麼？快到點播台投稿！",
     date: "", length: "", youtube: "", spotify: "",
     related: { people: ["zhugeliang"], idioms: [], stories: [] }
+  },
+  {
+    code: "SB01", type: "sp", status: "published", person: "",
+    title: "孫子兵法：始計篇＋作戰篇",
+    question: "開打之前，先學會按計算機",
+    lesson: "真正的贏家不是靠運氣衝鋒，而是在出發前就把條件算清楚、把時間用在刀口上；多一分準備，就多十分勝算。",
+    desc: "《三國別演了 × 孫子兵法》第一集！曹操帶大家讀《始計篇》「道天地將法」與《作戰篇》時間成本，從官渡之戰和孫臏「減灶誘敵」看懂怎麼用算的贏過強敵。",
+    date: "2026-11-23", length: "16:09",
+    youtube: "M7B5zoL1uu4", spotify: "6BQBAwXKOXVXhwOpJZcWY5",
+    related: { people: ["caocao", "zhugeliang", "xiaoqiao"], idioms: ["guisheng", "chubuyi"], stories: ["sunwu-era", "guandu-odds", "sunbin-stove"] }
   },
   {
     code: "QA01", type: "sp", label: "聽眾問答", status: "published", person: "",
@@ -483,6 +502,20 @@ const IDIOMS = [
     story: "漢末三國士兵的鐵製札甲重達二十多公斤，在後方安全時可以脫下休息；但進入前線交戰區隨時可能被夜襲，就必須穿戴全套盔甲、抱著武器坐著打盹，連鞋子都不能脫。後來《晉書》記錄劉琨寫信說自己「枕戈待旦」，成為形容戰備警戒的成語。",
     example: "明天就是決賽了，我們今晚把資料檢查好、枕戈待旦，全力以赴！",
     people: ["zhaoyun", "zhugeliang"], episode: "QA01"
+  },
+  {
+    id: "guisheng", word: "兵貴勝，不貴久", sourceType: "other", source: "《孫子兵法・作戰篇》",
+    meaning: "打仗與做事重點在迅速達成目標、解決問題，最忌拖延過久消耗資源與士氣。",
+    story: "《孫子兵法・作戰篇》幫軍隊算了一筆帳：十萬大軍每天糧草、車馬維修消耗龐大，戰事拖久了士兵疲憊、物價大漲，再強的國家也會被拖垮，因此強調「兵貴勝，不貴久」。",
+    example: "複習功課最怕拖延，專心把題目一次弄懂，「兵貴勝，不貴久」，就能早點去休息。",
+    people: ["caocao"], episode: "SB01"
+  },
+  {
+    id: "chubuyi", word: "攻其無備，出其不意", sourceType: "other", source: "《孫子兵法・始計篇》",
+    meaning: "趁對手還沒防備、沒有預料到的時候行動，就能掌握主動權（也常說「出其不意，攻其不備」）。",
+    story: "孫武在《始計篇》提醒「兵者，詭道也」，打仗要先「計算」對手的弱點，強的時候假裝弱、近的時候讓對方以為還遠，「攻其無備，出其不意」才不會跟人硬碰硬。",
+    example: "我們隊伍調整了傳球戰術，趁對手還在觀察時攻其無備，一下子就先馳得點。",
+    people: ["caocao", "zhugeliang"], episode: "SB01"
   }
 ];
 
@@ -553,6 +586,12 @@ const STORIES = [
     novel: "古代打仗怕密信被偷看，諸葛亮會用一首四十個字的詩當密碼本，每個字代表不同的戰況。", history: "用一首四十個字的五言詩當成軍用密碼表的「字驗」，是北宋兵書《武經總要》才記載的方法，三國時期還沒有！《六韜》記載的古代軍用密信「陰符」，是用八種不同長短的竹條或符節代表大勝、請兵等軍情，連信使自己都看不懂。" },
   { id: "menzhonghuo", title: "曹操在花園大門寫『活』字，嫌門蓋太大", verdict: "adapted", verdictText: "出自《世說新語》", people: ["caocao"], episode: "QA01", claimLabel: "民間故事",
     novel: "工匠幫曹操蓋好花園大門請他驗收，曹操沒說話，只在門上寫了個「活」字就走。楊修一看就懂：門裡面加個活就是「闊」字，意思是嫌門蓋得太寬了！", history: "這個機智猜謎出自南朝《世說新語・捷悟》篇（《三國演義》也有採用），屬於後人流傳的筆記趣聞，並不是陳壽《三國志》正史的記載。" },
+  { id: "sunwu-era", title: "孫武是三國時代的軍師嗎？", verdict: "fiction", verdictText: "早了七百年", people: ["caocao"], episode: "SB01", claimLabel: "常見誤會",
+    novel: "三國人物常常引用《孫子兵法》，有人因此以為孫武也是三國時期的軍事家。", history: "不是喔！孫武是春秋末期的人，比三國早了約七百年。曹操非常喜歡讀《孫子兵法》，還親自替它寫了現存最早的註釋本《孫子略解》。" },
+  { id: "guandu-odds", title: "官渡之戰時，袁紹的兵力約是曹操的五倍", verdict: "true", people: ["caocao"], episode: "SB01", claimLabel: "史實提醒",
+    novel: "袁紹兵強馬壯南下攻打曹操，許多人都以為曹操兵力太少撐不住。", history: "是真的！官渡之戰時袁紹擁有四州兵馬，兵力約是曹操的五倍，但曹操先用計算與判斷分散敵軍、再奇襲烏巢糧倉，成功以少勝多。" },
+  { id: "sunbin-stove", title: "孫臏『減灶誘敵』，故意少砌爐灶把龐涓引進埋伏圈", verdict: "true", people: [], episode: "SB01", claimLabel: "兵法典故",
+    novel: "齊國軍師孫臏與魏將龐涓交戰時，每天刻意減少軍營裡煮飯用的爐灶數量，裝作士兵大量逃亡。", history: "《史記・孫子吳起列傳》確實有記載！第一天十萬灶、第二天五萬灶、第三天三萬灶，龐涓果然上當只帶輕騎兵追擊，最後中伏大敗，正是《孫子兵法》「能而示之不能」的經典運用。" },
 ];
 
 /* ---------------- 🗳️ 下一位來賓候選人 ---------------- */
@@ -573,6 +612,7 @@ const CANDIDATES = [
 
 /* ---------------- 📋 題目看板 ---------------- */
 const TOPICS = [
+  { id: "t-sb01", type: "故事", title: "孫子兵法 SB01：始計篇與作戰篇，開打前先學會按計算機", status: "aired", episode: "SB01" },
   { id: "t-qa01", type: "生活", title: "聽眾問答 QA01：軍營廁所、赤兔馬食量、盔甲多重", status: "aired", episode: "QA01" },
   { id: "t-yueying", type: "人物", title: "黃月英來作客：打破刻板印象、用實力說話", status: "recording", episode: "EP11" },
   { id: "t-caocao", type: "人物", title: "曹操坐上來賓椅：主持人反轉大審問", status: "aired", episode: "EP10" },

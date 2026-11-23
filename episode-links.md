@@ -436,3 +436,31 @@
 🗳️ 下一位來賓由你投票決定 → https://sanguo-dont-act.pages.dev/request?from=spotify
 ```
 
+---
+
+## SB01 孫子兵法：始計篇＋作戰篇
+
+### 📺 YouTube
+
+```text
+📚 本集延伸｜三國別演了 官網
+🔍 「孫武是三國時代的軍師嗎？」是真的嗎？先猜再翻牌 → https://sanguo-dont-act.pages.dev/wiki?from=yt#s=sunwu-era
+🔍 「官渡之戰時，袁紹的兵力約是曹操的五倍」是真的嗎？先猜再翻牌 → https://sanguo-dont-act.pages.dev/wiki?from=yt#s=guandu-odds
+📖 名句「兵貴勝，不貴久」典故與造句 → https://sanguo-dont-act.pages.dev/wiki?from=yt#i=guisheng
+📖 名句「攻其無備，出其不意」典故與造句 → https://sanguo-dont-act.pages.dev/wiki?from=yt#i=chubuyi
+🎭 測測你最像哪位三國來賓 → https://sanguo-dont-act.pages.dev/quiz?from=yt
+🗳️ 下一位來賓由你投票決定 → https://sanguo-dont-act.pages.dev/request?from=yt
+```
+
+### 🎧 Spotify
+
+```text
+📚 本集延伸｜三國別演了 官網
+🔍 「孫武是三國時代的軍師嗎？」是真的嗎？先猜再翻牌 → https://sanguo-dont-act.pages.dev/wiki?from=spotify#s=sunwu-era
+🔍 「官渡之戰時，袁紹的兵力約是曹操的五倍」是真的嗎？先猜再翻牌 → https://sanguo-dont-act.pages.dev/wiki?from=spotify#s=guandu-odds
+📖 名句「兵貴勝，不貴久」典故與造句 → https://sanguo-dont-act.pages.dev/wiki?from=spotify#i=guisheng
+📖 名句「攻其無備，出其不意」典故與造句 → https://sanguo-dont-act.pages.dev/wiki?from=spotify#i=chubuyi
+🎭 測測你最像哪位三國來賓 → https://sanguo-dont-act.pages.dev/quiz?from=spotify
+🗳️ 下一位來賓由你投票決定 → https://sanguo-dont-act.pages.dev/request?from=spotify
+```
+
