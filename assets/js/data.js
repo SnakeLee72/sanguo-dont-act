@@ -39,6 +39,16 @@ const EPISODES = [
     related: { people: ["zhugeliang"], idioms: [], stories: [] }
   },
   {
+    code: "SP03", type: "sp", status: "published", person: "",
+    title: "黃仁勳 11 天驚奇回歸 CEO！",
+    question: "古代皇帝被迫退位後，真的還能『王者歸來』嗎？",
+    lesson: "真正厲害的團隊，不只要找回能扛大局的核心人物，更要把制度與信任補得比以前更牢；就算主角暫時離席，大家也能穩穩接住每一場考驗！",
+    desc: "輝達執行長黃仁勳辭職 11 天後全票回歸 CEO！從明英宗奪門之變、唐中宗神龍政變、拿破崙百日王朝、溥儀 12 天復辟，到司馬懿高平陵之變，看懂「人回來了」為何還要補好規矩。",
+    date: "2026-11-24", length: "15:30",
+    youtube: "pao8GvnPp7E", spotify: "08JZfZFdSQX31TKstCs7jx",
+    related: { people: ["simayi", "caocao", "zhugeliang"], idioms: ["dongshan"], stories: ["duomen", "shenlong", "fupi-12days", "gaopingling"] }
+  },
+  {
     code: "SB01", type: "sp", status: "published", person: "",
     title: "孫子兵法：始計篇＋作戰篇",
     question: "開打之前，先學會按計算機",
@@ -516,6 +526,13 @@ const IDIOMS = [
     story: "孫武在《始計篇》提醒「兵者，詭道也」，打仗要先「計算」對手的弱點，強的時候假裝弱、近的時候讓對方以為還遠，「攻其無備，出其不意」才不會跟人硬碰硬。",
     example: "我們隊伍調整了傳球戰術，趁對手還在觀察時攻其無備，一下子就先馳得點。",
     people: ["caocao", "zhugeliang"], episode: "SB01"
+  },
+  {
+    id: "dongshan", word: "東山再起", sourceType: "history", source: "《晉書・謝安傳》",
+    meaning: "原本退隱或失勢的人，經過沉潛等待後，再次回到重要職位、重新站上舞台。",
+    story: "東晉名相謝安年輕時辭官隱居在會稽東山，大家都在等他出山幫忙。後來國家面臨危機，他重新擔任宰相，並在淝水之戰帶領東晉以少勝多，留下「東山再起」這句成語。",
+    example: "他在這次比賽失利後沒有放棄，花半年重新調整節奏，明年果然東山再起拿下冠軍！",
+    people: ["simayi"], episode: "SP03"
   }
 ];
 
@@ -592,6 +609,14 @@ const STORIES = [
     novel: "袁紹兵強馬壯南下攻打曹操，許多人都以為曹操兵力太少撐不住。", history: "是真的！官渡之戰時袁紹擁有四州兵馬，兵力約是曹操的五倍，但曹操先用計算與判斷分散敵軍、再奇襲烏巢糧倉，成功以少勝多。" },
   { id: "sunbin-stove", title: "孫臏『減灶誘敵』，故意少砌爐灶把龐涓引進埋伏圈", verdict: "true", people: [], episode: "SB01", claimLabel: "兵法典故",
     novel: "齊國軍師孫臏與魏將龐涓交戰時，每天刻意減少軍營裡煮飯用的爐灶數量，裝作士兵大量逃亡。", history: "《史記・孫子吳起列傳》確實有記載！第一天十萬灶、第二天五萬灶、第三天三萬灶，龐涓果然上當只帶輕騎兵追擊，最後中伏大敗，正是《孫子兵法》「能而示之不能」的經典運用。" },
+  { id: "duomen", title: "明英宗被弟弟關了七年，後來撞門搶回皇位、當了兩次皇帝", verdict: "true", people: [], episode: "SP03", claimLabel: "正史記載",
+    novel: "皇帝在打仗時被抓走，回國後反而被繼位的弟弟關進南宮鎖了七年，最後趁夜撞門重新坐回龍椅！", history: "這是《明史・英宗本紀》記載的真實歷史！1449 年明英宗在土木堡之變被俘，弟弟景泰帝繼位；隔年放回後卻被軟禁南宮近七年，直到 1457 年景泰帝重病，大臣趁夜撞門扶他復辟（「奪門之變」），改元天順，成為明朝唯一兩度登基的皇帝。" },
+  { id: "shenlong", title: "唐中宗當皇帝才五十幾天就被母親武則天廢掉，二十多年後又被大臣請回來", verdict: "true", people: [], episode: "SP03", claimLabel: "正史記載",
+    novel: "剛繼位的皇帝被自己媽媽廢掉流放十幾年，直到二十多年後大臣發動政變，才又迎回長安恢復大唐國號。", history: "《舊唐書・中宗本紀》與《資治通鑑》都有記載！684 年唐中宗李顯剛即位約五十餘日便被武則天廢為廬陵王；直到 705 年武則天病重，宰相張柬之等發動「神龍政變」迎回李顯復位。可惜他回來後仍沒管好內部亂象，數年後再度出事。" },
+  { id: "fupi-12days", title: "清朝最後一位皇帝溥儀退位五年後曾經復辟，但只撐了十二天", verdict: "true", people: [], episode: "SP03", claimLabel: "近代史實",
+    novel: "民國建立好幾年之後，突然有人帶兵把已經退位的溥儀重新推上龍椅，結果不到半個月就垮台。", history: "是真的！1917 年 7 月 1 日軍閥張勳衝進北京擁立溥儀復辟，因全國反彈與各路軍隊討伐，到 7 月 12 日便宣告失敗，前後僅僅十二天（史稱「張勳復辟」）。" },
+  { id: "gaopingling", title: "三國時代有皇帝被廢又復位？其實是司馬懿被架空後一夜奪回實權", verdict: "adapted", verdictText: "三國沒有皇帝復辟", people: ["simayi", "caocao"], episode: "SP03", claimLabel: "常見誤會",
+    novel: "聽完歷代皇帝復辟，有人好奇《三國志》裡是不是也有皇帝下台後又重登大寶。", history: "正史《三國志》裡沒有皇帝二度登基喔！漢獻帝、曹芳、劉禪、孫亮等退位或被廢後都沒有再復位。不過西元 249 年，70 歲的司馬懿被曹爽架空成沒有兵權的「太傅」，最後趁對方出城掃墓發動「高平陵之變」，一天之內奪回曹魏軍政大權（見《三國志・齊王紀》《晉書・宣帝紀》）。" },
 ];
 
 /* ---------------- 🗳️ 下一位來賓候選人 ---------------- */
@@ -612,6 +637,7 @@ const CANDIDATES = [
 
 /* ---------------- 📋 題目看板 ---------------- */
 const TOPICS = [
+  { id: "t-sp03", type: "故事", title: "時事特輯 SP03：黃仁勳 11 天回歸 CEO vs 歷史上的皇帝歸位", status: "aired", episode: "SP03" },
   { id: "t-sb01", type: "故事", title: "孫子兵法 SB01：始計篇與作戰篇，開打前先學會按計算機", status: "aired", episode: "SB01" },
   { id: "t-qa01", type: "生活", title: "聽眾問答 QA01：軍營廁所、赤兔馬食量、盔甲多重", status: "aired", episode: "QA01" },
   { id: "t-yueying", type: "人物", title: "黃月英來作客：打破刻板印象、用實力說話", status: "recording", episode: "EP11" },

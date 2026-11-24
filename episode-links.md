@@ -464,3 +464,29 @@
 🗳️ 下一位來賓由你投票決定 → https://sanguo-dont-act.pages.dev/request?from=spotify
 ```
 
+---
+
+## SP03 黃仁勳 11 天驚奇回歸 CEO！
+
+### 📺 YouTube
+
+```text
+📚 本集延伸｜三國別演了 官網
+🔍 「明英宗被弟弟關了七年，後來撞門搶回皇位、當了兩次皇帝」是真的嗎？先猜再翻牌 → https://sanguo-dont-act.pages.dev/wiki?from=yt#s=duomen
+🔍 「唐中宗當皇帝才五十幾天就被母親武則天廢掉，二十多年後又被大臣請回來」是真的嗎？先猜再翻牌 → https://sanguo-dont-act.pages.dev/wiki?from=yt#s=shenlong
+📖 成語「東山再起」典故與造句 → https://sanguo-dont-act.pages.dev/wiki?from=yt#i=dongshan
+🎭 測測你最像哪位三國來賓 → https://sanguo-dont-act.pages.dev/quiz?from=yt
+🗳️ 下一位來賓由你投票決定 → https://sanguo-dont-act.pages.dev/request?from=yt
+```
+
+### 🎧 Spotify
+
+```text
+📚 本集延伸｜三國別演了 官網
+🔍 「明英宗被弟弟關了七年，後來撞門搶回皇位、當了兩次皇帝」是真的嗎？先猜再翻牌 → https://sanguo-dont-act.pages.dev/wiki?from=spotify#s=duomen
+🔍 「唐中宗當皇帝才五十幾天就被母親武則天廢掉，二十多年後又被大臣請回來」是真的嗎？先猜再翻牌 → https://sanguo-dont-act.pages.dev/wiki?from=spotify#s=shenlong
+📖 成語「東山再起」典故與造句 → https://sanguo-dont-act.pages.dev/wiki?from=spotify#i=dongshan
+🎭 測測你最像哪位三國來賓 → https://sanguo-dont-act.pages.dev/quiz?from=spotify
+🗳️ 下一位來賓由你投票決定 → https://sanguo-dont-act.pages.dev/request?from=spotify
+```
+
