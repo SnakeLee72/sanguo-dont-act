@@ -490,3 +490,31 @@
 🗳️ 下一位來賓由你投票決定 → https://sanguo-dont-act.pages.dev/request?from=spotify
 ```
 
+---
+
+## SB02 孫子兵法：謀攻篇＋軍形篇
+
+### 📺 YouTube
+
+```text
+📚 本集延伸｜三國別演了 官網
+🔍 「諸葛亮圍攻陳倉城，曹魏守將郝昭只帶一千多人就守住二十多天」是真的嗎？先猜再翻牌 → https://sanguo-dont-act.pages.dev/wiki?from=yt#s=chencang-haozhao
+🔍 「諸葛亮在南中『七擒七縱』孟獲，還碰上藤甲兵與驅使野獸的木鹿大王」是真的嗎？先猜再翻牌 → https://sanguo-dont-act.pages.dev/wiki?from=yt#s=qiqin-qizong
+📖 名句「不戰而屈人之兵」典故與造句 → https://sanguo-dont-act.pages.dev/wiki?from=yt#i=buzhan
+📖 名句「知彼知己，百戰不殆」典故與造句 → https://sanguo-dont-act.pages.dev/wiki?from=yt#i=baizhanbudai
+🎭 測測你最像哪位三國來賓 → https://sanguo-dont-act.pages.dev/quiz?from=yt
+🗳️ 下一位來賓由你投票決定 → https://sanguo-dont-act.pages.dev/request?from=yt
+```
+
+### 🎧 Spotify
+
+```text
+📚 本集延伸｜三國別演了 官網
+🔍 「諸葛亮圍攻陳倉城，曹魏守將郝昭只帶一千多人就守住二十多天」是真的嗎？先猜再翻牌 → https://sanguo-dont-act.pages.dev/wiki?from=spotify#s=chencang-haozhao
+🔍 「諸葛亮在南中『七擒七縱』孟獲，還碰上藤甲兵與驅使野獸的木鹿大王」是真的嗎？先猜再翻牌 → https://sanguo-dont-act.pages.dev/wiki?from=spotify#s=qiqin-qizong
+📖 名句「不戰而屈人之兵」典故與造句 → https://sanguo-dont-act.pages.dev/wiki?from=spotify#i=buzhan
+📖 名句「知彼知己，百戰不殆」典故與造句 → https://sanguo-dont-act.pages.dev/wiki?from=spotify#i=baizhanbudai
+🎭 測測你最像哪位三國來賓 → https://sanguo-dont-act.pages.dev/quiz?from=spotify
+🗳️ 下一位來賓由你投票決定 → https://sanguo-dont-act.pages.dev/request?from=spotify
+```
+

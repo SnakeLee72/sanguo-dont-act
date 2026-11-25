@@ -21,11 +21,11 @@ const HOSTS = [
 /* ---------------- 📻 節目單集 ---------------- */
 const EPISODES = [
   {
-    code: "SB02", type: "sp", status: "upcoming", person: "",
-    title: "孫子兵法：謀攻篇＋軍形篇",
-    question: "最高明的贏法是不吵架，「不戰而屈人之兵」到底怎麼做得到？",
+    code: "SB03", type: "sp", status: "upcoming", person: "",
+    title: "孫子兵法：兵勢篇＋虛實篇",
+    question: "為什麼從山頂滾一顆石頭，力量比一百個大力士還可怕？",
     lesson: "",
-    desc: "《三國別演了 × 孫子兵法》第二集預告！最高明的勝利不是硬碰硬，而是「不戰而屈人之兵」與「先勝而後求戰」，敬請期待！",
+    desc: "《三國別演了 × 孫子兵法》第三集預告！力氣比別人小、資源沒人家多，怎麼靠「位置」與「節奏」借力使力、避實擊虛打出漂亮反攻？",
     date: "", length: "", youtube: "", spotify: "",
     related: { people: ["caocao", "zhugeliang", "xiaoqiao"], idioms: [], stories: [] }
   },
@@ -37,6 +37,16 @@ const EPISODES = [
     desc: "第 11 集預告！傳說中才華出眾、卻常被外表標籤評價的黃月英要來作客了！你想問她什麼？快到點播台投稿！",
     date: "", length: "", youtube: "", spotify: "",
     related: { people: ["zhugeliang"], idioms: [], stories: [] }
+  },
+  {
+    code: "SB02", type: "sp", status: "published", person: "",
+    title: "孫子兵法：謀攻篇＋軍形篇",
+    question: "不戰而屈人之兵，最高明的贏法",
+    lesson: "最高明的勝利，不是把別人打趴在地上，而是讓對手心服口服、讓夥伴願意與你同行；先把自己的實力練到無懈可擊，好運自然會站在你這邊。",
+    desc: "《三國別演了 × 孫子兵法》第二集！曹操帶大家看懂《謀攻篇》「上兵伐謀、不戰而屈人之兵」與《軍形篇》「先為不可勝」，從曹劌一鼓作氣與郝昭守陳倉學會先站穩實力再出手。",
+    date: "2026-11-25", length: "17:22",
+    youtube: "IV3hTYbxZtY", spotify: "1oy3F1bfS1QvlDZFR6QJXJ",
+    related: { people: ["caocao", "zhugeliang", "xiaoqiao"], idioms: ["buzhan", "baizhanbudai"], stories: ["chencang-haozhao", "qiqin-qizong", "shezhan"] }
   },
   {
     code: "SP03", type: "sp", status: "published", person: "",
@@ -533,6 +543,20 @@ const IDIOMS = [
     story: "東晉名相謝安年輕時辭官隱居在會稽東山，大家都在等他出山幫忙。後來國家面臨危機，他重新擔任宰相，並在淝水之戰帶領東晉以少勝多，留下「東山再起」這句成語。",
     example: "他在這次比賽失利後沒有放棄，花半年重新調整節奏，明年果然東山再起拿下冠軍！",
     people: ["simayi"], episode: "SP03"
+  },
+  {
+    id: "buzhan", word: "不戰而屈人之兵", sourceType: "history", source: "《孫子兵法・謀攻篇》",
+    meaning: "不用真的動手開打，就能靠溝通、智慧或策略讓對手心服口服、化解衝突。",
+    story: "孫武在〈謀攻篇〉寫道「上兵伐謀，其次伐交，其次伐兵，其下攻城」，最高明的贏法是「不戰而屈人之兵，善之善者也」，因為硬碰硬攻城最浪費時間和力氣，贏了也是兩敗俱傷。",
+    example: "兩組為了搶教室白板差點吵起來，班長協調輪流使用，真正做到了不戰而屈人之兵。",
+    people: ["caocao", "zhugeliang"], episode: "SB02"
+  },
+  {
+    id: "baizhanbudai", word: "知彼知己，百戰不殆", sourceType: "history", source: "《孫子兵法・謀攻篇》",
+    meaning: "既了解對手也了解自己，就算經歷一百場考驗也不會陷入危險或失敗（「殆」是危險、失敗，常被誤說成「百戰百勝」）。",
+    story: "《孫子兵法・謀攻篇》原文不是「百戰百勝」，而是「知彼知己，百戰不殆」。孫武很務實，知道沒有人能保證次次全贏，但做足功課就能保證自己立於不敗之地。",
+    example: "比賽前先把隊友強項和對手打法摸清楚，做到知彼知己，百戰不殆。",
+    people: ["caocao", "zhugeliang"], episode: "SB02"
   }
 ];
 
@@ -617,6 +641,10 @@ const STORIES = [
     novel: "民國建立好幾年之後，突然有人帶兵把已經退位的溥儀重新推上龍椅，結果不到半個月就垮台。", history: "是真的！1917 年 7 月 1 日軍閥張勳衝進北京擁立溥儀復辟，因全國反彈與各路軍隊討伐，到 7 月 12 日便宣告失敗，前後僅僅十二天（史稱「張勳復辟」）。" },
   { id: "gaopingling", title: "三國時代有皇帝被廢又復位？其實是司馬懿被架空後一夜奪回實權", verdict: "adapted", verdictText: "三國沒有皇帝復辟", people: ["simayi", "caocao"], episode: "SP03", claimLabel: "常見誤會",
     novel: "聽完歷代皇帝復辟，有人好奇《三國志》裡是不是也有皇帝下台後又重登大寶。", history: "正史《三國志》裡沒有皇帝二度登基喔！漢獻帝、曹芳、劉禪、孫亮等退位或被廢後都沒有再復位。不過西元 249 年，70 歲的司馬懿被曹爽架空成沒有兵權的「太傅」，最後趁對方出城掃墓發動「高平陵之變」，一天之內奪回曹魏軍政大權（見《三國志・齊王紀》《晉書・宣帝紀》）。" },
+  { id: "chencang-haozhao", title: "諸葛亮圍攻陳倉城，曹魏守將郝昭只帶一千多人就守住二十多天", verdict: "true", people: ["zhugeliang", "caocao"], episode: "SB02", claimLabel: "正史記載",
+    novel: "第二次北伐時諸葛亮帶數萬大軍圍攻陳倉，曹魏守將郝昭兵力很少，卻硬是撐過二十多天直到糧盡撤軍。", history: "是真的！《三國志・明帝紀》裴松之注引《魏略》記載，郝昭僅率千餘人固守陳倉，面對雲梯、衝車、地道與連續進攻仍見招拆招，相持二十餘日迫使蜀軍糧盡退兵，正是《孫子兵法》「其下攻城」的經典印證。" },
+  { id: "qiqin-qizong", title: "諸葛亮在南中『七擒七縱』孟獲，還碰上藤甲兵與驅使野獸的木鹿大王", verdict: "adapted", verdictText: "七擒見於裴注，奇幻兵種為演義創作", people: ["zhugeliang"], episode: "SB02", claimLabel: "常見說法",
+    novel: "諸葛亮南征時把孟獲抓了又放、放了又抓整整七次，還打敗身穿刀槍不入藤甲的部隊和能召來野獸的木鹿大王。", history: "《三國志・諸葛亮傳》裴松之注引《漢晉春秋》確實記載「七縱七擒」以攻心服人（陳壽正文僅簡記平定南中四郡）；但《三國演義》裡噴火燒毀的藤甲兵與木鹿大王驅獸等場面，則屬於小說家增添的奇幻情節。" }
 ];
 
 /* ---------------- 🗳️ 下一位來賓候選人 ---------------- */
@@ -637,6 +665,7 @@ const CANDIDATES = [
 
 /* ---------------- 📋 題目看板 ---------------- */
 const TOPICS = [
+  { id: "t-sb02", type: "故事", title: "孫子兵法 SB02：謀攻篇與軍形篇，不戰而屈人之兵與百戰不殆", status: "aired", episode: "SB02" },
   { id: "t-sp03", type: "故事", title: "時事特輯 SP03：黃仁勳 11 天回歸 CEO vs 歷史上的皇帝歸位", status: "aired", episode: "SP03" },
   { id: "t-sb01", type: "故事", title: "孫子兵法 SB01：始計篇與作戰篇，開打前先學會按計算機", status: "aired", episode: "SB01" },
   { id: "t-qa01", type: "生活", title: "聽眾問答 QA01：軍營廁所、赤兔馬食量、盔甲多重", status: "aired", episode: "QA01" },
