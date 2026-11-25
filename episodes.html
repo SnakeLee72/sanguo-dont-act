@@ -29,6 +29,21 @@
 <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin />
 <link rel="preconnect" href="https://i.ytimg.com" />
 <!-- meta:end -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "全部節目｜三國別演了",
+  "description": "趙雲、呂布、周瑜、關羽、張飛、孫權、劉備、司馬懿、陸遜來作客！每集一位三國人物，親自回答當年到底發生了什麼。",
+  "url": "https://sanguo-dont-act.pages.dev/episodes",
+  "inLanguage": "zh-Hant-TW",
+  "isPartOf": {
+    "@type": "PodcastSeries",
+    "name": "三國別演了",
+    "url": "https://sanguo-dont-act.pages.dev/"
+  }
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
@@ -119,6 +134,33 @@
     render();
   });
   render();
+
+  // 動態補齊單集結構化資料（供搜尋引擎索引每集 PodcastEpisode）
+  const ld = document.createElement("script");
+  ld.type = "application/ld+json";
+  ld.textContent = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "三國別演了 已上架節目列表",
+    "itemListElement": published().map((ep, idx) => ({
+      "@type": "ListItem",
+      "position": idx + 1,
+      "item": {
+        "@type": "PodcastEpisode",
+        "name": `${ep.code} ${ep.title}｜${ep.question}`,
+        "description": ep.desc || ep.lesson || ep.question,
+        "datePublished": ep.date || undefined,
+        "url": `https://sanguo-dont-act.pages.dev/episodes#${ep.code}`,
+        "thumbnailUrl": ep.youtube ? `https://i.ytimg.com/vi/${ep.youtube}/hqdefault.jpg` : undefined,
+        "partOfSeries": { "@type": "PodcastSeries", "name": "三國別演了", "url": "https://sanguo-dont-act.pages.dev/" },
+        "sameAs": [
+          ep.youtube ? `https://www.youtube.com/watch?v=${ep.youtube}` : null,
+          ep.spotify ? `https://open.spotify.com/episode/${ep.spotify}` : null
+        ].filter(Boolean)
+      }
+    }))
+  });
+  document.head.appendChild(ld);
 
   // 網址帶 #EP03 時直接打開那一集
   const code = decodeURIComponent(location.hash.slice(1));

@@ -29,6 +29,26 @@
 <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin />
 <link rel="preconnect" href="https://i.ytimg.com" />
 <!-- meta:end -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Quiz",
+  "name": "你是哪位三國來賓？｜三國別演了",
+  "description": "7 題心理小測驗：你最像趙雲的勇敢、司馬懿的耐心，還是張飛的熱血？測完直接收聽那一集！",
+  "url": "https://sanguo-dont-act.pages.dev/quiz",
+  "inLanguage": "zh-Hant-TW",
+  "isAccessibleForFree": true,
+  "about": {
+    "@type": "Thing",
+    "name": "三國人物性格測驗"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "三國別演了",
+    "url": "https://sanguo-dont-act.pages.dev/"
+  }
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
@@ -48,6 +68,9 @@
   .faces > span { margin-left: -10px; }
   .faces .avatar { --s: clamp(30px, 10.5vw, 50px) !important; box-shadow: 0 0 0 2px #fff; }
   .also { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .challenge-banner { display: inline-flex; align-items: center; gap: 10px; background: var(--paper-2); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px 6px 8px; margin-bottom: 14px; font-size: 14px; font-weight: 700; max-width: 100%; }
+  .share-panel { border-top: 1px dashed var(--line); padding-top: 16px; display: grid; gap: 10px; }
+  .share-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
 </style>
 </head>
 <body data-page="quiz">
@@ -71,18 +94,159 @@
 <script src="assets/js/core.js"></script>
 <script>
 (function () {
-  const { $, esc, avatar, factionChip, personById, epByCode, links, Store, toast } = SG;
+  const { $, esc, avatar, FACTION, personById, epByCode, links, Store, toast } = SG;
   const box = $("#box");
+  const FACTION_HEX = { wei: "#2F5D8A", shu: "#2E7D4F", wu: "#B23A2E", qun: "#6B5B4B" };
   let i = 0, score = {};
+
+  function getChallengeGuest() {
+    const m = location.hash.match(/^#r=([a-z0-9-]+)$/i);
+    const guest = m && personById[m[1]];
+    return guest && guest.role === "guest" ? guest : null;
+  }
+
+  function wrapLines(ctx, text, maxW) {
+    const lines = [];
+    let line = "";
+    for (const ch of String(text || "")) {
+      if (ch === "\n") { lines.push(line); line = ""; continue; }
+      const next = line + ch;
+      if (ctx.measureText(next).width > maxW && line) { lines.push(line); line = ch; }
+      else line = next;
+    }
+    if (line) lines.push(line);
+    return lines;
+  }
+
+  function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  function loadPortrait(id) {
+    return new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => resolve(null);
+      img.src = `assets/img/cards/${id}.webp`;
+    });
+  }
+
+  async function buildResultCardBlob(p, ep) {
+    if (document.fonts && document.fonts.ready) {
+      try { await document.fonts.ready; } catch (_) {}
+    }
+    const W = 1080, H = 1080;
+    const canvas = document.createElement("canvas");
+    canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext("2d");
+    const fc = FACTION_HEX[p.faction] || "#8A2323";
+
+    // 紙張底色與邊框
+    ctx.fillStyle = "#FBF5EA";
+    ctx.fillRect(0, 0, W, H);
+
+    // 頂部陣營戲台背景
+    const grad = ctx.createLinearGradient(0, 0, W, 430);
+    grad.addColorStop(0, fc);
+    grad.addColorStop(1, "#2B0C0C");
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, 430);
+    ctx.fillStyle = "#F0B23E";
+    ctx.fillRect(0, 424, W, 6);
+
+    // 頂部標誌
+    ctx.textAlign = "center";
+    ctx.fillStyle = "rgba(255, 244, 222, 0.9)";
+    ctx.font = '700 28px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+    ctx.fillText("🎭 三國別演了｜你是哪位三國來賓？", W / 2, 58);
+
+    // 圓形角色頭像（若無圖檔則退回姓氏印章）
+    const portrait = await loadPortrait(p.id);
+    const cx = W / 2, cy = 192, r = 98;
+    ctx.save();
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.clip();
+    if (portrait) {
+      const scale = Math.max((r * 2) / portrait.width, (r * 2) / portrait.height);
+      const dw = portrait.width * scale, dh = portrait.height * scale;
+      ctx.drawImage(portrait, cx - dw / 2, cy - r - (dh - r * 2) * 0.12, dw, dh);
+    } else {
+      ctx.fillStyle = fc;
+      ctx.fillRect(cx - r, cy - r, r * 2, r * 2);
+      ctx.fillStyle = "#FFF4DE";
+      ctx.font = '700 96px "LXGW WenKai TC", serif';
+      ctx.textBaseline = "middle";
+      const ch = p.name.length > 2 ? p.name.slice(-1) : p.name.slice(0, 1);
+      ctx.fillText(ch, cx, cy + 4);
+      ctx.textBaseline = "alphabetic";
+    }
+    ctx.restore();
+    ctx.lineWidth = 7; ctx.strokeStyle = "#FFFFFF";
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke();
+    ctx.lineWidth = 3; ctx.strokeStyle = "#F0B23E";
+    ctx.beginPath(); ctx.arc(cx, cy, r + 6, 0, Math.PI * 2); ctx.stroke();
+
+    // 角色名稱與標籤
+    ctx.fillStyle = "#FFFFFF";
+    ctx.font = '700 66px "LXGW WenKai TC", "Noto Serif TC", serif';
+    ctx.fillText(p.name, W / 2, 354);
+    ctx.fillStyle = "#F6DFC0";
+    ctx.font = '500 26px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+    ctx.fillText(`${FACTION[p.faction] || ""}・${p.tags.map(t => "#" + t).join("  ")}`, W / 2, 398);
+
+    // 測驗短評
+    ctx.textAlign = "left";
+    ctx.fillStyle = "#2A1F1A";
+    ctx.font = '700 34px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+    const blurbLines = wrapLines(ctx, p.quizBlurb, W - 160).slice(0, 4);
+    let y = 505;
+    blurbLines.forEach(line => { ctx.fillText(line, 80, y); y += 52; });
+
+    // 本集金句盒
+    if (ep && ep.lesson) {
+      y += 22;
+      ctx.font = '500 27px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+      const lessonLines = wrapLines(ctx, `💡 ${p.name}教你的事：${ep.lesson}`, W - 210).slice(0, 3);
+      const boxH = lessonLines.length * 42 + 46;
+      roundRect(ctx, 80, y, W - 160, boxH, 16);
+      ctx.fillStyle = "#F3E8D5";
+      ctx.fill();
+      ctx.fillStyle = "#C88A22";
+      roundRect(ctx, 80, y, 10, boxH, 5);
+      ctx.fill();
+      ctx.fillStyle = "#4D1414";
+      let ly = y + 50;
+      lessonLines.forEach(line => { ctx.fillText(line, 112, ly); ly += 42; });
+    }
+
+    // 底部網址引導列
+    ctx.fillStyle = "#2B0C0C";
+    ctx.fillRect(0, H - 104, W, 104);
+    ctx.fillStyle = "#C88A22";
+    ctx.fillRect(0, H - 104, W, 4);
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#F0B23E";
+    ctx.font = '700 30px "Noto Sans TC", "Microsoft JhengHei", sans-serif';
+    ctx.fillText("你也來測測最像哪位三國來賓 → sanguo-dont-act.pages.dev/quiz", W / 2, H - 40);
+
+    return new Promise(resolve => canvas.toBlob(resolve, "image/png"));
+  }
 
   function start() {
     i = 0; score = {};
     const guests = PEOPLE.filter(p => p.role === "guest");
+    const ref = getChallengeGuest();
     const num = n => n <= 10 ? "零一二三四五六七八九十"[n] : n >= 20 ? "零一二三四五六七八九"[Math.floor(n / 10)] + "十" + (n % 10 ? "零一二三四五六七八九"[n % 10] : "") : "十" + "零一二三四五六七八九"[n % 10];
     box.innerHTML = `<div class="card card-pad" style="text-align:center;padding:36px 24px">
+      ${ref ? `<div class="challenge-banner">${avatar(ref, 36)}<span>朋友測出最像「<b>${esc(ref.name)}</b>」！換你來測測看</span></div>` : ""}
       <div class="faces">${guests.map(p => `<span>${avatar(p, 50)}</span>`).join("")}</div>
       <h2 style="font-size:clamp(24px,6.5vw,30px);margin-top:20px">${num(guests.length)}位來賓，誰最像你？</h2>
-      <p class="muted" style="margin-top:8px">測完會告訴你理由，還能直接收聽那一集。</p>
+      <p class="muted" style="margin-top:8px">測完會告訴你理由，還能下載結果圖卡分享給朋友。</p>
       <button class="btn btn-red" style="margin-top:22px;font-size:18px" id="go">開始測驗 →</button></div>`;
     $("#go").addEventListener("click", show);
   }
@@ -107,6 +271,12 @@
     const p = personById[ranked[0][0]];
     const others = ranked.slice(1, 3).map(([id]) => personById[id]);
     const ep = epByCode[p.episode];
+    const baseUrl = location.href.split("#")[0].split("?")[0];
+    const shareUrl = `${baseUrl}#r=${p.id}`;
+    const tagsLine = p.tags.map(t => "#" + t).join(" ");
+    const lessonLine = ep && ep.lesson ? `\n💡 一句話學三國：${ep.lesson}` : "";
+    const shareText = `🎭 我在《三國別演了》測出最像【${p.name}】！\n${tagsLine}\n${p.quizBlurb}${lessonLine}\n\n👉 來測測你是哪位三國來賓：${shareUrl}`;
+
     Store.vote("persona:" + p.id); // 統計大家測出誰（不影響畫面）
     SG.Cards.mark("quiz:" + p.id);
     box.innerHTML = `<article class="card fade-in f-${p.faction}">
@@ -126,20 +296,64 @@
         </div>
         ${others.length ? `<div style="border-top:1px dashed var(--line);padding-top:14px"><p class="small muted" style="text-align:center;margin-bottom:8px">你身上也有一點……</p>
           <div class="also">${others.map(o => `<a class="chip chip-link" href="${links.person(o.id)}" style="padding:6px 12px">${avatar(o, 26)} ${esc(o.name)}</a>`).join("")}</div></div>` : ""}
-        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-          <button class="btn btn-ink btn-sm" id="share">📋 複製結果分享給朋友</button>
-          <button class="btn btn-line btn-sm" id="again">↺ 再測一次</button>
+        <div class="share-panel">
+          <div class="share-row">
+            <button class="btn btn-ink btn-sm" type="button" id="share">📋 一鍵複製結果分享</button>
+            <button class="btn btn-line btn-sm" type="button" id="downloadCard">🖼️ 下載結果圖卡</button>
+            ${typeof navigator.share === "function" ? `<button class="btn btn-line btn-sm" type="button" id="nativeShare">📤 傳給好友</button>` : ""}
+            <button class="btn btn-line btn-sm" type="button" id="again">↺ 再測一次</button>
+          </div>
         </div>
       </div></article>`;
     $("#again").addEventListener("click", start);
     $("#share").addEventListener("click", async () => {
-      const url = location.href.split("#")[0];
-      const text = `我在《三國別演了》測出來最像「${p.name}」！${p.quizBlurb} 你也來測測看：${url}`;
-      try { await navigator.clipboard.writeText(text); toast("已複製！貼給朋友吧"); }
-      catch (_) { prompt("複製這段文字分享：", text); }
+      const btn = $("#share");
+      try {
+        await navigator.clipboard.writeText(shareText);
+        btn.textContent = "✓ 已複製分享文案";
+        toast("已複製！貼到 Threads、LINE 或 FB 揪朋友來測");
+        setTimeout(() => { if (btn.isConnected) btn.textContent = "📋 一鍵複製結果分享"; }, 2200);
+      } catch (_) {
+        prompt("複製這段文字分享：", shareText);
+      }
     });
+    $("#downloadCard").addEventListener("click", async () => {
+      const btn = $("#downloadCard");
+      btn.disabled = true; btn.textContent = "圖卡產生中…";
+      try {
+        const blob = await buildResultCardBlob(p, ep);
+        const a = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        a.href = url; a.download = `sanguo-quiz-${p.id}.png`;
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1500);
+        toast("已下載結果圖卡！可發限動或 Threads");
+      } catch (err) {
+        console.warn("結果圖卡產生失敗", err);
+        toast("圖卡產生失敗，請改用複製文案分享");
+      } finally {
+        if (btn.isConnected) { btn.disabled = false; btn.textContent = "🖼️ 下載結果圖卡"; }
+      }
+    });
+    const nativeBtn = $("#nativeShare");
+    if (nativeBtn) {
+      nativeBtn.addEventListener("click", async () => {
+        try {
+          const blob = await buildResultCardBlob(p, ep);
+          const file = blob ? new File([blob], `sanguo-quiz-${p.id}.png`, { type: "image/png" }) : null;
+          if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({ title: `我在《三國別演了》測出最像【${p.name}】`, text: shareText, files: [file] });
+          } else {
+            await navigator.share({ title: `我是哪位三國來賓？｜三國別演了`, text: shareText, url: shareUrl });
+          }
+        } catch (err) {
+          if (err && err.name !== "AbortError") toast("無法開啟系統分享，請改按一鍵複製");
+        }
+      });
+    }
     box.scrollIntoView({ behavior: "smooth", block: "start" });
   }
+  window.addEventListener("hashchange", () => { if (i === 0) start(); });
   start();
 })();
 </script>

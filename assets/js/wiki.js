@@ -184,5 +184,36 @@
     if (location.hash !== h) history.replaceState(null, "", h);
     fromHash();
   });
+  // 動態補齊史實查核 FAQ 與成語彙整結構化資料（供搜尋引擎索引長尾關鍵字）
+  const ld = document.createElement("script");
+  ld.type = "application/ld+json";
+  ld.textContent = JSON.stringify({
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "FAQPage",
+        "mainEntity": STORIES.map(s => ({
+          "@type": "Question",
+          "name": `「${s.title}」是真的嗎？`,
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": `${(VERDICT[s.verdict] || {}).label || ""}：${s.history}`
+          }
+        }))
+      },
+      {
+        "@type": "DefinedTermSet",
+        "name": "三國別演了 成語與名句典故",
+        "hasDefinedTerm": IDIOMS.map(i => ({
+          "@type": "DefinedTerm",
+          "name": i.word,
+          "description": `${i.meaning}（出處：${i.source}）`,
+          "url": `https://sanguo-dont-act.pages.dev/wiki#i=${i.id}`
+        }))
+      }
+    ]
+  });
+  document.head.appendChild(ld);
+
   fromHash();
 })();

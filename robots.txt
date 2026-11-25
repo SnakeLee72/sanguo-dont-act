@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /tools/
+Disallow: /backend/
+
+Sitemap: https://sanguo-dont-act.pages.dev/sitemap.xml
