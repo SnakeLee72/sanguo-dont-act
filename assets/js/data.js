@@ -39,6 +39,16 @@ const EPISODES = [
     related: { people: ["zhugeliang"], idioms: [], stories: [] }
   },
   {
+    code: "MV03", type: "mv", label: "諸葛亮主題曲", status: "published", person: "zhugeliang",
+    title: "「空城計」諸葛亮主題曲 MV",
+    question: "城樓煮烏龍茶、撥琴弦，冷靜拆解空城計！",
+    lesson: "",
+    desc: "諸葛亮主題曲《空城計》！城外十萬大軍揚起漫天塵沙，城樓上的諸葛亮卻邊煮烏龍茶邊整理三十卷訪綱，用古典搖滾唱出遇事不慌的冷靜智慧。",
+    date: "2026-11-26", length: "4:04",
+    youtube: "xBjGoLOFSKg", spotify: "",
+    related: { people: ["zhugeliang"], idioms: [], stories: ["kongcheng"] }
+  },
+  {
     code: "SB02", type: "sp", status: "published", person: "",
     title: "孫子兵法：謀攻篇＋軍形篇",
     question: "不戰而屈人之兵，最高明的贏法",

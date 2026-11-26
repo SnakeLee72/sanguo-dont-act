@@ -388,5 +388,6 @@ python -m http.server 8765
 | 2026-11-25 | SB02 孫子兵法第二集（謀攻篇＋軍形篇）上架；新增 SB03 預告、2 則名句（不戰而屈人之兵、知彼知己百戰不殆）、2 則查核（郝昭守陳倉、七擒七縱孟獲） |
 | 2026-11-25 | SEO 與社群分享強化：新增 `robots.txt`、`sitemap.xml`、主要頁面 JSON-LD 結構化資料；`quiz.html` 升級結果分享文案、`#r=<id>` 挑戰連結與 PNG 結果圖卡下載 |
 | 2026-11-26 | 新增 Google Search Console 網站擁有權驗證檔（`googlebe1bd2ab77a18d3c.html`） |
+| 2026-11-26 | 新增「空城計」諸葛亮主題曲 MV（MV03，`xBjGoLOFSKg`）與說明欄延伸連結 |
 
 > 每次完成一批更新，請在上表新增一行（日期用 YYYY-MM-DD）。

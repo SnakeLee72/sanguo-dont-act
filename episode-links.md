@@ -518,3 +518,27 @@
 🗳️ 下一位來賓由你投票決定 → https://sanguo-dont-act.pages.dev/request?from=spotify
 ```
 
+---
+
+## 「空城計」諸葛亮主題曲 MV
+
+### 📺 YouTube
+
+```text
+📚 本集延伸｜三國別演了 官網
+🔍 「諸葛亮空城計」是真的嗎？先猜再翻牌 → https://sanguo-dont-act.pages.dev/wiki?from=yt#s=kongcheng
+🏮 官網首頁 → https://sanguo-dont-act.pages.dev/?from=yt
+🎭 測測你最像哪位三國來賓 → https://sanguo-dont-act.pages.dev/quiz?from=yt
+🗳️ 下一位來賓由你投票決定 → https://sanguo-dont-act.pages.dev/request?from=yt
+```
+
+### 🎧 Spotify
+
+```text
+📚 本集延伸｜三國別演了 官網
+🔍 「諸葛亮空城計」是真的嗎？先猜再翻牌 → https://sanguo-dont-act.pages.dev/wiki?from=spotify#s=kongcheng
+🏮 官網首頁 → https://sanguo-dont-act.pages.dev/?from=spotify
+🎭 測測你最像哪位三國來賓 → https://sanguo-dont-act.pages.dev/quiz?from=spotify
+🗳️ 下一位來賓由你投票決定 → https://sanguo-dont-act.pages.dev/request?from=spotify
+```
+
